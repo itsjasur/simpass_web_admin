@@ -1,0 +1,1 @@
+double desktopBreakPoint = 700;
