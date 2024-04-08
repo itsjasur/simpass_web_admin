@@ -42,9 +42,4 @@ class ResponsiveMenuController extends GetxController {
       isSideMenuOpen.value = false;
     }
   }
-
-  // // Determine if the device is desktop based on the width
-  // bool isDeviceDesktop(BuildContext context) {
-  //   return MediaQuery.of(context).size.width > 800;
-  // }
 }

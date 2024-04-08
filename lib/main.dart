@@ -19,6 +19,8 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         // colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
         colorScheme: const ColorScheme.light(
+          primary: Colors.orangeAccent,
+          secondary: Colors.orangeAccent,
           background: Colors.white,
         ),
         useMaterial3: true,
