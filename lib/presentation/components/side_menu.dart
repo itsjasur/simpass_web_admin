@@ -7,8 +7,10 @@ class SideMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: Colors.black87,
-
+      shadowColor: Colors.transparent,
+      surfaceTintColor: Colors.transparent,
+      backgroundColor: Colors.black,
+      // width: 500,
       // shape: const BeveledRectangleBorder(borderRadius: BorderRadius.zero),
       child: ListView(
         children: [

@@ -1,3 +1,4 @@
+import 'package:admin_simpass/globals/main_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -41,7 +42,7 @@ class _SideMenuWidgetState extends State<SideMenuWidget> {
               SvgPicture.asset(
                 widget.iconSrc,
                 colorFilter: widget.isSelected || _hovering
-                    ? const ColorFilter.mode(Colors.orangeAccent, BlendMode.srcIn)
+                    ? const ColorFilter.mode(MainUi.mainColor, BlendMode.srcIn)
                     : const ColorFilter.mode(
                         Colors.white,
                         BlendMode.srcIn,
@@ -51,7 +52,7 @@ class _SideMenuWidgetState extends State<SideMenuWidget> {
               const SizedBox(width: 15),
               Text(
                 widget.title,
-                style: TextStyle(color: widget.isSelected || _hovering ? Colors.orangeAccent : Colors.white, fontSize: 16),
+                style: TextStyle(color: widget.isSelected || _hovering ? MainUi.mainColor : Colors.white, fontSize: 16),
               ),
             ],
           ),

@@ -1,56 +1,41 @@
-import 'package:admin_simpass/controller/side_menu_controller.dart';
+import 'package:admin_simpass/controller/side_menu_controller_provider.dart';
 import 'package:admin_simpass/globals/global_keys.dart';
 import 'package:admin_simpass/presentation/components/header.dart';
 import 'package:admin_simpass/presentation/components/side_menu.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
-class ResponsiveMenuPage extends StatelessWidget {
-  final ResponsiveMenuController controller = Get.find<ResponsiveMenuController>();
+import 'package:provider/provider.dart';
 
-  ResponsiveMenuPage({super.key});
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    //updating the side menu visibility depending on the toggle
-    controller.updateDrawerBasedOnScreenSize(context);
-
     return Scaffold(
       key: homePageScaffoldKey,
       drawer: const SideMenu(),
       body: Row(
         children: [
-          // Using Obx here to listen to changes in the controller's variables
-          // Obx(() {
-          //   if (controller.isDesktop.value && !controller.sideMenuManuallyClosed.value) {
-          //     return const SideMenu();
-          //   }
-
-          //   if (!controller.isDesktop.value && controller.isSideMenuOpen.value) {
-          //     return const SideMenu();
-          //   }
-
-          //   return Container();
-          // }),
-
-          Obx(() {
-            double width = 0;
-            if (controller.isDesktop.value && !controller.sideMenuManuallyClosed.value) {
-              width = 250; // Example open width, adjust as needed
-            }
-
-            return AnimatedContainer(
-              duration: const Duration(milliseconds: 300), // Adjust the duration to control the speed of the animation
-              width: width,
-              curve: Curves.easeInOut,
-              child: const SideMenu(), // Optional: Add a curve for the animation
-            );
-          }),
-          Expanded(
+          Consumer<ResponsiveMenuController>(
+            builder: (context, controller, child) {
+              controller.updateDrawerBasedOnScreenSize(context); //this should be called whenever screen size changes
+              double width = 0;
+              if (controller.isDesktop && !controller.sideMenuManuallyClosed) {
+                width = 300; // example open width, adjust as needed
+              }
+              return AnimatedContainer(
+                duration: const Duration(milliseconds: 300), // adjsting the duration to control the speed of the animation
+                width: width,
+                curve: Curves.easeInOut,
+                child: const SideMenu(), // Optional: Add a curve for the animation
+              );
+            },
+          ),
+          const Expanded(
             child: Column(
               children: [
                 Header(),
-                const Center(
+                Center(
                   child: Text("Main Content Area"),
                 ),
               ],
