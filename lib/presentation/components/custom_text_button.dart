@@ -9,13 +9,12 @@ class CustomTextButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      splashColor: Colors.red,
       onTap: onTap,
       child: Text(
         title,
         style: const TextStyle(
           color: MainUi.mainColor,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w500,
         ),
       ),
     );

@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:admin_simpass/globals/main_ui.dart';
 import 'package:flutter/material.dart';
 
@@ -27,11 +29,12 @@ class CustomTextInput extends StatelessWidget {
       obscureText: hidden,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       decoration: InputDecoration(
-        helperText: '',
+        // helperText: '', //leaves empty place for error text
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 10,
           vertical: 18,
         ),
+
         labelText: title,
         labelStyle: const TextStyle(
           fontSize: 15,
@@ -39,6 +42,7 @@ class CustomTextInput extends StatelessWidget {
         ),
         floatingLabelStyle: const TextStyle(
           color: Colors.black87,
+          // fontSize: 16,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
@@ -51,7 +55,6 @@ class CustomTextInput extends StatelessWidget {
         ),
         constraints: const BoxConstraints(minHeight: 50),
         // isDense: true,
-
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
           borderSide: const BorderSide(
@@ -64,9 +67,14 @@ class CustomTextInput extends StatelessWidget {
             color: Colors.red,
           ),
         ),
+
+        errorMaxLines: 3,
+
         errorStyle: const TextStyle(
           color: Colors.red,
+          // height: 0.5,
         ),
+
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
           borderSide: const BorderSide(

@@ -1,4 +1,4 @@
-import 'package:admin_simpass/controller/side_menu_controller_provider.dart';
+import 'package:admin_simpass/providers/side_menu_provider.dart';
 import 'package:admin_simpass/globals/global_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -9,7 +9,7 @@ class Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ResponsiveMenuController>(
+    return Consumer<SideMenuProvider>(
       builder: (context, controller, child) {
         return SizedBox(
           height: 50,
@@ -21,6 +21,8 @@ class Header extends StatelessWidget {
                 borderRadius: BorderRadius.circular(5),
                 onTap: () {
                   controller.isDesktop ? controller.toggleDrawer() : homePageScaffoldKey.currentState?.openDrawer();
+
+                  print('open drawe clicked');
                 },
                 child: AnimatedRotation(
                   duration: const Duration(milliseconds: 500), // Duration of the animation

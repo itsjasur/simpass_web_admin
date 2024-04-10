@@ -1,6 +1,4 @@
 import 'package:admin_simpass/data/api/api_service.dart';
-import 'package:admin_simpass/data/models/login_model.dart';
-import 'package:admin_simpass/globals/main_ui.dart';
 import 'package:admin_simpass/globals/validators.dart';
 import 'package:admin_simpass/presentation/components/clickable_logo.dart';
 import 'package:admin_simpass/presentation/components/custom_text_button.dart';
@@ -9,17 +7,23 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+class SignupPage extends StatefulWidget {
+  const SignupPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<SignupPage> createState() => _SignupPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _SignupPageState extends State<SignupPage> {
   final TextEditingController _userNameController = TextEditingController();
 
+  final TextEditingController _fullNameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneNumberController = TextEditingController();
+
   final TextEditingController _passController = TextEditingController();
+  final TextEditingController _passReentryController = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
 
@@ -66,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
                       const SizedBox(height: 20),
 
                       const Text(
-                        '로그인',
+                        '관리자 등록요청',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 22,
@@ -74,9 +78,8 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       const SizedBox(height: 10),
-
                       const Text(
-                        '사용자 아이디 와 비밀번호를 입력하세요',
+                        '기본정보 입력하세요',
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 15,
@@ -89,10 +92,35 @@ class _LoginPageState extends State<LoginPage> {
                       //ID text field
                       CustomTextInput(
                         controller: _userNameController,
-                        title: '사용자 아이디',
+                        title: '아이디',
                         validator: InputValidator().validateId,
                       ),
                       const SizedBox(height: 20),
+
+                      //name text field
+                      CustomTextInput(
+                        controller: _fullNameController,
+                        title: '이름',
+                        validator: InputValidator().validateName,
+                      ),
+                      const SizedBox(height: 20),
+
+                      //email text field
+                      CustomTextInput(
+                        controller: _emailController,
+                        title: '이매일',
+                        validator: InputValidator().validateName,
+                      ),
+                      const SizedBox(height: 20),
+
+                      //phone number text field
+                      CustomTextInput(
+                        controller: _phoneNumberController,
+                        title: '휴대전화',
+                        validator: InputValidator().validateName,
+                      ),
+                      const SizedBox(height: 20),
+
                       //password fiel
                       CustomTextInput(
                         controller: _passController,
@@ -100,20 +128,28 @@ class _LoginPageState extends State<LoginPage> {
                         validator: InputValidator().validatePass,
                         hidden: true,
                       ),
+                      const SizedBox(height: 25),
 
+                      //password reentry fiel
+                      CustomTextInput(
+                        controller: _passReentryController,
+                        title: '비밀번호 확인',
+                        validator: (p0) => InputValidator().validateRentryPass(_passController.text, p0),
+                        hidden: true,
+                      ),
                       const SizedBox(height: 25),
 
                       SizedBox(
                         height: 50,
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: _isLoading ? null : _login,
+                          onPressed: _isLoading ? null : _signup,
                           child: _isLoading
                               ? const CircularProgressIndicator(
                                   color: Colors.white,
                                   strokeWidth: 1,
                                 )
-                              : const Text('로그인'),
+                              : const Text('등록하기'),
                         ),
                       ),
 
@@ -122,12 +158,12 @@ class _LoginPageState extends State<LoginPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text('계정이 없나요?'),
+                          const Text('이미 계정을 가지고 계십니까?'),
                           const SizedBox(width: 10),
                           CustomTextButton(
-                            title: '사용자 등록',
+                            title: '로그인',
                             onTap: () {
-                              context.go('/signup');
+                              context.go('/login');
                             },
                           ),
                         ],
@@ -158,30 +194,12 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Future<void> _login() async {
+  Future<void> _signup() async {
     final APIService apiService = APIService();
-    print("login pressed");
+    print("signup pressed");
     setState(() {
       _isLoading = true;
     });
-
-    if (_formKey.currentState!.validate()) {
-      try {
-        LoginResponseModel response = await apiService.login(context, LoginRequestModel(userName: _userNameController.text, password: _passController.text));
-
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('accessToken', response.token);
-        await prefs.setString('refreshToken', response.refreshToken);
-
-        if (mounted) context.go('/');
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(e.toString())),
-          );
-        }
-      }
-    }
 
     setState(() {
       _isLoading = false;

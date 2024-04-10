@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:admin_simpass/presentation/constants.dart';
 import 'package:admin_simpass/globals/global_keys.dart';
 
-class ResponsiveMenuController with ChangeNotifier {
+class SideMenuProvider with ChangeNotifier {
   // Private variables to handle the drawer's visibility
   bool _isSideMenuOpen = false;
   bool _sideMenuManuallyClosed = false;
-  bool _isDesktop = true;
+  bool _isDesktop = false;
 
   // Getters to access private variables
   bool get isSideMenuOpen => _isSideMenuOpen;
@@ -27,8 +27,8 @@ class ResponsiveMenuController with ChangeNotifier {
     if (screenWidth > desktopBreakPoint) {
       _isDesktop = true;
       _isSideMenuOpen = true;
-    } else {
       homePageScaffoldKey.currentState?.closeDrawer();
+    } else {
       _isDesktop = false;
       _isSideMenuOpen = false;
     }

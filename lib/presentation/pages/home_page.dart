@@ -1,4 +1,4 @@
-import 'package:admin_simpass/controller/side_menu_controller_provider.dart';
+import 'package:admin_simpass/providers/side_menu_provider.dart';
 import 'package:admin_simpass/globals/global_keys.dart';
 import 'package:admin_simpass/presentation/components/header.dart';
 import 'package:admin_simpass/presentation/components/side_menu.dart';
@@ -16,17 +16,20 @@ class HomePage extends StatelessWidget {
       drawer: const SideMenu(),
       body: Row(
         children: [
-          Consumer<ResponsiveMenuController>(
+          Consumer<SideMenuProvider>(
             builder: (context, controller, child) {
-              controller.updateDrawerBasedOnScreenSize(context); //this should be called whenever screen size changes
+              // this should be called whenever screen size changes
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                controller.updateDrawerBasedOnScreenSize(context);
+              });
               double width = 0;
               if (controller.isDesktop && !controller.sideMenuManuallyClosed) {
                 width = 300; // example open width, adjust as needed
               }
               return AnimatedContainer(
-                duration: const Duration(milliseconds: 300), // adjsting the duration to control the speed of the animation
+                duration: const Duration(milliseconds: 200), // adjsting the duration to control the speed of the animation
                 width: width,
-                curve: Curves.easeInOut,
+                curve: Curves.fastOutSlowIn,
                 child: const SideMenu(), // Optional: Add a curve for the animation
               );
             },
