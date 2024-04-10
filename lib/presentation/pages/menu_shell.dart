@@ -1,13 +1,14 @@
 import 'package:admin_simpass/providers/side_menu_provider.dart';
 import 'package:admin_simpass/globals/global_keys.dart';
-import 'package:admin_simpass/presentation/components/header.dart';
 import 'package:admin_simpass/presentation/components/side_menu.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class MenuShell extends StatelessWidget {
+  final Widget child;
+
+  const MenuShell({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +19,13 @@ class HomePage extends StatelessWidget {
         children: [
           Consumer<SideMenuProvider>(
             builder: (context, controller, child) {
-              // this should be called whenever screen size changes
+              //updating side menu status depending on the screen size
+
               WidgetsBinding.instance.addPostFrameCallback((_) {
-                controller.updateDrawerBasedOnScreenSize(context);
+                controller.updateDrawerBasedOnScreenSize(MediaQuery.of(context).size.width);
               });
+
+              // this should be called whenever screen size changes
               double width = 0;
               if (controller.isDesktop && !controller.sideMenuManuallyClosed) {
                 width = 300; // example open width, adjust as needed
@@ -34,12 +38,11 @@ class HomePage extends StatelessWidget {
               );
             },
           ),
-          const Expanded(
+          Expanded(
             child: Column(
               children: [
-                Header(),
                 Center(
-                  child: Text("Main Content Area"),
+                  child: child,
                 ),
               ],
             ),

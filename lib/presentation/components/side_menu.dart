@@ -35,7 +35,7 @@ class SideMenu extends StatelessWidget {
             ),
           ),
           SideMenuWidget(
-            title: "JASUR",
+            title: "나의 정보",
             iconSrc: "assets/icons/user.svg",
             press: () {},
             isSelected: true,

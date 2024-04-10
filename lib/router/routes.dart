@@ -1,13 +1,15 @@
-import 'package:admin_simpass/presentation/pages/home_page.dart';
+import 'package:admin_simpass/presentation/pages/menu_shell.dart';
 import 'package:admin_simpass/presentation/pages/login_page.dart';
 import 'package:admin_simpass/presentation/pages/not_found_page.dart';
+import 'package:admin_simpass/presentation/pages/profile_page.dart';
+import 'package:admin_simpass/presentation/pages/application_receipt_status.dart';
 import 'package:admin_simpass/presentation/pages/signup_page.dart';
 import 'package:admin_simpass/providers/auth_provider.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 final appRouter = GoRouter(
-  initialLocation: '/signup',
+  initialLocation: '/profile',
   errorBuilder: (context, state) => const NotFoundPage(),
   routes: [
     GoRoute(
@@ -23,12 +25,17 @@ final appRouter = GoRouter(
     ShellRoute(
       routes: [
         GoRoute(
-          name: 'home',
-          path: '/',
-          builder: (context, state) => const HomePage(),
+          name: 'profile',
+          path: '/profile',
+          builder: (context, state) => const ProfilePage(),
+        ),
+        GoRoute(
+          name: 'application-receipt-status',
+          path: '/', // this pages opens whenever user visits base url
+          builder: (context, state) => const ApplicationReceiptStatusPage(),
         ),
       ],
-      builder: (context, state, child) => const HomePage(),
+      builder: (context, state, child) => MenuShell(child: child),
     ),
   ],
   redirect: (context, state) {

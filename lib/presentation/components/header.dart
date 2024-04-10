@@ -5,24 +5,27 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class Header extends StatelessWidget {
-  const Header({super.key});
+  final String? title;
+  const Header({super.key, this.title});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<SideMenuProvider>(
-      builder: (context, controller, child) {
-        return SizedBox(
-          height: 50,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(width: 10),
-              InkWell(
+    return Row(
+      children: [
+        Consumer<SideMenuProvider>(
+          builder: (context, controller, child) {
+            return Container(
+              alignment: Alignment.center,
+              color: Colors.amber,
+              height: 60,
+              child: InkWell(
                 borderRadius: BorderRadius.circular(5),
                 onTap: () {
                   controller.isDesktop ? controller.toggleDrawer() : homePageScaffoldKey.currentState?.openDrawer();
 
-                  print('open drawe clicked');
+                  print(controller.isSideMenuOpen);
+
+                  // print('open drawe clicked');
                 },
                 child: AnimatedRotation(
                   duration: const Duration(milliseconds: 500), // Duration of the animation
@@ -42,10 +45,18 @@ class Header extends StatelessWidget {
                   ),
                 ),
               ),
-            ],
+            );
+          },
+        ),
+        const SizedBox(width: 10),
+        if (title != null)
+          Text(
+            title!,
+            style: const TextStyle(
+              fontSize: 20,
+            ),
           ),
-        );
-      },
+      ],
     );
   }
 }

@@ -4,9 +4,10 @@ import 'package:admin_simpass/globals/global_keys.dart';
 
 class SideMenuProvider with ChangeNotifier {
   // Private variables to handle the drawer's visibility
-  bool _isSideMenuOpen = false;
+  bool _isSideMenuOpen = true;
   bool _sideMenuManuallyClosed = false;
-  bool _isDesktop = false;
+  bool _isDesktop = true;
+  double _previousScreenWidth = 0;
 
   // Getters to access private variables
   bool get isSideMenuOpen => _isSideMenuOpen;
@@ -21,17 +22,20 @@ class SideMenuProvider with ChangeNotifier {
   }
 
   // changes if the device is desktop based on the width
-  void updateDrawerBasedOnScreenSize(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-
-    if (screenWidth > desktopBreakPoint) {
+  void updateDrawerBasedOnScreenSize(double width) {
+    if (width != _previousScreenWidth && !_isDesktop && width > desktopBreakPoint) {
       _isDesktop = true;
-      _isSideMenuOpen = true;
       homePageScaffoldKey.currentState?.closeDrawer();
-    } else {
-      _isDesktop = false;
-      _isSideMenuOpen = false;
+
+      _previousScreenWidth = width;
+      notifyListeners();
     }
-    notifyListeners();
+    if (width != _previousScreenWidth && width < desktopBreakPoint && _isDesktop) {
+      _isDesktop = false;
+      // _isSideMenuOpen = false;
+
+      _previousScreenWidth = width;
+      notifyListeners();
+    }
   }
 }
