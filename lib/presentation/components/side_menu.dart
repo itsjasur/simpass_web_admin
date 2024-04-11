@@ -1,9 +1,8 @@
-import 'package:admin_simpass/presentation/components/side_menu_tile.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:admin_simpass/presentation/components/clickable_logo.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/rendering.dart';
+import 'package:admin_simpass/presentation/components/side_menu_tile.dart';
 import 'package:flutter/widgets.dart';
+import 'package:go_router/go_router.dart';
 
 class SideMenu extends StatelessWidget {
   const SideMenu({super.key});
@@ -19,25 +18,24 @@ class SideMenu extends StatelessWidget {
       child: ListView(
         children: [
           InkWell(
-            onTap: () {},
+            onTap: () {
+              context.go('/');
+            },
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
               alignment: Alignment.topLeft,
-              child: GestureDetector(
-                onTap: () {},
-                child: Image.asset(
-                  "assets/logo.png",
-                  color: Colors.white,
-                  height: 50,
-                  fit: BoxFit.contain,
-                ),
+              child: const ClickableLogo(
+                height: 60,
+                color: Colors.white,
               ),
             ),
           ),
           SideMenuWidget(
             title: "나의 정보",
             iconSrc: "assets/icons/user.svg",
-            press: () {},
+            press: () {
+              context.go('/profile');
+            },
             isSelected: true,
           ),
           SideMenuWidget(

@@ -1,7 +1,7 @@
 import 'package:admin_simpass/data/api/api_service.dart';
 import 'package:admin_simpass/data/models/login_model.dart';
-import 'package:admin_simpass/globals/main_ui.dart';
 import 'package:admin_simpass/globals/validators.dart';
+import 'package:admin_simpass/presentation/components/button_circular_indicator.dart';
 import 'package:admin_simpass/presentation/components/clickable_logo.dart';
 import 'package:admin_simpass/presentation/components/custom_text_button.dart';
 import 'package:admin_simpass/presentation/components/custom_text_input.dart';
@@ -48,9 +48,11 @@ class _LoginPageState extends State<LoginPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 80),
-                const SizedBox(
-                  height: 50,
-                  child: ClickableLogo(),
+                const Align(
+                  alignment: Alignment.center,
+                  child: ClickableLogo(
+                    height: 50,
+                  ),
                 ),
                 const SizedBox(height: 30),
                 Container(
@@ -108,12 +110,7 @@ class _LoginPageState extends State<LoginPage> {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: _isLoading ? null : _login,
-                          child: _isLoading
-                              ? const CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 1,
-                                )
-                              : const Text('로그인'),
+                          child: _isLoading ? const ButtonCircularProgressIndicator() : const Text('로그인'),
                         ),
                       ),
 
@@ -167,7 +164,12 @@ class _LoginPageState extends State<LoginPage> {
 
     if (_formKey.currentState!.validate()) {
       try {
-        LoginResponseModel response = await apiService.login(context, LoginRequestModel(userName: _userNameController.text, password: _passController.text));
+        LoginResponseModel response = await apiService.login(
+            context,
+            LoginRequestModel(
+              userName: _userNameController.text,
+              password: _passController.text,
+            ));
 
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('accessToken', response.token);

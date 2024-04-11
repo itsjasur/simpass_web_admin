@@ -9,7 +9,7 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 final appRouter = GoRouter(
-  initialLocation: '/profile',
+  initialLocation: '/',
   errorBuilder: (context, state) => const NotFoundPage(),
   routes: [
     GoRoute(
@@ -26,12 +26,12 @@ final appRouter = GoRouter(
       routes: [
         GoRoute(
           name: 'profile',
-          path: '/profile',
+          path: '/',
           builder: (context, state) => const ProfilePage(),
         ),
         GoRoute(
           name: 'application-receipt-status',
-          path: '/', // this pages opens whenever user visits base url
+          path: '/aas', // this pages opens whenever user visits base url
           builder: (context, state) => const ApplicationReceiptStatusPage(),
         ),
       ],
@@ -42,15 +42,23 @@ final appRouter = GoRouter(
     final isLoggedIn = context.read<AuthServiceProvider>().isLoggedIn;
     final goingToLogin = state.matchedLocation == '/login';
 
-    // if (!isLoggedIn && !goingToLogin) {
-    //   print("redirecting to login");
-    //   // User is not logged in and not heading to login, redirects to login
-    //   return '/login';
-    // } else if (isLoggedIn && goingToLogin) {
-    //   // User is logged in but heading to login, redirects to home
-    //   print("redirecting to home");
-    //   return '/';
-    // }
+    if (!isLoggedIn && !goingToLogin) {
+      print("redirecting to login");
+      // User is not logged in and not heading to login, redirects to login
+      return '/login';
+    }
+
+    if (isLoggedIn) {
+      // User is logged in but heading to login, redirects to home
+      print("redirecting to home");
+      return '/';
+    }
+
+    if (isLoggedIn && goingToLogin) {
+      // User is logged in but heading to login, redirects to home
+      print("redirecting to home");
+      return '/';
+    }
 
     // No need to redirect
     return null;

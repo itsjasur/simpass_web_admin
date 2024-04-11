@@ -35,6 +35,21 @@ class InputValidator {
     return null;
   }
 
+  String? validatePhoneNumber(String? value) {
+    value = value?.replaceAll(' ', '');
+
+    // checking if the field is empty
+    if (value == null || value.isEmpty) return '전화번호를 입력해주세요';
+
+    // regular expression to validate the email
+    final pattern = RegExp(r'^010-\d{4}-\d{4}$');
+    if (!pattern.hasMatch(value)) {
+      return '정확한 전화번호를 입력해주세요.';
+    }
+
+    return null;
+  }
+
   String? validatePass(String? value) {
     value = value?.replaceAll(' ', '');
 
@@ -61,6 +76,15 @@ class InputValidator {
 
     //matching old and new password
     if (oldValue != newValue) return '비밀번호가 일치하지 않습니다.';
+
+    return null;
+  }
+
+  String? validateCountry(String? value) {
+    value = value?.replaceAll(' ', '');
+
+    // checking if the field is empty
+    if (value == null || value.isEmpty) return '국가를 선택하세요.';
 
     return null;
   }

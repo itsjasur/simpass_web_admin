@@ -6,11 +6,13 @@ class AuthServiceProvider extends ChangeNotifier {
   bool get isLoggedIn => _isLoggedIn;
 
   void login() {
+    print('logged in');
     _isLoggedIn = true;
     notifyListeners();
   }
 
   void logout() {
+    print('logged out');
     _isLoggedIn = false;
     notifyListeners();
   }

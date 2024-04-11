@@ -1,3 +1,4 @@
+import 'package:admin_simpass/presentation/components/header.dart';
 import 'package:flutter/material.dart';
 
 class ApplicationReceiptStatusPage extends StatefulWidget {
@@ -10,8 +11,9 @@ class ApplicationReceiptStatusPage extends StatefulWidget {
 class RApplicationReceiptStatusPageState extends State<ApplicationReceiptStatusPage> {
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return const Column(
       children: [
+        Header(title: "신청서 접수현황"),
         Text('profile '),
       ],
     );

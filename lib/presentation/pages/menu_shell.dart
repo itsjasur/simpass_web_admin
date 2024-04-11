@@ -1,6 +1,7 @@
 import 'package:admin_simpass/providers/side_menu_provider.dart';
 import 'package:admin_simpass/globals/global_keys.dart';
 import 'package:admin_simpass/presentation/components/side_menu.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
@@ -38,15 +39,7 @@ class MenuShell extends StatelessWidget {
               );
             },
           ),
-          Expanded(
-            child: Column(
-              children: [
-                Center(
-                  child: child,
-                ),
-              ],
-            ),
-          ),
+          Expanded(child: child),
         ],
       ),
     );

@@ -1,11 +1,14 @@
 import 'package:admin_simpass/data/api/api_service.dart';
+import 'package:admin_simpass/data/models/signup_model.dart';
+import 'package:admin_simpass/globals/constants.dart';
 import 'package:admin_simpass/globals/validators.dart';
+import 'package:admin_simpass/presentation/components/button_circular_indicator.dart';
 import 'package:admin_simpass/presentation/components/clickable_logo.dart';
+import 'package:admin_simpass/presentation/components/custom_menu_drop_down.dart';
 import 'package:admin_simpass/presentation/components/custom_text_button.dart';
 import 'package:admin_simpass/presentation/components/custom_text_input.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -21,21 +24,36 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
 
+  final TextEditingController _countryController = TextEditingController();
+
   final TextEditingController _passController = TextEditingController();
   final TextEditingController _passReentryController = TextEditingController();
 
+  String? _countryErrorText;
+
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
+  List<DropdownMenuEntry> _countries = [];
 
   @override
   void initState() {
+    _phoneNumberController.addListener(_formatPhoneNumber);
+
+    _countries = countryNameCodelist.map((item) => DropdownMenuEntry(value: item['code'], label: item['label'])).toList();
+
     super.initState();
   }
 
   @override
   void dispose() {
     _userNameController.dispose();
+    _fullNameController.dispose();
+    _emailController.dispose();
+    _countryController.dispose();
+    _phoneNumberController.dispose();
     _passController.dispose();
+    _passReentryController.dispose();
+
     super.dispose();
   }
 
@@ -51,10 +69,12 @@ class _SignupPageState extends State<SignupPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 80),
-                const SizedBox(
-                  height: 50,
-                  child: ClickableLogo(),
+                const SizedBox(height: 50),
+                const Align(
+                  alignment: Alignment.center,
+                  child: ClickableLogo(
+                    height: 50,
+                  ),
                 ),
                 const SizedBox(height: 30),
                 Container(
@@ -109,15 +129,39 @@ class _SignupPageState extends State<SignupPage> {
                       CustomTextInput(
                         controller: _emailController,
                         title: '이매일',
-                        validator: InputValidator().validateName,
+                        validator: InputValidator().validateEmail,
                       ),
                       const SizedBox(height: 20),
 
                       //phone number text field
                       CustomTextInput(
                         controller: _phoneNumberController,
+                        maxlength: 13,
                         title: '휴대전화',
-                        validator: InputValidator().validateName,
+                        validator: InputValidator().validatePhoneNumber,
+                      ),
+                      const SizedBox(height: 20),
+
+                      //country text menu field
+
+                      LayoutBuilder(
+                        builder: (BuildContext context, BoxConstraints constraints) {
+                          // You can use constraints.maxWidth as the parent's width here.
+                          return CustomDropDownMenu(
+                            controller: _countryController,
+                            label: const Text("국가"),
+                            errorText: _countryErrorText,
+                            onSelected: (selectedItem) {
+                              _countryController.text = countryNameCodelist.firstWhere((e) => e['code'] == selectedItem)['label'];
+
+                              _countryErrorText = null;
+                              setState(() {});
+                            },
+                            width: constraints.maxWidth + 7,
+                            items: _countries,
+                            selectedItem: 34,
+                          );
+                        },
                       ),
                       const SizedBox(height: 20),
 
@@ -144,12 +188,7 @@ class _SignupPageState extends State<SignupPage> {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: _isLoading ? null : _signup,
-                          child: _isLoading
-                              ? const CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 1,
-                                )
-                              : const Text('등록하기'),
+                          child: _isLoading ? const ButtonCircularProgressIndicator() : const Text('등록하기'),
                         ),
                       ),
 
@@ -195,14 +234,54 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   Future<void> _signup() async {
-    final APIService apiService = APIService();
-    print("signup pressed");
-    setState(() {
-      _isLoading = true;
-    });
+    if (_countryController.text.isEmpty) {
+      _countryErrorText = "국가를 선택하세요.";
+      setState(() {});
+    }
 
-    setState(() {
-      _isLoading = false;
-    });
+    if (_formKey.currentState!.validate() && _countryController.text.isNotEmpty) {
+      try {
+        final APIService apiService = APIService();
+
+        await apiService.signup(
+          context,
+          SignupRequestModel(
+            userName: _userNameController.text,
+            password: _passController.text,
+            email: _emailController.text,
+            fullName: _fullNameController.text,
+            country: _countryController.text,
+            phoneNumber: _phoneNumberController.text,
+          ),
+        );
+
+        _isLoading = false;
+        setState(() {});
+
+        if (mounted) context.go('/login');
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(e.toString())),
+          );
+        }
+      }
+    }
+  }
+
+  void _formatPhoneNumber() {
+    String text = _phoneNumberController.text.replaceAll('-', '');
+    if (text.length > 3 && text.length <= 7) {
+      text = '${text.substring(0, 3)}-${text.substring(3)}';
+    } else if (text.length > 7) {
+      text = '${text.substring(0, 3)}-${text.substring(3, 7)}-${text.substring(7, text.length)}';
+    }
+    // Update the controller without causing infinite loop
+    if (text != _phoneNumberController.text) {
+      _phoneNumberController.value = TextEditingValue(
+        text: text,
+        selection: TextSelection.collapsed(offset: text.length),
+      );
+    }
   }
 }

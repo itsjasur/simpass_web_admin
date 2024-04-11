@@ -1,53 +1,57 @@
 import 'package:admin_simpass/globals/main_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-class CustomTextInput extends StatelessWidget {
-  final TextEditingController controller;
-  final String title;
-  final String? Function(String?)? validator;
-  final bool hidden;
+class CustomDropDownMenu extends StatelessWidget {
+  final List<DropdownMenuEntry> items;
+  final double width;
+  final dynamic selectedItem;
+  final Widget label;
   final bool enabled;
-  final bool readOnly;
-  final int? maxlength;
-  final List<TextInputFormatter>? inputFormatters;
+  final Function(dynamic)? onSelected;
+  final TextEditingController? controller;
+  final String? errorText;
 
-  const CustomTextInput({
+  const CustomDropDownMenu({
     super.key,
-    required this.controller,
-    required this.title,
-    this.validator,
-    this.hidden = false,
+    required this.items,
+    this.width = 200,
+    this.selectedItem,
+    this.onSelected,
+    required this.label,
     this.enabled = true,
-    this.readOnly = false,
-    this.inputFormatters,
-    this.maxlength,
+    this.controller,
+    this.errorText,
   });
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      style: const TextStyle(
-        fontSize: 15,
-        color: Colors.black87,
-      ),
+    return DropdownMenu(
+      width: width,
+      menuHeight: 300,
+      errorText: errorText,
       controller: controller,
-      validator: validator,
-      inputFormatters: inputFormatters,
+      requestFocusOnTap: false,
+      expandedInsets: const EdgeInsets.all(0),
+      label: label,
+      initialSelection: selectedItem,
+      onSelected: onSelected,
       enabled: enabled,
-      maxLength: maxlength,
-      readOnly: readOnly,
-      obscureText: hidden,
-      autovalidateMode: AutovalidateMode.onUserInteraction,
-      decoration: InputDecoration(
-        counterText: '',
+      menuStyle: MenuStyle(
+        padding: MaterialStateProperty.all(EdgeInsets.zero),
+        // backgroundColor: MaterialStateProperty.all(Colors.white),
+        // shadowColor: MaterialStateProperty.all(Colors.white),
+        surfaceTintColor: MaterialStateProperty.all(Colors.white),
+      ),
+      dropdownMenuEntries: items,
+      inputDecorationTheme: InputDecorationTheme(
+        // fillColor: Colors.white,
+
         // helperText: '', //leaves empty place for error text
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 10,
           vertical: 18,
         ),
 
-        labelText: title,
         labelStyle: const TextStyle(
           fontSize: 15,
           color: Colors.black45,
@@ -65,13 +69,9 @@ class CustomTextInput extends StatelessWidget {
             color: MainUi.mainColor,
           ),
         ),
-        constraints: const BoxConstraints(minHeight: 50),
-        // isDense: true,
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5),
-          borderSide: const BorderSide(
-            color: Colors.black45,
-          ),
+        constraints: const BoxConstraints(
+          minHeight: 50,
+          // minWidth: 100,
         ),
 
         disabledBorder: OutlineInputBorder(
@@ -81,6 +81,13 @@ class CustomTextInput extends StatelessWidget {
           ),
         ),
 
+        // isDense: true,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5),
+          borderSide: const BorderSide(
+            color: Colors.black45,
+          ),
+        ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
           borderSide: const BorderSide(

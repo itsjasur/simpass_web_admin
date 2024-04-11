@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:admin_simpass/presentation/constants.dart';
+import 'package:admin_simpass/globals/constants.dart';
 import 'package:admin_simpass/globals/global_keys.dart';
 
 class SideMenuProvider with ChangeNotifier {
   // Private variables to handle the drawer's visibility
-  bool _isSideMenuOpen = true;
+  bool _isSideMenuOpen = false;
   bool _sideMenuManuallyClosed = false;
-  bool _isDesktop = true;
+  bool _isDesktop = false;
   double _previousScreenWidth = 0;
 
   // Getters to access private variables
