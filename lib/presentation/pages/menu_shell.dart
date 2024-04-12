@@ -1,8 +1,10 @@
+import 'package:admin_simpass/presentation/components/header.dart';
 import 'package:admin_simpass/providers/side_menu_provider.dart';
 import 'package:admin_simpass/globals/global_keys.dart';
 import 'package:admin_simpass/presentation/components/side_menu.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import 'package:provider/provider.dart';
 
@@ -17,6 +19,7 @@ class MenuShell extends StatelessWidget {
       key: homePageScaffoldKey,
       drawer: const SideMenu(),
       body: Row(
+        mainAxisSize: MainAxisSize.max,
         children: [
           Consumer<SideMenuProvider>(
             builder: (context, controller, child) {
@@ -39,7 +42,9 @@ class MenuShell extends StatelessWidget {
               );
             },
           ),
-          Expanded(child: child),
+          Expanded(
+            child: child,
+          ),
         ],
       ),
     );

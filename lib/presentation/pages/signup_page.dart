@@ -1,6 +1,7 @@
 import 'package:admin_simpass/data/api/api_service.dart';
 import 'package:admin_simpass/data/models/signup_model.dart';
 import 'package:admin_simpass/globals/constants.dart';
+import 'package:admin_simpass/globals/formatters.dart';
 import 'package:admin_simpass/globals/validators.dart';
 import 'package:admin_simpass/presentation/components/button_circular_indicator.dart';
 import 'package:admin_simpass/presentation/components/clickable_logo.dart';
@@ -37,8 +38,6 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   void initState() {
-    _phoneNumberController.addListener(_formatPhoneNumber);
-
     _countries = countryNameCodelist.map((item) => DropdownMenuEntry(value: item['code'], label: item['label'])).toList();
 
     super.initState();
@@ -139,6 +138,7 @@ class _SignupPageState extends State<SignupPage> {
                         maxlength: 13,
                         title: '휴대전화',
                         validator: InputValidator().validatePhoneNumber,
+                        inputFormatters: [PhoneNumberFormatter()],
                       ),
                       const SizedBox(height: 20),
 
@@ -266,22 +266,6 @@ class _SignupPageState extends State<SignupPage> {
           );
         }
       }
-    }
-  }
-
-  void _formatPhoneNumber() {
-    String text = _phoneNumberController.text.replaceAll('-', '');
-    if (text.length > 3 && text.length <= 7) {
-      text = '${text.substring(0, 3)}-${text.substring(3)}';
-    } else if (text.length > 7) {
-      text = '${text.substring(0, 3)}-${text.substring(3, 7)}-${text.substring(7, text.length)}';
-    }
-    // Update the controller without causing infinite loop
-    if (text != _phoneNumberController.text) {
-      _phoneNumberController.value = TextEditingValue(
-        text: text,
-        selection: TextSelection.collapsed(offset: text.length),
-      );
     }
   }
 }

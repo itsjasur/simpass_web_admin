@@ -93,3 +93,30 @@ class ProfileResponseModel {
         'roles_value': rolesValue?.map((e) => e.toJson()).toList(),
       };
 }
+
+class ProfileUpdateRequestModel {
+  int id;
+  String username;
+  String name;
+  String country;
+  String phoneNumber;
+  String email;
+
+  ProfileUpdateRequestModel({
+    required this.id,
+    required this.username,
+    required this.name,
+    required this.country,
+    required this.phoneNumber,
+    required this.email,
+  });
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "username": username,
+        "name": name,
+        "country": country,
+        "phone_number": phoneNumber,
+        "email": email,
+      };
+}

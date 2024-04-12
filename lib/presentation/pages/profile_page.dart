@@ -8,8 +8,12 @@ import 'package:admin_simpass/presentation/components/button_circular_indicator.
 import 'package:admin_simpass/presentation/components/custom_menu_drop_down.dart';
 import 'package:admin_simpass/presentation/components/custom_text_input.dart';
 import 'package:admin_simpass/presentation/components/header.dart';
+import 'package:admin_simpass/providers/auth_provider.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -24,7 +28,6 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
 
-  final TextEditingController _countryController = TextEditingController();
   final TextEditingController _statusController = TextEditingController();
 
   final TextEditingController _startDateController = TextEditingController(text: '04/08/2024, 11:42:23 AM');
@@ -33,17 +36,19 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController _oldPassController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
   final TextEditingController _passReentryController = TextEditingController();
+  String _selectedCountryCode = "";
 
   bool _isDataUpdating = false;
-
   String? _countryErrorText;
-
   List<dynamic> _roles = [];
+  int? _userId;
 
   List<DropdownMenuEntry> _countries = [];
 
   final _formKey = GlobalKey<FormState>();
-  bool _isLoading = false;
+
+  bool _isPageLoading = true;
+  bool _isUpdatingLoading = false;
 
   @override
   void initState() {
@@ -61,7 +66,6 @@ class _ProfilePageState extends State<ProfilePage> {
     _emailController.dispose();
     _phoneNumberController.dispose();
 
-    _countryController.dispose();
     _statusController.dispose();
 
     _startDateController.dispose();
@@ -75,202 +79,324 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Header(title: "나의 정보"),
-        SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return _isPageLoading
+        ? const Align(
+            alignment: Alignment.center,
+            child: CircularProgressIndicator(),
+          )
+        : Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: Container(
-                  // color: Colors.amber.shade100,
-                  constraints: const BoxConstraints(
-                    maxWidth: 900,
-                  ),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: CustomTextInput(
-                                controller: _userNameController,
-                                title: '아이디',
-                                readOnly: true,
-                              ),
-                            ),
-                            const Gap(20),
-                            Expanded(
-                              child: CustomTextInput(
-                                controller: _fullNameController,
-                                title: '이름',
-                                validator: InputValidator().validateName,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Gap(30),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: CustomTextInput(
-                                controller: _emailController,
-                                title: '이메일',
-                                validator: InputValidator().validateEmail,
-                              ),
-                            ),
-                            const Gap(20),
-                            Expanded(
-                              child: CustomTextInput(
-                                controller: _phoneNumberController,
-                                title: '휴대전화',
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Gap(30),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: LayoutBuilder(
-                                builder: (BuildContext context, BoxConstraints constraints) {
-                                  // You can use constraints.maxWidth as the parent's width here.
-                                  return CustomDropDownMenu(
-                                    controller: _countryController,
-                                    label: const Text("국가"),
-                                    errorText: _countryErrorText,
-                                    onSelected: (selectedItem) {
-                                      _countryErrorText = null;
-                                      setState(() {});
-                                      print(selectedItem);
-                                    },
-                                    width: constraints.maxWidth,
-                                    items: _countries,
-                                    selectedItem: _countryController.text,
-                                  );
-                                },
-                              ),
-                            ),
-                            const Gap(20),
-                            Expanded(
-                              child: LayoutBuilder(
-                                builder: (BuildContext context, BoxConstraints constraints) {
-                                  // You can use constraints.maxWidth as the parent's width here.
-                                  return CustomDropDownMenu(
-                                    controller: _statusController,
-                                    enabled: false,
-                                    label: const Text("상태"),
-                                    // enabled: false,
-                                    onSelected: (selectedItem) {
-                                      print(selectedItem);
-                                    },
-                                    width: constraints.maxWidth,
-                                    items: _countries,
-                                    selectedItem: 34,
-                                  );
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Gap(20),
-                        const Text('권한'),
-                        const Gap(5),
-                        Wrap(
-                          runSpacing: 10,
-                          spacing: 10,
-                          children: _roles
-                              .map(
-                                (item) => Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.black38,
-                                    borderRadius: BorderRadius.circular(5),
-                                    border: Border.all(
-                                      color: Colors.black45,
-                                      width: 1,
-                                    ),
+              const Header(title: "나의 정보"),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Container(
+                          // color: Colors.amber.shade100,
+                          constraints: const BoxConstraints(
+                            maxWidth: 900,
+                          ),
+                          child: Form(
+                            key: _formKey,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  '나의 정보',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
                                   ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                                    child: Text(
-                                      item["description"] ?? "",
-                                      style: const TextStyle(color: Colors.white),
+                                ),
+                                const Gap(30),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: CustomTextInput(
+                                        controller: _userNameController,
+                                        title: '아이디',
+                                        readOnly: true,
+                                      ),
+                                    ),
+                                    const Gap(20),
+                                    Expanded(
+                                      child: CustomTextInput(
+                                        controller: _fullNameController,
+                                        title: '이름',
+                                        validator: InputValidator().validateName,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const Gap(30),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: CustomTextInput(
+                                        controller: _emailController,
+                                        title: '이메일',
+                                        validator: InputValidator().validateEmail,
+                                      ),
+                                    ),
+                                    const Gap(20),
+                                    Expanded(
+                                      child: CustomTextInput(
+                                        controller: _phoneNumberController,
+                                        inputFormatters: [PhoneNumberFormatter()],
+                                        maxlength: 13,
+                                        title: '휴대전화',
+                                        validator: InputValidator().validatePhoneNumber,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const Gap(30),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: LayoutBuilder(
+                                        builder: (BuildContext context, BoxConstraints constraints) {
+                                          //  use constraints.maxWidth as the parent's width here.
+                                          return CustomDropDownMenu(
+                                            label: const Text("국가"),
+                                            errorText: _countryErrorText,
+                                            onSelected: (selectedItem) {
+                                              setState(() {
+                                                _countryErrorText = null;
+                                              });
+                                            },
+                                            width: constraints.maxWidth,
+                                            items: _countries,
+                                            selectedItem: _selectedCountryCode,
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    const Gap(20),
+                                    Expanded(
+                                      child: LayoutBuilder(
+                                        builder: (BuildContext context, BoxConstraints constraints) {
+                                          return CustomDropDownMenu(
+                                            controller: _statusController,
+                                            enabled: false,
+                                            label: const Text("상태"),
+                                            // onSelected: (selectedItem) {},
+                                            width: constraints.maxWidth,
+                                            items: _countries,
+                                            // selectedItem: ,
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const Gap(30),
+                                const Text('권한'),
+                                const Gap(5),
+                                Wrap(
+                                  runSpacing: 10,
+                                  spacing: 10,
+                                  children: _roles
+                                      .map(
+                                        (item) => Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.black38,
+                                            borderRadius: BorderRadius.circular(5),
+                                            border: Border.all(
+                                              color: Colors.black45,
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                                            child: Text(
+                                              item["description"] ?? "",
+                                              style: const TextStyle(color: Colors.white),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                      .toList(),
+                                ),
+                                const Gap(30),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: CustomTextInput(
+                                        // enabled: false,
+                                        readOnly: true,
+                                        controller: _startDateController,
+                                        title: '시작일자',
+                                      ),
+                                    ),
+                                    const Gap(20),
+                                    Expanded(
+                                      child: CustomTextInput(
+                                        // enabled: false,
+                                        readOnly: true,
+                                        controller: _expiryDateController,
+                                        title: '종료일자',
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const Gap(30),
+                                Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: Container(
+                                    height: 50,
+                                    constraints: const BoxConstraints(minWidth: 150),
+                                    child: ElevatedButton(
+                                      onPressed: _isDataUpdating ? null : _updateProfileData,
+                                      child: _isDataUpdating ? const ButtonCircularProgressIndicator() : const Text('정보 저장'),
                                     ),
                                   ),
                                 ),
-                              )
-                              .toList(),
-                        ),
-                        const Gap(30),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: CustomTextInput(
-                                // enabled: false,
-                                readOnly: true,
-                                controller: _startDateController,
-                                title: '시작일자',
-                              ),
-                            ),
-                            const Gap(20),
-                            Expanded(
-                              child: CustomTextInput(
-                                // enabled: false,
-                                readOnly: true,
-                                controller: _expiryDateController,
-                                title: '종료일자',
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Gap(30),
-                        Align(
-                          alignment: Alignment.bottomRight,
-                          child: Container(
-                            height: 50,
-                            constraints: const BoxConstraints(minWidth: 150),
-                            child: ElevatedButton(
-                              onPressed: _isDataUpdating ? null : _updateProfileData,
-                              child: _isDataUpdating ? const ButtonCircularProgressIndicator() : const Text('정보 저장'),
+                              ],
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      Divider(
+                        color: Colors.grey.shade100,
+                        height: 80,
+                        thickness: 5,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Container(
+                          constraints: const BoxConstraints(
+                            maxWidth: 900,
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                '비밀번호 변경',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const Gap(30),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: CustomTextInput(
+                                      controller: _oldPassController,
+                                      title: '현재 비밀번호',
+                                      validator: InputValidator().validatePass,
+                                      hidden: true,
+                                    ),
+                                  ),
+                                  Expanded(child: Container()),
+                                ],
+                              ),
+                              const Gap(30),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: CustomTextInput(
+                                      controller: _passController,
+                                      title: '새 비밀번호',
+                                      validator: InputValidator().validatePass,
+                                      hidden: true,
+                                    ),
+                                  ),
+                                  Expanded(child: Container()),
+                                ],
+                              ),
+                              const Gap(30),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: CustomTextInput(
+                                      controller: _passReentryController,
+                                      title: '새 비밀번호 확인',
+                                      validator: (p) {
+                                        return InputValidator().validateRentryPass(_passController.text, p);
+                                      },
+                                      hidden: true,
+                                    ),
+                                  ),
+                                  Expanded(child: Container()),
+                                ],
+                              ),
+                              const Gap(30),
+                              Container(
+                                height: 50,
+                                constraints: const BoxConstraints(minWidth: 150),
+                                child: ElevatedButton(
+                                  onPressed: _isDataUpdating ? null : _updateProfileData,
+                                  child: _isDataUpdating ? const ButtonCircularProgressIndicator() : const Text('비밀번호 업데이트'),
+                                ),
+                              ),
+                              const Gap(30),
+                              const Text(
+                                '강력한 비밀번호를 얻으려면 이 가이드를 따르세요.',
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                ),
+                              ),
+                              const Gap(15),
+                              const Row(
+                                children: [
+                                  Icon(Icons.circle, color: Colors.black45, size: 13),
+                                  SizedBox(width: 10),
+                                  Text('특수 문자 1개'),
+                                ],
+                              ),
+                              const Gap(10),
+                              const Row(
+                                children: [
+                                  Icon(Icons.circle, color: Colors.black45, size: 13),
+                                  SizedBox(width: 10),
+                                  Text('최소 8 글자'),
+                                ],
+                              ),
+                              const Gap(10),
+                              const Row(
+                                children: [
+                                  Icon(Icons.circle, color: Colors.black45, size: 13),
+                                  SizedBox(width: 10),
+                                  Text('숫자 1개(2개 권장'),
+                                ],
+                              ),
+                              const Gap(10),
+                              const Row(
+                                children: [
+                                  Icon(Icons.circle, color: Colors.black45, size: 13),
+                                  SizedBox(width: 10),
+                                  Text('자주 바꾸세요'),
+                                ],
+                              ),
+                              const Gap(100),
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
                   ),
                 ),
               ),
-              Divider(
-                color: Colors.grey.shade100,
-                height: 80,
-                thickness: 5,
-              )
             ],
-          ),
-        ),
-      ],
-    );
+          );
   }
 
   Future<void> _fetchProfileData() async {
-    print('fetch called');
-    final APIService apiService = APIService();
-
     try {
+      final APIService apiService = APIService();
       ProfileResponseModel result = await apiService.profileInfo(context);
 
       _roles = result.roles ?? [];
@@ -278,10 +404,11 @@ class _ProfilePageState extends State<ProfilePage> {
       _fullNameController.text = result.name ?? "";
       _emailController.text = result.email ?? "";
       _phoneNumberController.text = result.phoneNumber ?? "";
-      _countryController.text = result.countryValue?["code"] ?? "";
+      _selectedCountryCode = result.countryValue?["code"] ?? "";
       _statusController.text = result.statusNm ?? "";
       _startDateController.text = CustomFormat().formatDate(result.fromDate ?? "") ?? "";
       _expiryDateController.text = CustomFormat().formatDate(result.expireDate ?? "") ?? "";
+      _userId = result.id;
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -290,20 +417,47 @@ class _ProfilePageState extends State<ProfilePage> {
       }
     }
 
-    setState(() {});
+    setState(() {
+      _isPageLoading = false;
+    });
   }
 
   Future<void> _updateProfileData() async {
-    if (_countryController.text.isEmpty) {
-      _countryErrorText = "국가를 선택하세요.";
-      setState(() {});
+    setState(() {
+      _isDataUpdating = true;
+    });
+
+    if (_selectedCountryCode.isEmpty) {
+      setState(() {
+        _countryErrorText = "국가를 선택하세요.";
+      });
     }
 
-    if (_formKey.currentState!.validate() && _countryController.text.isNotEmpty) {
-      setState(() {
-        _isDataUpdating = true;
-      });
-      print('update profile data here');
+    if (_formKey.currentState!.validate() && _selectedCountryCode.isNotEmpty && _userId != null) {
+      try {
+        final APIService apiService = APIService();
+
+        await apiService.profileInfoUpdate(
+          context,
+          ProfileUpdateRequestModel(
+            id: _userId!,
+            username: _userNameController.text,
+            name: _fullNameController.text,
+            country: _selectedCountryCode,
+            phoneNumber: _phoneNumberController.text,
+            email: _emailController.text,
+          ),
+        );
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(e.toString())),
+          );
+        }
+      }
     }
+    setState(() {
+      _isDataUpdating = false;
+    });
   }
 }
