@@ -1,6 +1,8 @@
 import 'package:admin_simpass/data/api/api_service.dart';
 import 'package:admin_simpass/data/models/login_model.dart';
+import 'package:admin_simpass/data/models/profile_model.dart';
 import 'package:admin_simpass/globals/constants.dart';
+import 'package:admin_simpass/globals/formatters.dart';
 import 'package:admin_simpass/globals/validators.dart';
 import 'package:admin_simpass/presentation/components/button_circular_indicator.dart';
 import 'package:admin_simpass/presentation/components/custom_menu_drop_down.dart';
@@ -36,7 +38,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   String? _countryErrorText;
 
-  List<String> _roles = ['asd', 'asdas', 'asdas', 'asdlkasjkhasd', 'asdasdsasas'];
+  List<dynamic> _roles = [];
+
   List<DropdownMenuEntry> _countries = [];
 
   final _formKey = GlobalKey<FormState>();
@@ -151,14 +154,13 @@ class _ProfilePageState extends State<ProfilePage> {
                                     label: const Text("국가"),
                                     errorText: _countryErrorText,
                                     onSelected: (selectedItem) {
-                                      setState(() {
-                                        _countryErrorText = null;
-                                      });
+                                      _countryErrorText = null;
+                                      setState(() {});
                                       print(selectedItem);
                                     },
-                                    width: constraints.maxWidth + 7,
+                                    width: constraints.maxWidth,
                                     items: _countries,
-                                    selectedItem: 34,
+                                    selectedItem: _countryController.text,
                                   );
                                 },
                               ),
@@ -176,7 +178,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     onSelected: (selectedItem) {
                                       print(selectedItem);
                                     },
-                                    width: constraints.maxWidth + 7,
+                                    width: constraints.maxWidth,
                                     items: _countries,
                                     selectedItem: 34,
                                   );
@@ -205,7 +207,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                                     child: Text(
-                                      item.toString(),
+                                      item["description"] ?? "",
                                       style: const TextStyle(color: Colors.white),
                                     ),
                                   ),
@@ -220,7 +222,6 @@ class _ProfilePageState extends State<ProfilePage> {
                               child: CustomTextInput(
                                 // enabled: false,
                                 readOnly: true,
-
                                 controller: _startDateController,
                                 title: '시작일자',
                               ),
@@ -266,9 +267,29 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _fetchProfileData() async {
+    print('fetch called');
     final APIService apiService = APIService();
 
-    await apiService.profileInfo(context);
+    try {
+      ProfileResponseModel result = await apiService.profileInfo(context);
+
+      _roles = result.roles ?? [];
+      _userNameController.text = result.username ?? "";
+      _fullNameController.text = result.name ?? "";
+      _emailController.text = result.email ?? "";
+      _phoneNumberController.text = result.phoneNumber ?? "";
+      _countryController.text = result.countryValue?["code"] ?? "";
+      _statusController.text = result.statusNm ?? "";
+      _startDateController.text = CustomFormat().formatDate(result.fromDate ?? "") ?? "";
+      _expiryDateController.text = CustomFormat().formatDate(result.expireDate ?? "") ?? "";
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.toString())),
+        );
+      }
+    }
+
     setState(() {});
   }
 

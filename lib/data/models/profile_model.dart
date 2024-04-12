@@ -15,8 +15,8 @@ class ProfileResponseModel {
   String? expireDate;
   String? status;
   String? statusNm;
-  List<Map>? roles;
-  List<String>? strRoles;
+  List? roles;
+  List? strRoles;
   Map? countryValue;
   Map? statusValue;
   List? rolesValue;
