@@ -42,7 +42,10 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         // textTheme: GoogleFonts.notoSansKrTextTheme(Theme.of(context).textTheme),
         // textTheme: GoogleFonts.notoSansKRTextTheme(),
-
+        dividerTheme: DividerThemeData(
+          color: Colors.grey.shade200,
+          thickness: 0,
+        ),
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             disabledBackgroundColor: Colors.black38,
@@ -50,6 +53,14 @@ class MyApp extends StatelessWidget {
             backgroundColor: MainUi.mainColor,
             foregroundColor: Colors.white,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+          ),
+        ),
+
+        checkboxTheme: const CheckboxThemeData(
+          // checkColor: MaterialStatePropertyAll(Colors.red),
+          side: BorderSide(
+            width: 1,
+            color: Colors.black26,
           ),
         ),
 

@@ -1,3 +1,4 @@
+import 'package:admin_simpass/presentation/pages/manage_users.dart';
 import 'package:admin_simpass/presentation/pages/menu_shell.dart';
 import 'package:admin_simpass/presentation/pages/login_page.dart';
 import 'package:admin_simpass/presentation/pages/not_found_page.dart';
@@ -26,8 +27,13 @@ final appRouter = GoRouter(
       routes: [
         GoRoute(
           name: 'profile',
-          path: '/',
+          path: '/profile',
           builder: (context, state) => const ProfilePage(),
+        ),
+        GoRoute(
+          name: 'manage-users',
+          path: '/',
+          builder: (context, state) => const ManageUsers(),
         ),
         GoRoute(
           name: 'application-receipt-status',
@@ -46,12 +52,6 @@ final appRouter = GoRouter(
       print("redirecting to login");
       // User is not logged in and not heading to login, redirects to login
       return '/login';
-    }
-
-    if (isLoggedIn) {
-      // User is logged in but heading to login, redirects to home
-      print("redirecting to home");
-      return '/';
     }
 
     if (isLoggedIn && goingToLogin) {
