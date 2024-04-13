@@ -5,7 +5,7 @@ class CustomDropDownMenu extends StatelessWidget {
   final List<DropdownMenuEntry> items;
   final double width;
   final dynamic selectedItem;
-  final Widget label;
+  final Widget? label;
   final bool enabled;
   final Function(dynamic)? onSelected;
   final TextEditingController? controller;
@@ -17,7 +17,7 @@ class CustomDropDownMenu extends StatelessWidget {
     this.width = 200,
     this.selectedItem,
     this.onSelected,
-    required this.label,
+    this.label,
     this.enabled = true,
     this.controller,
     this.errorText,
@@ -45,8 +45,8 @@ class CustomDropDownMenu extends StatelessWidget {
       dropdownMenuEntries: items,
       inputDecorationTheme: InputDecorationTheme(
         // fillColor: Colors.white,
-
         // helperText: '', //leaves empty place for error text
+
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 10,
           vertical: 18,

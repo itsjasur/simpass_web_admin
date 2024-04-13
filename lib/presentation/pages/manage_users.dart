@@ -2,8 +2,10 @@ import 'package:admin_simpass/data/api/api_service.dart';
 import 'package:admin_simpass/data/models/user_mdel.dart';
 import 'package:admin_simpass/globals/main_ui.dart';
 import 'package:admin_simpass/presentation/components/header.dart';
+import 'package:admin_simpass/presentation/components/pagination.dart';
 import 'package:admin_simpass/presentation/pages/test.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 
 class ManageUsers extends StatefulWidget {
@@ -44,6 +46,8 @@ class _ManageUsersState extends State<ManageUsers> {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Gap(20),
                     Container(
@@ -105,14 +109,15 @@ class _ManageUsersState extends State<ManageUsers> {
                         rows: List.generate(
                           _usersList.length,
                           (rowIndex) => DataRow(
-                            onSelectChanged: (value) {},
+                            // onSelectChanged: (value) {},
+
                             cells: List.generate(
                               _columns.length,
                               (columnIndex) {
                                 if (columnIndex == 0) {
                                   return DataCell(
                                     Text(_usersList[rowIndex].id.toString()),
-                                    onTap: () {},
+                                    onTap: () async {},
                                   );
                                 }
                                 if (columnIndex == 1) {
@@ -189,6 +194,10 @@ class _ManageUsersState extends State<ManageUsers> {
                           ),
                         ),
                       ),
+                    ),
+                    const SizedBox(
+                      width: 500,
+                      child: Pagination(),
                     ),
                   ],
                 ),

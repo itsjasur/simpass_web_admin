@@ -56,6 +56,18 @@ class MyApp extends StatelessWidget {
           ),
         ),
 
+        // menuButtonTheme: const MenuButtonThemeData(style: ButtonStyle(padding: MaterialStatePropertyAll(EdgeInsets.zero))),
+
+        iconButtonTheme: const IconButtonThemeData(
+          style: ButtonStyle(
+            visualDensity: VisualDensity.compact,
+            backgroundColor: MaterialStatePropertyAll(Colors.amber),
+            padding: MaterialStatePropertyAll(
+              EdgeInsets.all(1),
+            ),
+          ),
+        ),
+
         checkboxTheme: const CheckboxThemeData(
           // checkColor: MaterialStatePropertyAll(Colors.red),
           side: BorderSide(
