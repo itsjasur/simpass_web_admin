@@ -3,7 +3,6 @@ import 'package:admin_simpass/data/api/request_helper.dart';
 import 'package:admin_simpass/data/models/login_model.dart';
 import 'package:admin_simpass/data/models/profile_model.dart';
 import 'package:admin_simpass/data/models/signup_model.dart';
-import 'package:admin_simpass/data/models/user_mdel.dart';
 import 'package:admin_simpass/providers/auth_provider.dart';
 import 'package:admin_simpass/sensitive.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +37,7 @@ class APIService {
         throw 'Incorrect credentials';
       }
     } catch (e) {
+      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
       rethrow;
     }
   }
@@ -58,6 +58,7 @@ class APIService {
         throw Exception('Sign up data error');
       }
     } catch (e) {
+      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
       rethrow;
     }
   }
@@ -81,6 +82,8 @@ class APIService {
 
       throw "Profile response data not reveiced";
     } catch (e) {
+      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+
       rethrow;
     }
   }
@@ -108,6 +111,7 @@ class APIService {
         throw "Update data incorrect";
       }
     } catch (e) {
+      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
       rethrow;
     }
   }
@@ -126,9 +130,11 @@ class APIService {
         var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
         return decodedResponse;
       } else {
-        throw "Update data incorrect";
+        throw "Could not fetch data";
       }
     } catch (e) {
+      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+
       rethrow;
     }
   }
