@@ -1,4 +1,5 @@
 import 'package:admin_simpass/providers/auth_provider.dart';
+import 'package:admin_simpass/providers/myinfo_provider.dart';
 import 'package:admin_simpass/providers/side_menu_provider.dart';
 import 'package:admin_simpass/globals/main_ui.dart';
 import 'package:admin_simpass/router/routes.dart';
@@ -10,6 +11,7 @@ void main() {
     providers: [
       ChangeNotifierProvider(create: (context) => AuthServiceProvider()),
       ChangeNotifierProvider(create: (context) => SideMenuProvider()),
+      ChangeNotifierProvider(create: (context) => MyinfoProvifer()),
     ],
     child: const MyApp(),
   ));

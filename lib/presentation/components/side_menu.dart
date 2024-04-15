@@ -41,7 +41,9 @@ class SideMenu extends StatelessWidget {
           SideMenuWidget(
             title: "사용자 관리",
             iconSrc: "assets/icons/admin.svg",
-            press: () {},
+            press: () {
+              context.go('/');
+            },
           ),
           SideMenuWidget(
             title: "요금제 관리",

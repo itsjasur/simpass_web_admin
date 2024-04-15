@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
 class Pagination extends StatefulWidget {
-  final Function(dynamic currentPage, dynamic perPage)? onUpdated;
+  final Function(int currentPage, int perPage)? onUpdated;
 
   final int totalCount;
 

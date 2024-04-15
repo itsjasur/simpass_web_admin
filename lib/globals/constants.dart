@@ -24,3 +24,123 @@ const List countryNameCodelist = [
 ];
 
 final List<int> perPageCounts = [10, 20, 50, 100, 200];
+
+final List<Map<String, dynamic>> userRolesList = [
+  {
+    "id": 1,
+    "label": "관리자",
+    "code": "ROLE_ADMIN",
+    "state": 'active',
+    "checked": false,
+    "high": [],
+    "low": ["ALL"]
+  },
+  {
+    "id": 2,
+    "label": "담당자",
+    "code": "ROLE_MANAGER",
+    "state": 'active',
+    "checked": false,
+    "high": ["ROLE_ADMIN"],
+    "low": ["ROLE_USER", "ROLE_OPEN_MANAGER", "ROLE_OPEN_MEMBER", "ROLE_EXP_MANAGER", "ROLE_EXP_MEMBER", "ROLE_MALL_MANAGER", "ROLE_MALL_MEMBER"]
+  },
+  {
+    "id": 3,
+    "label": "사용자",
+    "code": "ROLE_USER",
+    "state": 'active',
+    "checked": false,
+    "high": ["ROLE_ADMIN", "ROLE_MANAGER"],
+    "low": ["ROLE_OPEN_MEMBER", "ROLE_EXP_MEMBER", "ROLE_MALL_MEMBER"]
+  },
+
+  //
+  //개통
+  {
+    "id": 4,
+    "label": "개통관리자",
+    "code": "ROLE_OPEN_ADMIN",
+    "state": 'active',
+    "checked": false,
+    "high": ["ROLE_ADMIN"],
+    "low": ["ROLE_OPEN_MANAGER", "ROLE_OPEN_MEMBER"]
+  },
+  {
+    "id": 5,
+    "label": "개통담당자",
+    "code": "ROLE_OPEN_MANAGER",
+    "state": 'active',
+    "checked": false,
+    "high": ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_OPEN_ADMIN"],
+    "low": ["ROLE_OPEN_MEMBER"]
+  },
+  {
+    "id": 6,
+    "label": "개통사용자",
+    "code": "ROLE_OPEN_MEMBER",
+    "state": 'active',
+    "checked": false,
+    "high": ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_USER", "ROLE_OPEN_ADMIN", "ROLE_OPEN_MANAGER"],
+    "low": []
+  },
+
+  //
+  //해외배송
+  {
+    "id": 7,
+    "label": "해외배송관리자",
+    "code": "ROLE_EXP_ADMIN",
+    "state": 'active',
+    "checked": false,
+    "high": ["ROLE_ADMIN"],
+    "low": ["ROLE_EXP_MANAGER", "ROLE_EXP_MEMBER"]
+  },
+  {
+    "id": 8,
+    "label": "해외배송담당자",
+    "code": "ROLE_EXP_MANAGER",
+    "state": 'active',
+    "checked": false,
+    "high": ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_EXP_ADMIN"],
+    "low": ["ROLE_EXP_MEMBER"]
+  },
+  {
+    "id": 9,
+    "label": "해외배송사용자",
+    "code": "ROLE_EXP_MEMBER",
+    "state": 'active',
+    "checked": false,
+    "high": ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_USER", "ROLE_EXP_ADMIN", "ROLE_EXP_MANAGER"],
+    "low": []
+  },
+
+  //
+  //쇼핑몰
+  {
+    "id": 10,
+    "label": "쇼핑몰관리자",
+    "code": "ROLE_MALL_ADMIN",
+    "state": 'active',
+    "checked": false,
+    "high": ["ROLE_ADMIN"],
+    "low": ["ROLE_MALL_MANAGER", "ROLE_MALL_MEMBER"]
+  },
+  {
+    "id": 11,
+    "label": "쇼핑몰담당자",
+    "code": "ROLE_MALL_MANAGER",
+    "state": 'active',
+    "checked": false,
+    "high": ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_MALL_ADMIN"],
+    "low": ["ROLE_MALL_MEMBER"]
+  },
+  {
+    "id": 12,
+    "label": "쇼핑몰사용자",
+    "code": "ROLE_MALL_MEMBER",
+    "state": 'active',
+    "checked": false,
+    "high": ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_USER", "ROLE_MALL_ADMIN", "ROLE_MALL_MANAGER"],
+    "low": []
+  },
+];

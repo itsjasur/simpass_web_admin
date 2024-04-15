@@ -30,15 +30,14 @@ class RequestHelper {
           var result = json.decode(utf8.decode(response.bodyBytes));
           await prefs.setString('accessToken', result['accessToken']);
           await prefs.setString('refreshToken', result['refreshToken']);
+          print('token refreshed');
+
           return result['accessToken'];
-        } else {
-          throw "Expired token";
         }
       } catch (e) {
         rethrow;
       }
     }
-
     return null;
   }
 
@@ -59,7 +58,6 @@ class RequestHelper {
           throw "Expired token. Login again";
         }
       }
-
       return response;
     } catch (e) {
       rethrow;

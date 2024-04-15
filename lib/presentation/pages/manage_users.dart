@@ -1,11 +1,15 @@
 import 'package:admin_simpass/data/api/api_service.dart';
 import 'package:admin_simpass/data/models/user_mdel.dart';
 import 'package:admin_simpass/globals/constants.dart';
+import 'package:admin_simpass/globals/formatters.dart';
 import 'package:admin_simpass/globals/main_ui.dart';
+import 'package:admin_simpass/presentation/components/alert_dialog.dart';
 import 'package:admin_simpass/presentation/components/header.dart';
+import 'package:admin_simpass/presentation/components/manage_users_popup_context.dart';
 import 'package:admin_simpass/presentation/components/pagination.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 
 class ManageUsers extends StatefulWidget {
   const ManageUsers({super.key});
@@ -59,6 +63,8 @@ class _ManageUsersState extends State<ManageUsers> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Gap(20),
+                            const ManageUsersPopupContent(),
+                            const Gap(200),
                             SizedBox(
                               // width: 500,
                               child: Pagination(
@@ -70,9 +76,6 @@ class _ManageUsersState extends State<ManageUsers> {
                                     _usersList.clear();
                                     await _fetchUsers();
                                   }
-
-                                  print(currentPage);
-                                  print(perPage);
                                 },
                               ),
                             ),
@@ -196,21 +199,23 @@ class _ManageUsersState extends State<ManageUsers> {
                                         }
                                         if (columnIndex == 7) {
                                           return DataCell(
-                                            Text(_usersList[rowIndex].fromDate),
+                                            Text(CustomFormat().formatDate(_usersList[rowIndex].fromDate) ?? ""),
                                             onTap: () {},
                                           );
                                         }
                                         if (columnIndex == 8) {
                                           return DataCell(
                                             const Icon(Icons.edit_outlined, color: MainUi.mainColor),
-                                            onTap: () {},
+                                            onTap: () {
+                                              showCustomDialog(
+                                                content: ManageUsersPopupContent(),
+                                                context: context,
+                                              );
+                                            },
                                           );
                                         }
 
-                                        return DataCell(
-                                          onTap: () {},
-                                          const Text(''),
-                                        );
+                                        return DataCell(onTap: () {}, const SizedBox());
                                       },
                                     ),
                                   ),
@@ -234,7 +239,7 @@ class _ManageUsersState extends State<ManageUsers> {
     // _usersList.addAll(newList);
     // setState(() {});
 
-    // if (_currentPage == 1) _usersList.clear();
+    if (_currentPage == 1) _usersList.clear();
 
     final APIService apiService = APIService();
     var result = await apiService.fetchUsers(context: context, page: _currentPage, rowLimit: _perPage);

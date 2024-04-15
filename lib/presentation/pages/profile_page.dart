@@ -8,12 +8,8 @@ import 'package:admin_simpass/presentation/components/button_circular_indicator.
 import 'package:admin_simpass/presentation/components/custom_menu_drop_down.dart';
 import 'package:admin_simpass/presentation/components/custom_text_input.dart';
 import 'package:admin_simpass/presentation/components/header.dart';
-import 'package:admin_simpass/providers/auth_provider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
-import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -36,23 +32,22 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController _oldPassController = TextEditingController();
   final TextEditingController _passController = TextEditingController();
   final TextEditingController _passReentryController = TextEditingController();
+
   String _selectedCountryCode = "";
 
-  bool _isDataUpdating = false;
   String? _countryErrorText;
   List<dynamic> _roles = [];
   int? _userId;
 
-  List<DropdownMenuEntry> _countries = [];
-
   final _formKey = GlobalKey<FormState>();
 
   bool _isPageLoading = true;
-  bool _isUpdatingLoading = false;
+  bool _isDataUpdating = false;
+
+  final List<DropdownMenuEntry> _countries = countryNameCodelist.map((item) => DropdownMenuEntry(value: item['code'], label: item['label'])).toList();
 
   @override
   void initState() {
-    _countries = countryNameCodelist.map((item) => DropdownMenuEntry(value: item['code'], label: item['label'])).toList();
     _fetchProfileData();
 
     super.initState();
