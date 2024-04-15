@@ -44,20 +44,26 @@ class RequestHelper {
 
   //this checkes if there is any error in the post request response
   Future<Response> post(BuildContext? context, Response response, Uri url, Map<String, String> headers, Object? body) async {
-    if (response.statusCode == 401) {
-      String? newAccessToken = await _accessTokenRefreshed();
+    try {
+      if (response.statusCode == 401) {
+        String? newAccessToken = await _accessTokenRefreshed();
 
-      if (newAccessToken != null) {
-        headers['Authorization'] = 'Bearer $newAccessToken';
-        response = await http.post(url, headers: headers, body: body);
-      } else {
-        if (context != null && context.mounted) {
-          Provider.of<AuthServiceProvider>(context, listen: false).loggedOut(context);
+        if (newAccessToken != null) {
+          headers['Authorization'] = 'Bearer $newAccessToken';
+          response = await http.post(url, headers: headers, body: body);
+          return response;
+        } else {
+          if (context != null && context.mounted) {
+            Provider.of<AuthServiceProvider>(context, listen: false).loggedOut(context);
+          }
           throw "Expired token. Login again";
         }
       }
+
+      return response;
+    } catch (e) {
+      rethrow;
     }
-    return response;
   }
 
   //this checkes if there is any error in the post request response

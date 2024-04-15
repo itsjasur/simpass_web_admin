@@ -120,7 +120,10 @@ class APIService {
     String? accessToken = await getAccessToken();
     headers['Authorization'] = 'Bearer $accessToken';
     Uri url = _urlMaker('admin/member');
-    var body = json.encode({"page": page, "rowLimit": rowLimit});
+    var body = json.encode({
+      "page": page,
+      "rowLimit": rowLimit,
+    });
 
     try {
       var response = await http.post(url, headers: headers, body: body);

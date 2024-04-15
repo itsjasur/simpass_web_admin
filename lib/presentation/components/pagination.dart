@@ -1,32 +1,30 @@
+import 'package:admin_simpass/globals/constants.dart';
 import 'package:admin_simpass/globals/main_ui.dart';
+import 'package:admin_simpass/presentation/components/hoverable_icon_button.dart';
 import 'package:admin_simpass/presentation/components/pagination_drop_down.dart';
-import 'package:admin_simpass/presentation/components/test.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 
 class Pagination extends StatefulWidget {
-  final Function(dynamic)? onSelected;
-  const Pagination({super.key, this.onSelected});
+  final Function(dynamic currentPage, dynamic perPage)? onUpdated;
+
+  final int totalCount;
+
+  const Pagination({super.key, required this.totalCount, this.onUpdated});
 
   @override
   State<Pagination> createState() => _PaginationState();
 }
 
 class _PaginationState extends State<Pagination> {
-  final List<int> _perPageCounts = [10, 20, 50, 100, 200];
-
   int _selectedIndex = 0;
-
-  int _totalCount = 23;
   int _currentPage = 1;
 
   int _fromCount = 1;
   int _toCount = 1;
 
-  bool _backButtonHovered = false;
-  bool _forwardButtonHovered = false;
+  int _avlPaginationCount = 0;
+  List<Widget> _paginationNumbersWidgets = [];
 
   @override
   void initState() {
@@ -35,111 +33,128 @@ class _PaginationState extends State<Pagination> {
   }
 
   void _updateNumbers() {
-    _fromCount = (_currentPage * _perPageCounts[_selectedIndex]) - _perPageCounts[_selectedIndex] + 1;
-    _toCount = (_currentPage * _perPageCounts[_selectedIndex]);
+    _fromCount = (_currentPage * perPageCounts[_selectedIndex]) - perPageCounts[_selectedIndex] + 1;
+    _toCount = (_currentPage * perPageCounts[_selectedIndex]);
 
-    if (_toCount > _totalCount) _toCount = _totalCount;
+    _avlPaginationCount = (widget.totalCount / perPageCounts[_selectedIndex]).ceil();
+
+    if (_toCount > (widget.totalCount)) _toCount = (widget.totalCount);
     setState(() {});
+  }
+
+  void _updateCallBack() {
+    if (widget.onUpdated != null) widget.onUpdated!(_currentPage, perPageCounts[_selectedIndex]);
   }
 
   @override
   Widget build(BuildContext context) {
+    _paginationNumbersWidgets = List.generate(
+      _avlPaginationCount,
+      (index) {
+        Widget paginationCountWidget = InkWell(
+          onTap: () {
+            _currentPage = index + 1;
+            _updateNumbers();
+            _updateCallBack();
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+            child: Text((index + 1).toString()),
+          ),
+        );
+
+        if (_currentPage - 1 == index) {
+          paginationCountWidget = Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: MainUi.mainColor),
+              borderRadius: BorderRadius.circular(3),
+            ),
+            child: paginationCountWidget,
+          );
+        }
+        return paginationCountWidget;
+      },
+    );
     return Row(
       children: [
-        // (_currentPage *  _perPageCounts[_selectedIndex] –10) / _totalCount;
-
         Text(
-          '$_fromCount - $_toCount / $_totalCount',
+          '$_fromCount - $_toCount / ${widget.totalCount}',
           style: const TextStyle(color: Colors.black87),
         ),
         const Gap(10),
-
         const Text(
           '페이지 당 행',
           style: TextStyle(color: Colors.black87),
         ),
         const Gap(10),
         SimpleDropDown(
-          items: _perPageCounts,
+          items: perPageCounts,
           onSelected: (selectedIndex) {
             _selectedIndex = selectedIndex;
+            _currentPage = 1;
+
             _updateNumbers();
+            _updateCallBack();
           },
         ),
         const Gap(20),
-        InkWell(
+        HoverAbleIconButton(
+          icon: Icons.keyboard_double_arrow_left,
+          onTap: () {
+            _currentPage = 1;
+            _updateNumbers();
+            _updateCallBack();
+          },
+        ),
+        HoverAbleIconButton(
+          icon: Icons.chevron_left,
           onTap: () {
             if (_currentPage > 1) _currentPage--;
-
             _updateNumbers();
+            _updateCallBack();
           },
-          onHover: (value) {
-            _backButtonHovered = value;
-            setState(() {});
-          },
-          overlayColor: const MaterialStatePropertyAll(Colors.transparent),
-          child: Icon(
-            Icons.arrow_back_ios_new,
-            size: 15,
-            color: _backButtonHovered ? MainUi.mainColor : Colors.black54,
-          ),
         ),
         const Gap(10),
         Row(
           children: List.generate(
-            (_totalCount / _perPageCounts[_selectedIndex]).ceil(),
+            _avlPaginationCount,
             (index) {
-              if (index + 1 == _currentPage) {
-                return Container(
-                  // margin: const EdgeInsets.symmetric(horizontal: 5),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: MainUi.mainColor),
-                    borderRadius: BorderRadius.circular(3),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
-                    child: Text(
-                      (index + 1).toString(),
-                    ),
-                  ),
-                );
+              if (_currentPage <= 3) {
+                if (index <= 4) return _paginationNumbersWidgets[index];
+              } else if (_currentPage >= _avlPaginationCount - 3) {
+                if (index >= _avlPaginationCount - 5) return _paginationNumbersWidgets[index];
+              } else {
+                if (index < _currentPage - 1 && index >= _currentPage - 3) {
+                  return _paginationNumbersWidgets[index];
+                }
+
+                if (index == _currentPage - 1) return _paginationNumbersWidgets[index];
+
+                if (index > _currentPage - 1 && index <= _currentPage + 1) {
+                  return _paginationNumbersWidgets[index];
+                }
               }
-              return InkWell(
-                onTap: () {
-                  _currentPage = index + 1;
-                  _updateNumbers();
-                  setState(() {});
-                },
-                onHover: (value) {},
-                borderRadius: BorderRadius.circular(3),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 10),
-                  child: Text(
-                    (index + 1).toString(),
-                  ),
-                ),
-              );
+
+              return const SizedBox.shrink();
             },
           ),
         ),
         const Gap(10),
-        InkWell(
+        HoverAbleIconButton(
+          icon: Icons.chevron_right,
           onTap: () {
-            if (_currentPage < (_totalCount / _perPageCounts[_selectedIndex]).ceil()) _currentPage++;
-
+            if (_currentPage < _avlPaginationCount) _currentPage++;
             _updateNumbers();
+            _updateCallBack();
           },
-          onHover: (value) {
-            _forwardButtonHovered = value;
-
-            setState(() {});
+        ),
+        HoverAbleIconButton(
+          icon: Icons.keyboard_double_arrow_right,
+          onTap: () {
+            _currentPage = _avlPaginationCount;
+            _updateNumbers();
+            _updateCallBack();
           },
-          overlayColor: const MaterialStatePropertyAll(Colors.transparent),
-          child: Icon(
-            Icons.arrow_forward_ios,
-            size: 15,
-            color: _forwardButtonHovered ? MainUi.mainColor : Colors.black54,
-          ),
         ),
       ],
     );

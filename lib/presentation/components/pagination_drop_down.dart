@@ -1,10 +1,5 @@
 import 'package:admin_simpass/globals/main_ui.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
-
-// Assuming MenuController is a ChangeNotifier
 
 class SimpleDropDown extends StatefulWidget {
   final List items;
@@ -33,7 +28,6 @@ class _SimpleDropDownState extends State<SimpleDropDown> {
 
   @override
   void dispose() {
-    _menuController.close();
     super.dispose();
   }
 
@@ -41,12 +35,16 @@ class _SimpleDropDownState extends State<SimpleDropDown> {
   Widget build(BuildContext context) {
     return MenuAnchor(
       onClose: () {
-        _isMenuOpen = false;
-        setState(() {});
+        if (mounted) {
+          _isMenuOpen = false;
+          setState(() {});
+        }
       },
       onOpen: () {
-        _isMenuOpen = true;
-        setState(() {});
+        if (mounted) {
+          _isMenuOpen = true;
+          setState(() {});
+        }
       },
       controller: _menuController,
       style: const MenuStyle(
