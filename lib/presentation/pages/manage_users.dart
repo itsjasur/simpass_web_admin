@@ -2,6 +2,7 @@ import 'package:admin_simpass/data/api/api_service.dart';
 import 'package:admin_simpass/data/models/user_model.dart';
 import 'package:admin_simpass/globals/constants.dart';
 import 'package:admin_simpass/globals/formatters.dart';
+import 'package:admin_simpass/globals/global_keys.dart';
 import 'package:admin_simpass/globals/main_ui.dart';
 import 'package:admin_simpass/presentation/components/alert_dialog.dart';
 import 'package:admin_simpass/presentation/components/header.dart';
@@ -52,16 +53,16 @@ class _ManageUsersState extends State<ManageUsers> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          color: Colors.amber.shade100,
-          width: 800,
-          child: const ManageUsersPopupContent(
-            userId: 27,
-            userName: 'sadfsfdsf',
-          ),
-        ),
+        // Container(
+        //   color: Colors.amber.shade100,
+        //   width: 800,
+        //   child: const ManageUsersPopupContent(
+        //     userId: 27,
+        //     userName: 'sadfsfdsf',
+        //   ),
+        // ),
         const Header(title: "Users"),
-        const Gap(200),
+
         _dataLoading
             ? const CircularProgressIndicator()
             : Expanded(
@@ -219,9 +220,14 @@ class _ManageUsersState extends State<ManageUsers> {
                                             const Icon(Icons.edit_outlined, color: MainUi.mainColor),
                                             onTap: () {
                                               showCustomDialog(
-                                                content: ManageUsersPopupContent(
-                                                  userId: _usersList[rowIndex].id,
-                                                  userName: _usersList[rowIndex].username,
+                                                width: 800,
+                                                content: SizedBox(
+                                                  // width: 500,
+                                                  // height: 600,
+                                                  child: ManageUsersPopupContent(
+                                                    userId: _usersList[rowIndex].id,
+                                                    userName: _usersList[rowIndex].username,
+                                                  ),
                                                 ),
                                                 context: context,
                                               );

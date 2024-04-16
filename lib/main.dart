@@ -1,3 +1,4 @@
+import 'package:admin_simpass/globals/global_keys.dart';
 import 'package:admin_simpass/providers/auth_provider.dart';
 import 'package:admin_simpass/providers/myinfo_provider.dart';
 import 'package:admin_simpass/providers/side_menu_provider.dart';
@@ -25,6 +26,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp.router(
       routerConfig: appRouter,
+
+      key: rootScaffoldKey,
+
+      scaffoldMessengerKey: rootScaffoldMessengerKey,
 
       debugShowCheckedModeBanner: false,
 

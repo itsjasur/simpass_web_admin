@@ -2,26 +2,23 @@ import 'package:admin_simpass/data/api/api_service.dart';
 import 'package:admin_simpass/data/models/member_model.dart';
 import 'package:admin_simpass/globals/constants.dart';
 import 'package:admin_simpass/globals/formatters.dart';
+import 'package:admin_simpass/globals/global_keys.dart';
 import 'package:admin_simpass/globals/validators.dart';
 import 'package:admin_simpass/presentation/components/button_circular_indicator.dart';
 import 'package:admin_simpass/presentation/components/custom_menu_drop_down.dart';
-import 'package:admin_simpass/presentation/components/custom_text_button.dart';
 import 'package:admin_simpass/presentation/components/custom_text_input.dart';
 import 'package:admin_simpass/presentation/components/date_time_picker.dart';
 import 'package:admin_simpass/providers/myinfo_provider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
-import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 import 'package:provider/provider.dart';
 
 class ManageUsersPopupContent extends StatefulWidget {
   final String userName;
   final int userId;
-  const ManageUsersPopupContent({super.key, required this.userName, required this.userId});
+  final bool isNew;
+  const ManageUsersPopupContent({super.key, required this.userName, required this.userId, this.isNew = false});
 
   @override
   State<ManageUsersPopupContent> createState() => _ManageUsersPopupContentState();
@@ -35,8 +32,8 @@ class _ManageUsersPopupContentState extends State<ManageUsersPopupContent> {
 
   String? _countryErrorText;
 
-  final TextEditingController _fromDateController = TextEditingController();
-  final TextEditingController _expiryDateController = TextEditingController();
+  final TextEditingController _fromDateController = TextEditingController(text: DateTime.now().toString());
+  final TextEditingController _expiryDateController = TextEditingController(text: DateTime.now().add(const Duration(days: 365)).toString());
 
   String _selectedCountryCode = countryNameCodelist[0]['code'];
   String _selectedStatusCode = memberStatuses[0]['code'];
@@ -55,7 +52,8 @@ class _ManageUsersPopupContentState extends State<ManageUsersPopupContent> {
 
   @override
   void initState() {
-    _fetchData();
+    if (!widget.isNew) _fetchData();
+
     super.initState();
   }
 
@@ -74,9 +72,11 @@ class _ManageUsersPopupContentState extends State<ManageUsersPopupContent> {
   @override
   Widget build(BuildContext context) {
     return _dataLoading
-        ? const Align(
-            alignment: Alignment.center,
-            child: CircularProgressIndicator(),
+        ? const SizedBox(
+            height: 300,
+            child: Align(
+              child: CircularProgressIndicator(),
+            ),
           )
         : SingleChildScrollView(
             child: Form(
@@ -85,7 +85,7 @@ class _ManageUsersPopupContentState extends State<ManageUsersPopupContent> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Gap(50),
+                  const Gap(20),
                   const Text(
                     "사용자 수정",
                     style: TextStyle(
@@ -93,7 +93,7 @@ class _ManageUsersPopupContentState extends State<ManageUsersPopupContent> {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const Gap(20),
+                  const Gap(30),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,7 +102,7 @@ class _ManageUsersPopupContentState extends State<ManageUsersPopupContent> {
                         child: CustomTextInput(
                           controller: _userNameController,
                           title: '아이디',
-                          readOnly: true,
+                          validator: InputValidator().validateId,
                         ),
                       ),
                       const Gap(20),
@@ -225,6 +225,7 @@ class _ManageUsersPopupContentState extends State<ManageUsersPopupContent> {
                       },
                     ),
                   ),
+                  const Gap(30),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -282,7 +283,7 @@ class _ManageUsersPopupContentState extends State<ManageUsersPopupContent> {
                       ),
                     ],
                   ),
-                  const Gap(20),
+                  const Gap(40),
                   Align(
                     alignment: Alignment.topRight,
                     child: Wrap(
@@ -326,21 +327,19 @@ class _ManageUsersPopupContentState extends State<ManageUsersPopupContent> {
   }
 
   Future<void> _fetchData() async {
-    List<String> myRolesList = await Provider.of<MyinfoProvifer>(context, listen: false).getRolesList();
+    // await Future.delayed(Duration(seconds: 2));
 
-    _globalHighRoleCodes.addAll(myRolesList);
-    _globalLowRoleCodes.addAll(myRolesList);
+    // //not showing super admin and admin from the chosen list depending on self role
+    // List<String> myRolesList = await Provider.of<MyinfoProvifer>(context, listen: false).getRolesList();
+
+    // _globalHighRoleCodes.addAll(myRolesList);
+    // _globalLowRoleCodes.addAll(myRolesList);
 
     //updating checkbox
-    for (int i = 0; i < _userRolesList.length; i++) {
-      _userRolesList[i]['state'] = "active";
-      if (_globalLowRoleCodes.contains(_userRolesList[i]["code"])) {
-        _userRolesList[i]['state'] = "hidden";
-      }
-    }
+
     final APIService apiService = APIService();
     if (mounted) {
-      MemberModel memberInfo = await apiService.fetchMemberInfo(context: context, memberUserName: 'asdas');
+      MemberModel memberInfo = await apiService.fetchMemberInfo(context: context, memberUserName: widget.userName);
 
       _userNameController.text = memberInfo.username;
       _fullNameController.text = memberInfo.name ?? '';
@@ -349,6 +348,19 @@ class _ManageUsersPopupContentState extends State<ManageUsersPopupContent> {
       _selectedCountryCode = memberInfo.country ?? "";
       _fromDateController.text = CustomFormat().formatDate(memberInfo.fromDate) ?? "";
       _expiryDateController.text = CustomFormat().formatDate(memberInfo.expireDate) ?? "";
+
+      List<dynamic> rolesList = memberInfo.strRoles ?? [];
+      // print(rolesList);
+      _globalHighRoleCodes.addAll(rolesList);
+      // _globalLowRoleCodes.addAll(rolesList);
+
+      for (String role in rolesList) {
+        for (int i = 0; i < _userRolesList.length; i++) {
+          if (role == _userRolesList[i]['code']) {
+            _userRolesList[i]['checked'] = true;
+          }
+        }
+      }
     }
     _dataLoading = false;
     setState(() {});
@@ -363,10 +375,11 @@ class _ManageUsersPopupContentState extends State<ManageUsersPopupContent> {
         if (context.mounted) {
           ScaffoldMessenger.of(context).removeCurrentSnackBar();
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("이미 선택권한의 하위권한이 선택 또는 존재합니다.")),
+            const SnackBar(
+              content: Text("이미 선택권한의 하위권한이 선택 또는 존재합니다."),
+            ),
           );
         }
-        return;
       } else {
         _userRolesList[index]['checked'] = true;
       }
@@ -387,7 +400,7 @@ class _ManageUsersPopupContentState extends State<ManageUsersPopupContent> {
       }
     }
 
-    //updating checkbox
+    //updating state
     for (int i = 0; i < _userRolesList.length; i++) {
       _userRolesList[i]['state'] = "active";
       if (_globalLowRoleCodes.contains(_userRolesList[i]["code"])) {

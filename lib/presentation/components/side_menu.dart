@@ -1,7 +1,6 @@
 import 'package:admin_simpass/presentation/components/clickable_logo.dart';
 import 'package:flutter/material.dart';
 import 'package:admin_simpass/presentation/components/side_menu_tile.dart';
-import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
 class SideMenu extends StatelessWidget {

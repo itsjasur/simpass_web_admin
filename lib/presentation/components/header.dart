@@ -32,7 +32,7 @@ class Header extends StatelessWidget {
                       return InkWell(
                         borderRadius: BorderRadius.circular(5),
                         onTap: () {
-                          controller.isDesktop ? controller.toggleDrawer() : homePageScaffoldKey.currentState?.openDrawer();
+                          controller.isDesktop ? controller.toggleDrawer() : shellScaffoldKey.currentState?.openDrawer();
                           print(controller.isSideMenuOpen);
 
                           // print('open drawe clicked');

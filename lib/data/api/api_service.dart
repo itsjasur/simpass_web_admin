@@ -4,6 +4,7 @@ import 'package:admin_simpass/data/models/login_model.dart';
 import 'package:admin_simpass/data/models/member_model.dart';
 import 'package:admin_simpass/data/models/profile_model.dart';
 import 'package:admin_simpass/data/models/signup_model.dart';
+import 'package:admin_simpass/globals/global_keys.dart';
 import 'package:admin_simpass/providers/auth_provider.dart';
 import 'package:admin_simpass/providers/myinfo_provider.dart';
 import 'package:admin_simpass/sensitive.dart';
@@ -195,3 +196,11 @@ class APIService {
     }
   }
 }
+
+
+
+
+
+// rootScaffoldMessengerKey.currentState?.showSnackBar(const SnackBar(
+//   content: Text("SnackBar using the root ScaffoldMessenger."),
+// ));

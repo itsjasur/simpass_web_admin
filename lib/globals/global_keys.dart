@@ -1,3 +1,7 @@
 import 'package:flutter/material.dart';
 
-final GlobalKey<ScaffoldState> homePageScaffoldKey = GlobalKey<ScaffoldState>();
+final GlobalKey<ScaffoldState> rootScaffoldKey = GlobalKey<ScaffoldState>();
+final GlobalKey<ScaffoldState> shellScaffoldKey = GlobalKey<ScaffoldState>();
+
+final GlobalKey<ScaffoldMessengerState> rootScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+final GlobalKey<ScaffoldMessengerState> shellScaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
