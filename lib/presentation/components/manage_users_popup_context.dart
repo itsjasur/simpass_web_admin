@@ -1,18 +1,27 @@
+import 'package:admin_simpass/data/api/api_service.dart';
+import 'package:admin_simpass/data/models/member_model.dart';
 import 'package:admin_simpass/globals/constants.dart';
 import 'package:admin_simpass/globals/formatters.dart';
 import 'package:admin_simpass/globals/validators.dart';
+import 'package:admin_simpass/presentation/components/button_circular_indicator.dart';
 import 'package:admin_simpass/presentation/components/custom_menu_drop_down.dart';
+import 'package:admin_simpass/presentation/components/custom_text_button.dart';
 import 'package:admin_simpass/presentation/components/custom_text_input.dart';
-import 'package:admin_simpass/providers/auth_provider.dart';
+import 'package:admin_simpass/presentation/components/date_time_picker.dart';
 import 'package:admin_simpass/providers/myinfo_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+import 'package:omni_datetime_picker/omni_datetime_picker.dart';
 import 'package:provider/provider.dart';
 
 class ManageUsersPopupContent extends StatefulWidget {
-  const ManageUsersPopupContent({super.key});
+  final String userName;
+  final int userId;
+  const ManageUsersPopupContent({super.key, required this.userName, required this.userId});
 
   @override
   State<ManageUsersPopupContent> createState() => _ManageUsersPopupContentState();
@@ -24,197 +33,331 @@ class _ManageUsersPopupContentState extends State<ManageUsersPopupContent> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
 
-  final TextEditingController _statusController = TextEditingController();
-
-  final TextEditingController _startDateController = TextEditingController(text: '04/08/2024, 11:42:23 AM');
-  final TextEditingController _expiryDateController = TextEditingController(text: '04/08/2024, 11:42:23 AM');
-
   String? _countryErrorText;
 
-  final String _selectedCountryCode = countryNameCodelist[0]['code'];
+  final TextEditingController _fromDateController = TextEditingController();
+  final TextEditingController _expiryDateController = TextEditingController();
+
+  String _selectedCountryCode = countryNameCodelist[0]['code'];
+  String _selectedStatusCode = memberStatuses[0]['code'];
+
   final List<DropdownMenuEntry> _countries = countryNameCodelist.map((item) => DropdownMenuEntry(value: item['code'], label: item['label'])).toList();
+  final List<DropdownMenuEntry> _statuses = memberStatuses.map((item) => DropdownMenuEntry(value: item['code'], label: item['label'])).toList();
 
   final List<Map<String, dynamic>> _userRolesList = userRolesList;
+  final _formKey = GlobalKey<FormState>();
 
-  Set _globalLowRoleCodes = {"ROLE_ADMIN"};
-  Set _globalHighRoleCodes = {"ROLE_ADMIN"};
+  final Set _globalLowRoleCodes = {};
+  final Set _globalHighRoleCodes = {};
+
+  bool _dataLoading = true;
+  bool _dataUpdating = false;
 
   @override
   void initState() {
+    _fetchData();
     super.initState();
   }
 
   @override
   void dispose() {
+    _fromDateController.dispose();
+    _expiryDateController.dispose();
     _userNameController.dispose();
     _fullNameController.dispose();
     _emailController.dispose();
     _phoneNumberController.dispose();
-
-    _statusController.dispose();
-
-    _startDateController.dispose();
-    _expiryDateController.dispose();
 
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // Size size = MediaQuery.of(context).size;
-
-    return SingleChildScrollView(
-      child: SizedBox(
-        width: 800,
-        child: Column(
-          // mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Gap(50),
-            const Text(
-              "사용자 수정",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const Gap(20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: CustomTextInput(
-                    controller: _userNameController,
-                    title: '아이디',
-                    readOnly: true,
+    return _dataLoading
+        ? const Align(
+            alignment: Alignment.center,
+            child: CircularProgressIndicator(),
+          )
+        : SingleChildScrollView(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Gap(50),
+                  const Text(
+                    "사용자 수정",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-                const Gap(20),
-                Expanded(
-                  child: CustomTextInput(
-                    controller: _fullNameController,
-                    title: '이름',
-                    validator: InputValidator().validateName,
-                  ),
-                ),
-              ],
-            ),
-            const Gap(30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: CustomTextInput(
-                    controller: _emailController,
-                    title: '이메일',
-                    validator: InputValidator().validateEmail,
-                  ),
-                ),
-                const Gap(20),
-                Expanded(
-                  child: CustomTextInput(
-                    controller: _phoneNumberController,
-                    inputFormatters: [PhoneNumberFormatter()],
-                    maxlength: 13,
-                    title: '휴대전화',
-                    validator: InputValidator().validatePhoneNumber,
-                  ),
-                ),
-              ],
-            ),
-            const Gap(30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: LayoutBuilder(
-                    builder: (BuildContext context, BoxConstraints constraints) {
-                      //  use constraints.maxWidth as the parent's width here.
-                      return CustomDropDownMenu(
-                        label: const Text("국가"),
-                        errorText: _countryErrorText,
-                        onSelected: (selectedItem) {
-                          setState(() {
-                            _countryErrorText = null;
-                          });
-                        },
-                        width: constraints.maxWidth,
-                        items: _countries,
-                        selectedItem: _selectedCountryCode,
-                      );
-                    },
-                  ),
-                ),
-                const Gap(20),
-                Expanded(
-                  child: LayoutBuilder(
-                    builder: (BuildContext context, BoxConstraints constraints) {
-                      return CustomDropDownMenu(
-                        controller: _statusController,
-                        enabled: false,
-                        label: const Text("상태"),
-                        // onSelected: (selectedItem) {},
-                        width: constraints.maxWidth,
-                        items: _countries,
-                        // selectedItem: ,
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
-            const Gap(30),
-            Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              children: List.generate(_userRolesList.length, (index) {
-                return InkWell(
-                  borderRadius: BorderRadius.circular(5),
-                  onTap: _userRolesList[index]['state'] == "hidden"
-                      ? null
-                      : () {
-                          _updateUserRoles(index);
-                        },
-                  onHover: (value) {},
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Checkbox(
-                          overlayColor: const MaterialStatePropertyAll(Colors.transparent),
-                          visualDensity: VisualDensity.compact,
-                          value: _userRolesList[index]['checked'],
-                          onChanged: _userRolesList[index]['state'] == "hidden"
-                              ? null
-                              : (newValue) {
-                                  _updateUserRoles(index);
-                                },
+                  const Gap(20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: CustomTextInput(
+                          controller: _userNameController,
+                          title: '아이디',
+                          readOnly: true,
                         ),
-                        const Gap(5),
-                        Flexible(
-                            child: Text(
-                          _userRolesList[index]['label'],
-                          style: TextStyle(color: _userRolesList[index]['state'] == 'hidden' ? Colors.black45 : Colors.black),
-                        )),
+                      ),
+                      const Gap(20),
+                      Expanded(
+                        child: CustomTextInput(
+                          controller: _fullNameController,
+                          title: '이름',
+                          validator: InputValidator().validateName,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Gap(30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: CustomTextInput(
+                          controller: _emailController,
+                          title: '이메일',
+                          validator: InputValidator().validateEmail,
+                        ),
+                      ),
+                      const Gap(20),
+                      Expanded(
+                        child: CustomTextInput(
+                          controller: _phoneNumberController,
+                          inputFormatters: [PhoneNumberFormatter()],
+                          maxlength: 13,
+                          title: '휴대전화',
+                          validator: InputValidator().validatePhoneNumber,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Gap(30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: LayoutBuilder(
+                          builder: (BuildContext context, BoxConstraints constraints) {
+                            //  use constraints.maxWidth as the parent's width here.
+                            return CustomDropDownMenu(
+                              label: const Text("국가"),
+                              errorText: _countryErrorText,
+                              onSelected: (selectedItem) {
+                                if (selectedItem != null) _selectedCountryCode = selectedItem;
+                                _countryErrorText = null;
+                                setState(() {});
+                              },
+                              width: constraints.maxWidth,
+                              items: _countries,
+                              selectedItem: _selectedCountryCode,
+                            );
+                          },
+                        ),
+                      ),
+                      const Gap(20),
+                      Expanded(
+                        child: LayoutBuilder(
+                          builder: (BuildContext context, BoxConstraints constraints) {
+                            //  use constraints.maxWidth as the parent's width here.
+                            return CustomDropDownMenu(
+                              label: const Text("상태"),
+                              onSelected: (selectedItem) {
+                                if (selectedItem != null) _selectedStatusCode = selectedItem;
+                              },
+                              width: constraints.maxWidth,
+                              items: _statuses,
+                              selectedItem: _selectedStatusCode,
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Gap(30),
+                  Wrap(
+                    spacing: 10,
+                    runSpacing: 10,
+                    children: List.generate(
+                      _userRolesList.length,
+                      (index) {
+                        return InkWell(
+                          borderRadius: BorderRadius.circular(5),
+                          onTap: _userRolesList[index]['state'] == "hidden"
+                              ? null
+                              : () {
+                                  _changeUserRoles(index);
+                                },
+                          onHover: (value) {},
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Checkbox(
+                                  overlayColor: const MaterialStatePropertyAll(Colors.transparent),
+                                  visualDensity: VisualDensity.compact,
+                                  value: _userRolesList[index]['checked'],
+                                  onChanged: _userRolesList[index]['state'] == "hidden"
+                                      ? null
+                                      : (newValue) {
+                                          _changeUserRoles(index);
+                                        },
+                                ),
+                                const Gap(5),
+                                Flexible(
+                                    child: Text(
+                                  _userRolesList[index]['label'],
+                                  style: TextStyle(color: _userRolesList[index]['state'] == 'hidden' ? Colors.black45 : Colors.black),
+                                )),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Stack(
+                          alignment: Alignment.centerRight,
+                          children: [
+                            CustomTextInput(
+                              controller: _fromDateController,
+                              title: '시작일자',
+                              onTap: () async {
+                                String? selectedDate = await showDateTimePicker(context);
+                                if (selectedDate != null) _fromDateController.text = CustomFormat().formatDate(selectedDate) ?? "";
+                              },
+                              readOnly: true,
+                            ),
+                            const Positioned(
+                              right: 10,
+                              child: IgnorePointer(
+                                child: Icon(
+                                  Icons.calendar_month,
+                                  color: Colors.black26,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const Gap(20),
+                      Expanded(
+                        child: Stack(
+                          alignment: Alignment.centerRight,
+                          children: [
+                            CustomTextInput(
+                              controller: _expiryDateController,
+                              onTap: () async {
+                                String? selectedDate = await showDateTimePicker(context);
+                                if (selectedDate != null) _expiryDateController.text = CustomFormat().formatDate(selectedDate) ?? "";
+                              },
+                              readOnly: true,
+                              title: '종료일자',
+                            ),
+                            const Positioned(
+                              right: 10,
+                              child: IgnorePointer(
+                                child: Icon(
+                                  Icons.calendar_month,
+                                  color: Colors.black26,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const Gap(20),
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: Wrap(
+                      crossAxisAlignment: WrapCrossAlignment.end,
+                      runSpacing: 20,
+                      spacing: 20,
+                      children: [
+                        SizedBox(
+                          width: 100,
+                          height: 40,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.grey,
+                            ),
+                            onPressed: () {
+                              context.pop();
+                            },
+                            child: const Text("취소"),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 100,
+                          height: 40,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(),
+                            onPressed: _dataUpdating
+                                ? null
+                                : () {
+                                    _updateMemberData();
+                                  },
+                            child: _dataUpdating ? const ButtonCircularProgressIndicator() : const Text("저장"),
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                );
-              }),
+                ],
+              ),
             ),
-          ],
-        ),
-      ),
-    );
+          );
   }
 
-  void _updateUserRoles(index) {
+  Future<void> _fetchData() async {
+    List<String> myRolesList = await Provider.of<MyinfoProvifer>(context, listen: false).getRolesList();
+
+    _globalHighRoleCodes.addAll(myRolesList);
+    _globalLowRoleCodes.addAll(myRolesList);
+
+    //updating checkbox
+    for (int i = 0; i < _userRolesList.length; i++) {
+      _userRolesList[i]['state'] = "active";
+      if (_globalLowRoleCodes.contains(_userRolesList[i]["code"])) {
+        _userRolesList[i]['state'] = "hidden";
+      }
+    }
+    final APIService apiService = APIService();
+    if (mounted) {
+      MemberModel memberInfo = await apiService.fetchMemberInfo(context: context, memberUserName: 'asdas');
+
+      _userNameController.text = memberInfo.username;
+      _fullNameController.text = memberInfo.name ?? '';
+      _emailController.text = memberInfo.email ?? "";
+      _phoneNumberController.text = memberInfo.phoneNumber ?? "";
+      _selectedCountryCode = memberInfo.country ?? "";
+      _fromDateController.text = CustomFormat().formatDate(memberInfo.fromDate) ?? "";
+      _expiryDateController.text = CustomFormat().formatDate(memberInfo.expireDate) ?? "";
+    }
+    _dataLoading = false;
+    setState(() {});
+  }
+
+  void _changeUserRoles(index) {
     //checking highrole list and showing popup
     //updating checkbox only if the index role high low not available in global highlow list
+
     if (!_userRolesList[index]["checked"]) {
       if (_globalHighRoleCodes.contains(_userRolesList[index]["code"])) {
         if (context.mounted) {
@@ -252,6 +395,39 @@ class _ManageUsersPopupContentState extends State<ManageUsersPopupContent> {
       }
     }
 
+    setState(() {});
+  }
+
+  Future<void> _updateMemberData() async {
+    if (_selectedCountryCode.isEmpty) {
+      _countryErrorText = "국가를 선택하세요.";
+      setState(() {});
+    }
+
+    _dataUpdating = true;
+    setState(() {});
+
+    if (_formKey.currentState!.validate() && _selectedCountryCode.isNotEmpty) {
+      final APIService apiService = APIService();
+
+      await apiService.memberInfoUpdate(
+        context,
+        MemberModel(
+          id: widget.userId,
+          username: widget.userName,
+          email: _emailController.text,
+          name: _fullNameController.text,
+          status: _selectedStatusCode,
+          fromDate: CustomFormat().formatDateReverse(_fromDateController.text).toString(),
+          expireDate: CustomFormat().formatDateReverse(_expiryDateController.text).toString(),
+          country: _selectedCountryCode,
+          phoneNumber: _phoneNumberController.text,
+          strRoles: _userRolesList.where((role) => role['checked'] == true).map((role) => role['label'].toString()).toList(),
+        ),
+      );
+    }
+
+    _dataUpdating = false;
     setState(() {});
   }
 }

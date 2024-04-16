@@ -4,6 +4,7 @@ import 'package:admin_simpass/providers/side_menu_provider.dart';
 import 'package:admin_simpass/globals/main_ui.dart';
 import 'package:admin_simpass/router/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -26,6 +27,17 @@ class MyApp extends StatelessWidget {
       routerConfig: appRouter,
 
       debugShowCheckedModeBanner: false,
+
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const <Locale>[
+        Locale('en', 'US'), // American English
+        Locale('ko', 'KO'), // Korean
+        // ...
+      ],
       theme: ThemeData(
         // colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
         colorScheme: const ColorScheme.light(
@@ -36,9 +48,8 @@ class MyApp extends StatelessWidget {
 
         // pageTransitionsTheme: const PageTransitionsTheme(
         //   builders: {
-        //     TargetPlatform.macOS: ZoomPageTransitionsBuilder(),
+        //     TargetPlatform.macOS: NoAnimationPageTransitionsBuilder(),
         //     // TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-        //     // TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
         //   },
         // ),
         useMaterial3: true,
@@ -48,6 +59,18 @@ class MyApp extends StatelessWidget {
           color: Colors.grey.shade200,
           thickness: 0,
         ),
+
+        datePickerTheme: const DatePickerThemeData(
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.transparent,
+          rangePickerBackgroundColor: Colors.transparent,
+          rangePickerHeaderForegroundColor: Colors.transparent,
+          rangePickerHeaderBackgroundColor: Colors.transparent,
+        ),
+        timePickerTheme: const TimePickerThemeData(
+          backgroundColor: Colors.white,
+        ),
+
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             disabledBackgroundColor: Colors.black38,
@@ -97,3 +120,20 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+// class NoAnimationPageTransitionsBuilder extends PageTransitionsBuilder {
+//   const NoAnimationPageTransitionsBuilder();
+
+//   @override
+//   Widget buildTransitions<T>(
+//     PageRoute<T> route,
+//     BuildContext context,
+//     Animation<double> animation,
+//     Animation<double> secondaryAnimation,
+//     Widget child,
+//   ) {
+//     return child;
+//   }
+// }
+
+

@@ -30,7 +30,7 @@ class RequestHelper {
           var result = json.decode(utf8.decode(response.bodyBytes));
           await prefs.setString('accessToken', result['accessToken']);
           await prefs.setString('refreshToken', result['refreshToken']);
-          print('token refreshed');
+          await prefs.setStringList('myRolesList', result['roles']);
 
           return result['accessToken'];
         }

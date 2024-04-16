@@ -5,11 +5,8 @@ import 'package:admin_simpass/presentation/components/button_circular_indicator.
 import 'package:admin_simpass/presentation/components/clickable_logo.dart';
 import 'package:admin_simpass/presentation/components/custom_text_button.dart';
 import 'package:admin_simpass/presentation/components/custom_text_input.dart';
-import 'package:admin_simpass/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -111,6 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                         height: 50,
                         width: double.infinity,
                         child: ElevatedButton(
+                          statesController: MaterialStatesController(),
                           onPressed: _isLoading ? null : _login,
                           child: _isLoading ? const ButtonCircularProgressIndicator() : const Text('로그인'),
                         ),
@@ -166,23 +164,11 @@ class _LoginPageState extends State<LoginPage> {
 
     if (_formKey.currentState!.validate()) {
       try {
-        await apiService.login(
-            context,
-            LoginRequestModel(
-              userName: _userNameController.text,
-              password: _passController.text,
-            ));
+        await apiService.login(context, LoginRequestModel(userName: _userNameController.text, password: _passController.text));
       } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(e.toString())),
-          );
-        }
+        _isLoading = false;
+        setState(() {});
       }
     }
-
-    setState(() {
-      _isLoading = false;
-    });
   }
 }

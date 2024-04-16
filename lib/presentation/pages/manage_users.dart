@@ -1,5 +1,5 @@
 import 'package:admin_simpass/data/api/api_service.dart';
-import 'package:admin_simpass/data/models/user_mdel.dart';
+import 'package:admin_simpass/data/models/user_model.dart';
 import 'package:admin_simpass/globals/constants.dart';
 import 'package:admin_simpass/globals/formatters.dart';
 import 'package:admin_simpass/globals/main_ui.dart';
@@ -7,7 +7,9 @@ import 'package:admin_simpass/presentation/components/alert_dialog.dart';
 import 'package:admin_simpass/presentation/components/header.dart';
 import 'package:admin_simpass/presentation/components/manage_users_popup_context.dart';
 import 'package:admin_simpass/presentation/components/pagination.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
@@ -47,8 +49,19 @@ class _ManageUsersState extends State<ManageUsers> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Container(
+          color: Colors.amber.shade100,
+          width: 800,
+          child: const ManageUsersPopupContent(
+            userId: 27,
+            userName: 'sadfsfdsf',
+          ),
+        ),
         const Header(title: "Users"),
+        const Gap(200),
         _dataLoading
             ? const CircularProgressIndicator()
             : Expanded(
@@ -63,8 +76,6 @@ class _ManageUsersState extends State<ManageUsers> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Gap(20),
-                            const ManageUsersPopupContent(),
-                            const Gap(200),
                             SizedBox(
                               // width: 500,
                               child: Pagination(
@@ -208,7 +219,10 @@ class _ManageUsersState extends State<ManageUsers> {
                                             const Icon(Icons.edit_outlined, color: MainUi.mainColor),
                                             onTap: () {
                                               showCustomDialog(
-                                                content: ManageUsersPopupContent(),
+                                                content: ManageUsersPopupContent(
+                                                  userId: _usersList[rowIndex].id,
+                                                  userName: _usersList[rowIndex].username,
+                                                ),
                                                 context: context,
                                               );
                                             },
@@ -253,8 +267,7 @@ class _ManageUsersState extends State<ManageUsers> {
       _usersList.addAll(newList);
 
       _dataLoading = false;
-
-      setState(() {});
     }
+    setState(() {});
   }
 }

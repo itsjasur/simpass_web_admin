@@ -3,25 +3,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CustomTextInput extends StatelessWidget {
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final String title;
   final String? Function(String?)? validator;
+  final Function()? onTap;
   final bool hidden;
   final bool enabled;
+  final String? initialValue;
   final bool readOnly;
   final int? maxlength;
   final List<TextInputFormatter>? inputFormatters;
 
   const CustomTextInput({
     super.key,
-    required this.controller,
+    this.controller,
     required this.title,
+    this.onTap,
     this.validator,
     this.hidden = false,
     this.enabled = true,
     this.readOnly = false,
     this.inputFormatters,
     this.maxlength,
+    this.initialValue,
   });
 
   @override
@@ -35,6 +39,8 @@ class CustomTextInput extends StatelessWidget {
       validator: validator,
       inputFormatters: inputFormatters,
       enabled: enabled,
+      onTap: onTap,
+      initialValue: initialValue,
       maxLength: maxlength,
       readOnly: readOnly,
       obscureText: hidden,

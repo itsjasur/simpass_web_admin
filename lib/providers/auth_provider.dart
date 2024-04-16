@@ -13,6 +13,7 @@ class AuthServiceProvider extends ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('accessToken', accessToken);
     await prefs.setString('refreshToken', refreshToken);
+
     _isLoggedIn = true;
     if (context.mounted) context.go('/');
     notifyListeners();
@@ -22,6 +23,7 @@ class AuthServiceProvider extends ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('accessToken');
     await prefs.remove('refreshToken');
+
     print('logged out');
     _isLoggedIn = false;
     if (context.mounted) context.go('/login');

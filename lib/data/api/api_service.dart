@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:admin_simpass/data/api/request_helper.dart';
 import 'package:admin_simpass/data/models/login_model.dart';
+import 'package:admin_simpass/data/models/member_model.dart';
 import 'package:admin_simpass/data/models/profile_model.dart';
 import 'package:admin_simpass/data/models/signup_model.dart';
 import 'package:admin_simpass/providers/auth_provider.dart';
+import 'package:admin_simpass/providers/myinfo_provider.dart';
 import 'package:admin_simpass/sensitive.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,22 +25,24 @@ class APIService {
 
   var headers = {'Content-Type': 'application/json; charset=utf-8'};
 
-  Future<LoginResponseModel> login(BuildContext context, LoginRequestModel requestModel) async {
+  Future<void> login(BuildContext context, LoginRequestModel requestModel) async {
     try {
       final response = await http.post(_urlMaker('auth/signin'), headers: headers, body: json.encode(requestModel.toJson()));
-
       if (response.statusCode == 200) {
         var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
+        LoginResponseModel loginResponse = LoginResponseModel.fromJson(decodedResponse);
         if (context.mounted) {
-          await Provider.of<AuthServiceProvider>(context, listen: false).loggedIn(context, decodedResponse['accessToken'], decodedResponse['refreshToken']);
+          await Provider.of<AuthServiceProvider>(context, listen: false).loggedIn(context, loginResponse.token, loginResponse.refreshToken);
         }
-        return LoginResponseModel.fromJson(decodedResponse);
+        if (context.mounted) {
+          print(loginResponse.roles);
+          await Provider.of<MyinfoProvifer>(context, listen: false).setRolesList(loginResponse.roles);
+        }
       } else {
         throw 'Incorrect credentials';
       }
     } catch (e) {
       if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
-      rethrow;
     }
   }
 
@@ -59,7 +63,6 @@ class APIService {
       }
     } catch (e) {
       if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
-      rethrow;
     }
   }
 
@@ -83,7 +86,6 @@ class APIService {
       throw "Profile response data not reveiced";
     } catch (e) {
       if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
-
       rethrow;
     }
   }
@@ -112,7 +114,6 @@ class APIService {
       }
     } catch (e) {
       if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
-      rethrow;
     }
   }
 
@@ -137,8 +138,60 @@ class APIService {
       }
     } catch (e) {
       if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
-
       rethrow;
+    }
+  }
+
+  Future<MemberModel> fetchMemberInfo({required BuildContext context, required String memberUserName}) async {
+    String? accessToken = await getAccessToken();
+    headers['Authorization'] = 'Bearer $accessToken';
+    Uri url = _urlMaker('admin/memberDetail');
+
+    var body = json.encode({"username": memberUserName});
+
+    try {
+      var response = await http.post(url, headers: headers, body: body);
+      response = await RequestHelper().post(context.mounted ? context : null, response, url, headers, body);
+
+      if (response.statusCode == 200) {
+        var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
+
+        return MemberModel.fromJson(decodedResponse["data"]["info"]);
+      } else {
+        throw "Could not fetch data";
+      }
+    } catch (e) {
+      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      rethrow;
+    }
+  }
+
+  Future<void> memberInfoUpdate(BuildContext context, MemberModel requestModel) async {
+    try {
+      String? accessToken = await getAccessToken();
+
+      headers['Authorization'] = 'Bearer $accessToken';
+      Uri url = _urlMaker('admin/memberUpdate');
+
+      var body = json.encode(requestModel.toJson());
+
+      print(body);
+      var response = await http.post(url, headers: headers, body: body);
+
+      response = await RequestHelper().post(context.mounted ? context : null, response, url, headers, body);
+
+      if (response.statusCode == 200) {
+        var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(decodedResponse['message'])),
+          );
+        }
+      } else {
+        throw "Update data incorrect";
+      }
+    } catch (e) {
+      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
     }
   }
 }

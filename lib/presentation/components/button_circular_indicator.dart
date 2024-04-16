@@ -6,8 +6,8 @@ class ButtonCircularProgressIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const SizedBox(
-      height: 30,
-      width: 30,
+      height: 25,
+      width: 25,
       child: CircularProgressIndicator(
         color: Colors.white,
         strokeWidth: 2,

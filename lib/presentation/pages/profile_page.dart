@@ -24,8 +24,6 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
 
-  final TextEditingController _statusController = TextEditingController();
-
   final TextEditingController _startDateController = TextEditingController(text: '04/08/2024, 11:42:23 AM');
   final TextEditingController _expiryDateController = TextEditingController(text: '04/08/2024, 11:42:23 AM');
 
@@ -33,9 +31,6 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController _passController = TextEditingController();
   final TextEditingController _passReentryController = TextEditingController();
 
-  String _selectedCountryCode = "";
-
-  String? _countryErrorText;
   List<dynamic> _roles = [];
   int? _userId;
 
@@ -44,7 +39,11 @@ class _ProfilePageState extends State<ProfilePage> {
   bool _isPageLoading = true;
   bool _isDataUpdating = false;
 
+  String _selectedCountryCode = "";
+  String? _countryErrorText;
+  String _selectedStatusCode = "W";
   final List<DropdownMenuEntry> _countries = countryNameCodelist.map((item) => DropdownMenuEntry(value: item['code'], label: item['label'])).toList();
+  final List<DropdownMenuEntry> _statuses = memberStatuses.map((item) => DropdownMenuEntry(value: item['code'], label: item['label'])).toList();
 
   @override
   void initState() {
@@ -60,8 +59,6 @@ class _ProfilePageState extends State<ProfilePage> {
     _fullNameController.dispose();
     _emailController.dispose();
     _phoneNumberController.dispose();
-
-    _statusController.dispose();
 
     _startDateController.dispose();
     _expiryDateController.dispose();
@@ -182,13 +179,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                       child: LayoutBuilder(
                                         builder: (BuildContext context, BoxConstraints constraints) {
                                           return CustomDropDownMenu(
-                                            controller: _statusController,
                                             enabled: false,
                                             label: const Text("상태"),
                                             // onSelected: (selectedItem) {},
                                             width: constraints.maxWidth,
-                                            items: _countries,
-                                            // selectedItem: ,
+                                            items: _statuses,
+                                            selectedItem: _selectedStatusCode,
                                           );
                                         },
                                       ),
@@ -400,7 +396,7 @@ class _ProfilePageState extends State<ProfilePage> {
       _emailController.text = result.email ?? "";
       _phoneNumberController.text = result.phoneNumber ?? "";
       _selectedCountryCode = result.countryValue?["code"] ?? "";
-      _statusController.text = result.statusNm ?? "";
+      _selectedStatusCode = result.status ?? "";
       _startDateController.text = CustomFormat().formatDate(result.fromDate ?? "") ?? "";
       _expiryDateController.text = CustomFormat().formatDate(result.expireDate ?? "") ?? "";
       _userId = result.id;
@@ -418,14 +414,12 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _updateProfileData() async {
-    setState(() {
-      _isDataUpdating = true;
-    });
+    _isDataUpdating = true;
+    setState(() {});
 
     if (_selectedCountryCode.isEmpty) {
-      setState(() {
-        _countryErrorText = "국가를 선택하세요.";
-      });
+      _countryErrorText = "국가를 선택하세요.";
+      setState(() {});
     }
 
     if (_formKey.currentState!.validate() && _selectedCountryCode.isNotEmpty && _userId != null) {

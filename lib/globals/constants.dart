@@ -21,6 +21,7 @@ const List countryNameCodelist = [
   {"code": 'RU', "label": '러시아'},
   {"code": 'US', "label": '미국'},
   {"code": 'KR', "label": '대한민국'},
+  {"code": 'EN', "label": '영어권 국가'},
 ];
 
 final List<int> perPageCounts = [10, 20, 50, 100, 200];
@@ -143,4 +144,11 @@ final List<Map<String, dynamic>> userRolesList = [
     "high": ["ROLE_ADMIN", "ROLE_MANAGER", "ROLE_USER", "ROLE_MALL_ADMIN", "ROLE_MALL_MANAGER"],
     "low": []
   },
+];
+
+final List<Map<String, dynamic>> memberStatuses = [
+  {"label": "사용중", "code": "Y"},
+  {"label": "미사용", "code": "N"},
+  {"label": "삭제", "code": "D"},
+  {"label": "승인대기", "code": "W"},
 ];

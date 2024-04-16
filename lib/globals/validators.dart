@@ -88,4 +88,16 @@ class InputValidator {
 
     return null;
   }
+
+  String? validateDateTime(String? value) {
+    value = value?.replaceAll(' ', '');
+
+    if (value == null || value.isEmpty) {
+      return '날짜와 시간을 입력해주세요';
+    }
+    if (DateTime.tryParse(value) == null) {
+      return '잘못된 날짜/시간 형식';
+    }
+    return null;
+  }
 }

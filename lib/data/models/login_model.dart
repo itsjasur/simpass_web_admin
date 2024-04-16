@@ -4,7 +4,7 @@ class LoginResponseModel {
   final String refreshToken;
   final String email;
   final String userName;
-  final List roles;
+  final List<String> roles;
   final String type;
 
   LoginResponseModel({
@@ -25,7 +25,7 @@ class LoginResponseModel {
       refreshToken: json["refreshToken"] ?? "",
       userName: json["username"] ?? "",
       email: json["email"] ?? "",
-      roles: json["roles"] ?? "",
+      roles: List<String>.from(json['roles'] ?? []),
     );
   }
 }

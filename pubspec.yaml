@@ -30,6 +30,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -41,7 +44,9 @@ dependencies:
   http: ^1.2.1
   shared_preferences: ^2.2.2
   gap: ^3.0.1
-  intl: ^0.19.0
+  intl: ^0.18.1
+  omni_datetime_picker:
+    path: packages/omni_datetime_picker
 
 
 
