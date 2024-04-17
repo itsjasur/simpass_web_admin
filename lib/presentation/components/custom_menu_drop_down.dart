@@ -8,6 +8,9 @@ class CustomDropDownMenu extends StatelessWidget {
   final Widget? label;
   final bool enabled;
   final Function(dynamic)? onSelected;
+  final bool enableSearch;
+  final bool enableFilter;
+  final bool requestFocusOnTap;
   final TextEditingController? controller;
   final String? errorText;
 
@@ -21,6 +24,9 @@ class CustomDropDownMenu extends StatelessWidget {
     this.enabled = true,
     this.controller,
     this.errorText,
+    this.enableSearch = false,
+    this.requestFocusOnTap = false,
+    this.enableFilter = false,
   });
 
   @override
@@ -28,9 +34,11 @@ class CustomDropDownMenu extends StatelessWidget {
     return DropdownMenu(
       width: width + 7,
       menuHeight: 300,
+      enableSearch: enableSearch,
+      enableFilter: enableFilter,
       errorText: errorText,
       controller: controller,
-      requestFocusOnTap: false,
+      requestFocusOnTap: requestFocusOnTap,
       expandedInsets: const EdgeInsets.all(0),
       label: label,
       initialSelection: selectedItem,
@@ -49,7 +57,7 @@ class CustomDropDownMenu extends StatelessWidget {
 
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 10,
-          vertical: 18,
+          vertical: 15,
         ),
 
         labelStyle: const TextStyle(

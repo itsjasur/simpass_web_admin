@@ -1,3 +1,4 @@
+import 'package:admin_simpass/presentation/pages/manage_plans.dart';
 import 'package:admin_simpass/presentation/pages/manage_users.dart';
 import 'package:admin_simpass/presentation/pages/menu_shell.dart';
 import 'package:admin_simpass/presentation/pages/login_page.dart';
@@ -6,7 +7,7 @@ import 'package:admin_simpass/presentation/pages/profile_page.dart';
 import 'package:admin_simpass/presentation/pages/application_receipt_status.dart';
 import 'package:admin_simpass/presentation/pages/signup_page.dart';
 import 'package:admin_simpass/providers/auth_provider.dart';
-import 'package:admin_simpass/providers/menui_ndex_provider.dart';
+import 'package:admin_simpass/providers/menu_navigation_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -38,9 +39,9 @@ final appRouter = GoRouter(
           builder: (context, state) => const ManageUsers(),
         ),
         GoRoute(
-          name: 'application-receipt-status',
-          path: '/application-receipt-status',
-          builder: (context, state) => const ApplicationReceiptStatusPage(),
+          name: 'manager-plans',
+          path: '/manage-plans',
+          builder: (context, state) => const ManagePlans(),
         ),
       ],
       builder: (context, state, child) => MenuShell(child: child),

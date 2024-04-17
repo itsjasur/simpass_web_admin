@@ -24,7 +24,7 @@ const List countryNameCodelist = [
   {"code": 'EN', "label": '영어권 국가'},
 ];
 
-final List<int> perPageCounts = [50, 100, 250, 500];
+final List<int> perPageCounts = [50, 10, 100, 250, 500];
 
 final List<Map<String, dynamic>> userRolesList = [
   {
@@ -152,3 +152,6 @@ final List<Map<String, dynamic>> memberStatuses = [
   {"label": "삭제", "code": "D"},
   {"label": "승인대기", "code": "W"},
 ];
+
+final List manageMembersColumns = ['No.', '아이디', '이름', '국가', '휴대전화', '이매일', '상태', '시작일자', '액션'];
+final List mangePlansColumns = ['No.', '상태', '요금제명', '통신사', '브랜드', '대리점', '서비스 유형', '가입대상', '기본료', '판매금액', '음성', '문자', '데아터', '영상/기타', 'QOS', '액션'];

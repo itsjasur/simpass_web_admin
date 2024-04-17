@@ -156,19 +156,14 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _login() async {
-    final APIService apiService = APIService();
-    print("login pressed");
-    setState(() {
-      _isLoading = true;
-    });
+    _isLoading = true;
+    setState(() {});
 
     if (_formKey.currentState!.validate()) {
-      try {
-        await apiService.login(context, LoginRequestModel(userName: _userNameController.text, password: _passController.text));
-      } catch (e) {
-        _isLoading = false;
-        setState(() {});
-      }
+      final APIService apiService = APIService();
+      await apiService.login(context, LoginRequestModel(userName: _userNameController.text, password: _passController.text));
     }
+    _isLoading = false;
+    setState(() {});
   }
 }

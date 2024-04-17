@@ -4,20 +4,26 @@ import 'package:admin_simpass/globals/constants.dart';
 import 'package:admin_simpass/globals/formatters.dart';
 import 'package:admin_simpass/globals/main_ui.dart';
 import 'package:admin_simpass/presentation/components/alert_dialog.dart';
+import 'package:admin_simpass/presentation/components/custom_menu_drop_down.dart';
 import 'package:admin_simpass/presentation/components/header.dart';
 import 'package:admin_simpass/presentation/components/manage_users_popup_context.dart';
 import 'package:admin_simpass/presentation/components/pagination.dart';
+import 'package:admin_simpass/presentation/components/pagination_drop_down.dart';
+import 'package:admin_simpass/presentation/components/simple_drop_down.dart';
+import 'package:admin_simpass/presentation/pages/test.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 
-class ManageUsers extends StatefulWidget {
-  const ManageUsers({super.key});
+class ManagePlans extends StatefulWidget {
+  const ManagePlans({super.key});
 
   @override
-  State<ManageUsers> createState() => _ManageUsersState();
+  State<ManagePlans> createState() => _ManagePlansState();
 }
 
-class _ManageUsersState extends State<ManageUsers> {
+class _ManagePlansState extends State<ManagePlans> {
   final List<UserModel> _usersList = [];
 
   int _totalCount = 0;
@@ -27,7 +33,13 @@ class _ManageUsersState extends State<ManageUsers> {
 
   bool _dataLoading = true;
 
-  final List _columns = manageMembersColumns;
+  final List _columns = mangePlansColumns;
+
+  final List<DropdownMenuEntry> _carriers = carriers.map((item) => DropdownMenuEntry(value: item['cd'], label: item['value'])).toList();
+  final List<DropdownMenuEntry> _mvnos = mvnos.map((item) => DropdownMenuEntry(value: item['cd'], label: item['value'])).toList();
+
+  String? _selectedCarrier;
+  String? _selectedMvno;
 
   @override
   void initState() {
@@ -56,9 +68,63 @@ class _ManageUsersState extends State<ManageUsers> {
                 child: LayoutBuilder(
                   builder: (context, constraints) => SingleChildScrollView(
                     child: Column(
+                      mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        //FILTER GOES HERE
+
+                        const Gap(20),
+
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Wrap(
+                            direction: Axis.horizontal,
+                            spacing: 10,
+                            runSpacing: 10,
+                            children: [
+                              Container(
+                                constraints: const BoxConstraints(
+                                  maxWidth: 200,
+                                ),
+                                child: LayoutBuilder(
+                                  builder: (context, constraints) => CustomDropDownMenu(
+                                    label: const Text("통신사"),
+                                    requestFocusOnTap: true,
+                                    enableSearch: true,
+                                    onSelected: (selectedItem) {
+                                      _selectedCarrier = selectedItem;
+                                    },
+                                    width: constraints.maxWidth,
+                                    items: _carriers,
+                                    selectedItem: _selectedCarrier,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                constraints: const BoxConstraints(
+                                  maxWidth: 300,
+                                ),
+                                child: LayoutBuilder(
+                                  builder: (context, constraints) => CustomDropDownMenu(
+                                    requestFocusOnTap: true,
+                                    enableSearch: true,
+                                    enableFilter: true,
+                                    label: const Text("브랜드"),
+                                    onSelected: (selectedItem) {
+                                      _selectedMvno = selectedItem;
+                                    },
+                                    items: _mvnos,
+                                    width: constraints.maxWidth,
+                                    selectedItem: _selectedMvno,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        ///
                         Container(
                           margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                           constraints: const BoxConstraints(
@@ -162,6 +228,30 @@ class _ManageUsersState extends State<ManageUsers> {
                                           onTap: () async {},
                                         );
                                       }
+
+                                      if (columnIndex == 1) {
+                                        Color containerColor = Colors.black38;
+                                        if (_usersList[rowIndex].status == 'Y') containerColor = Colors.green;
+                                        if (_usersList[rowIndex].status == 'W') containerColor = Colors.red;
+
+                                        return DataCell(
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                                            constraints: const BoxConstraints(minWidth: 80),
+                                            decoration: BoxDecoration(
+                                              color: containerColor,
+                                              borderRadius: BorderRadius.circular(30),
+                                            ),
+                                            child: Text(
+                                              textAlign: TextAlign.center,
+                                              _usersList[rowIndex].statusNm,
+                                              style: const TextStyle(color: Colors.white),
+                                            ),
+                                          ),
+                                          onTap: () {},
+                                        );
+                                      }
+
                                       if (columnIndex == 1) {
                                         return DataCell(
                                           Text(_usersList[rowIndex].username),
@@ -193,35 +283,14 @@ class _ManageUsersState extends State<ManageUsers> {
                                           onTap: () {},
                                         );
                                       }
-                                      if (columnIndex == 6) {
-                                        Color containerColor = Colors.black38;
-                                        if (_usersList[rowIndex].status == 'Y') containerColor = Colors.green;
-                                        if (_usersList[rowIndex].status == 'W') containerColor = Colors.red;
 
-                                        return DataCell(
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                                            constraints: const BoxConstraints(minWidth: 80),
-                                            decoration: BoxDecoration(
-                                              color: containerColor,
-                                              borderRadius: BorderRadius.circular(30),
-                                            ),
-                                            child: Text(
-                                              textAlign: TextAlign.center,
-                                              _usersList[rowIndex].statusNm,
-                                              style: const TextStyle(color: Colors.white),
-                                            ),
-                                          ),
-                                          onTap: () {},
-                                        );
-                                      }
                                       if (columnIndex == 7) {
                                         return DataCell(
                                           Text(CustomFormat().formatDate(_usersList[rowIndex].fromDate) ?? ""),
                                           onTap: () {},
                                         );
                                       }
-                                      if (columnIndex == 8) {
+                                      if (columnIndex == 15) {
                                         return DataCell(
                                           const Icon(Icons.edit_outlined, color: MainUi.mainColor),
                                           onTap: () {

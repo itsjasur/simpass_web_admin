@@ -75,19 +75,25 @@ class _PaginationState extends State<Pagination> {
         return paginationCountWidget;
       },
     );
-    return Row(
+    return Wrap(
+      direction: Axis.horizontal,
+      crossAxisAlignment: WrapCrossAlignment.center,
+      alignment: WrapAlignment.start,
+      spacing: 10,
+      runSpacing: 10,
       children: [
         Text(
           '$_fromCount - $_toCount / ${widget.totalCount}',
           style: const TextStyle(color: Colors.black87),
         ),
-        const Gap(10),
+        // const Gap(10),
         const Text(
           '페이지 당 행',
           style: TextStyle(color: Colors.black87),
         ),
-        const Gap(10),
-        SimpleDropDown(
+        // const Gap(10),
+        PaginationDropDown(
+          width: 80,
           items: perPageCounts,
           onSelected: (selectedIndex) {
             _selectedIndex = selectedIndex;
@@ -97,7 +103,7 @@ class _PaginationState extends State<Pagination> {
             _updateCallBack();
           },
         ),
-        const Gap(20),
+        // const Gap(20),
         HoverAbleIconButton(
           icon: Icons.keyboard_double_arrow_left,
           onTap: () {
@@ -114,8 +120,9 @@ class _PaginationState extends State<Pagination> {
             _updateCallBack();
           },
         ),
-        const Gap(10),
+        // const Gap(10),
         Row(
+          mainAxisSize: MainAxisSize.min,
           children: List.generate(
             _avlPaginationCount,
             (index) {
@@ -139,7 +146,7 @@ class _PaginationState extends State<Pagination> {
             },
           ),
         ),
-        const Gap(10),
+        // const Gap(10),
         HoverAbleIconButton(
           icon: Icons.chevron_right,
           onTap: () {

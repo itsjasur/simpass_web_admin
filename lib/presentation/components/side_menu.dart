@@ -1,5 +1,5 @@
 import 'package:admin_simpass/presentation/components/clickable_logo.dart';
-import 'package:admin_simpass/providers/menui_ndex_provider.dart';
+import 'package:admin_simpass/providers/menu_navigation_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:admin_simpass/presentation/components/side_menu_tile.dart';
 import 'package:go_router/go_router.dart';
@@ -52,7 +52,7 @@ class SideMenu extends StatelessWidget {
               title: "요금제 관리",
               iconSrc: "assets/icons/plans.svg",
               press: () {
-                context.go('/application-receipt-status');
+                context.go('/manage-plans');
               },
               isSelected: value.openSideMenuIndex == 2,
             ),
