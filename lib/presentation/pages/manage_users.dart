@@ -8,7 +8,6 @@ import 'package:admin_simpass/presentation/components/header.dart';
 import 'package:admin_simpass/presentation/components/manage_users_popup_context.dart';
 import 'package:admin_simpass/presentation/components/pagination.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 
 class ManageUsers extends StatefulWidget {
@@ -272,19 +271,25 @@ class _ManageUsersState extends State<ManageUsers> {
 
     if (_currentPage == 1) _usersList.clear();
 
-    final APIService apiService = APIService();
-    var result = await apiService.fetchUsers(context: context, page: _currentPage, rowLimit: _perPage);
+    try {
+      final APIService apiService = APIService();
+      var result = await apiService.fetchUsers(context: context, page: _currentPage, rowLimit: _perPage);
 
-    if (result['data'] != null && result['data']['result'] == 'SUCCESS') {
-      Map data = result['data'];
-      List rows = data['rows'];
-      _totalCount = data['totalNum'];
+      if (result['data'] != null && result['data']['result'] == 'SUCCESS') {
+        Map data = result['data'];
+        List rows = data['rows'];
+        _totalCount = data['totalNum'];
 
-      List<UserModel> newList = rows.map((json) => UserModel.fromJson(json)).toList();
-      _usersList.addAll(newList);
+        List<UserModel> newList = rows.map((json) => UserModel.fromJson(json)).toList();
+        _usersList.addAll(newList);
+      }
 
       _dataLoading = false;
+      setState(() {});
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      }
     }
-    setState(() {});
   }
 }

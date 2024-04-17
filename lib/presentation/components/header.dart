@@ -1,11 +1,8 @@
 import 'package:admin_simpass/providers/auth_provider.dart';
 import 'package:admin_simpass/providers/side_menu_provider.dart';
 import 'package:admin_simpass/globals/global_keys.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 
 class Header extends StatelessWidget {
@@ -32,7 +29,7 @@ class Header extends StatelessWidget {
                       return InkWell(
                         borderRadius: BorderRadius.circular(5),
                         onTap: () {
-                          controller.isDesktop ? controller.toggleDrawer() : shellScaffoldKey.currentState?.openDrawer();
+                          controller.isDesktop ? controller.toggleDrawer() : rootScaffoldKey.currentState?.openDrawer();
                           print(controller.isSideMenuOpen);
 
                           // print('open drawe clicked');

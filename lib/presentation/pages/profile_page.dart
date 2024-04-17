@@ -1,5 +1,4 @@
 import 'package:admin_simpass/data/api/api_service.dart';
-import 'package:admin_simpass/data/models/login_model.dart';
 import 'package:admin_simpass/data/models/profile_model.dart';
 import 'package:admin_simpass/globals/constants.dart';
 import 'package:admin_simpass/globals/formatters.dart';
@@ -8,8 +7,10 @@ import 'package:admin_simpass/presentation/components/button_circular_indicator.
 import 'package:admin_simpass/presentation/components/custom_menu_drop_down.dart';
 import 'package:admin_simpass/presentation/components/custom_text_input.dart';
 import 'package:admin_simpass/presentation/components/header.dart';
+import 'package:admin_simpass/providers/menui_ndex_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -48,7 +49,6 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     _fetchProfileData();
-
     super.initState();
   }
 
@@ -402,9 +402,7 @@ class _ProfilePageState extends State<ProfilePage> {
       _userId = result.id;
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString())),
-        );
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
       }
     }
 

@@ -9,7 +9,6 @@ class AuthServiceProvider extends ChangeNotifier {
 
   Future<void> loggedIn(BuildContext context, accessToken, refreshToken) async {
     print('logged in');
-
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('accessToken', accessToken);
     await prefs.setString('refreshToken', refreshToken);
@@ -30,21 +29,3 @@ class AuthServiceProvider extends ChangeNotifier {
     notifyListeners();
   }
 }
-
-
-
-// class AuthServiceProvider with ChangeNotifier {
-//   void login(String accessToken, String refreshToken) async {
-//     SharedPreferences prefs = await SharedPreferences.getInstance();
-//     await prefs.setString('accessToken', accessToken);
-//     await prefs.setString('refreshToken', refreshToken);
-//     notifyListeners(); // Notify listeners that login status has changed
-//   }
-
-//   void logout() async {
-//     SharedPreferences prefs = await SharedPreferences.getInstance();
-//     await prefs.remove('accessToken');
-//     await prefs.remove('refreshToken');
-//     notifyListeners(); // Notify listeners that login status has changed
-//   }
-// }

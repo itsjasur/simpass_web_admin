@@ -1,5 +1,3 @@
-import 'package:admin_simpass/globals/global_keys.dart';
-import 'package:admin_simpass/presentation/components/side_menu.dart';
 import 'package:admin_simpass/presentation/pages/manage_users.dart';
 import 'package:admin_simpass/presentation/pages/menu_shell.dart';
 import 'package:admin_simpass/presentation/pages/login_page.dart';
@@ -8,6 +6,8 @@ import 'package:admin_simpass/presentation/pages/profile_page.dart';
 import 'package:admin_simpass/presentation/pages/application_receipt_status.dart';
 import 'package:admin_simpass/presentation/pages/signup_page.dart';
 import 'package:admin_simpass/providers/auth_provider.dart';
+import 'package:admin_simpass/providers/menui_ndex_provider.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -39,7 +39,7 @@ final appRouter = GoRouter(
         ),
         GoRoute(
           name: 'application-receipt-status',
-          path: '/aas', // this pages opens whenever user visits base url
+          path: '/application-receipt-status',
           builder: (context, state) => const ApplicationReceiptStatusPage(),
         ),
       ],
@@ -50,15 +50,20 @@ final appRouter = GoRouter(
     final isLoggedIn = context.read<AuthServiceProvider>().isLoggedIn;
     final goingToLogin = state.matchedLocation == '/login';
 
+    //updating side menu state if user opens from url
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<MenuIndexProvider>().updateMenuIndexWithUrl(state.matchedLocation);
+      // Provider.of<MenuIndexProvider>(context, listen: false).updateMenuIndex(state.matchedLocation);
+    });
+
+    // User is not logged in and not heading to login, redirects to login
     if (!isLoggedIn && !goingToLogin) {
       print("redirecting to login");
-      // User is not logged in and not heading to login, redirects to login
       return '/login';
     }
 
+    // User is logged in but heading to login, redirects to home
     if (isLoggedIn && goingToLogin) {
-      // User is logged in but heading to login, redirects to home
-      print("redirecting to home");
       return '/';
     }
 

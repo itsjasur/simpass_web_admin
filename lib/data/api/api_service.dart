@@ -4,7 +4,6 @@ import 'package:admin_simpass/data/models/login_model.dart';
 import 'package:admin_simpass/data/models/member_model.dart';
 import 'package:admin_simpass/data/models/profile_model.dart';
 import 'package:admin_simpass/data/models/signup_model.dart';
-import 'package:admin_simpass/globals/global_keys.dart';
 import 'package:admin_simpass/providers/auth_provider.dart';
 import 'package:admin_simpass/providers/myinfo_provider.dart';
 import 'package:admin_simpass/sensitive.dart';
@@ -35,10 +34,7 @@ class APIService {
         if (context.mounted) {
           await Provider.of<AuthServiceProvider>(context, listen: false).loggedIn(context, loginResponse.token, loginResponse.refreshToken);
         }
-        if (context.mounted) {
-          print(loginResponse.roles);
-          await Provider.of<MyinfoProvifer>(context, listen: false).setRolesList(loginResponse.roles);
-        }
+        if (context.mounted) await Provider.of<MyinfoProvifer>(context, listen: false).setRolesList(loginResponse.roles);
       } else {
         throw 'Incorrect credentials';
       }
@@ -86,7 +82,6 @@ class APIService {
 
       throw "Profile response data not reveiced";
     } catch (e) {
-      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
       rethrow;
     }
   }
@@ -138,7 +133,6 @@ class APIService {
         throw "Could not fetch data";
       }
     } catch (e) {
-      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
       rethrow;
     }
   }
@@ -162,7 +156,6 @@ class APIService {
         throw "Could not fetch data";
       }
     } catch (e) {
-      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
       rethrow;
     }
   }
@@ -180,7 +173,7 @@ class APIService {
       print(body);
       print(response.body);
 
-      // response = await RequestHelper().post(context.mounted ? context : null, response, url, headers, body);
+      response = await RequestHelper().post(context.mounted ? context : null, response, url, headers, body);
 
       if (response.statusCode == 200) {
         var decodedResponse = json.decode(utf8.decode(response.bodyBytes));

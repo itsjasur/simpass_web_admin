@@ -24,7 +24,7 @@ const List countryNameCodelist = [
   {"code": 'EN', "label": '영어권 국가'},
 ];
 
-final List<int> perPageCounts = [10, 20, 50, 100, 200];
+final List<int> perPageCounts = [50, 100, 250, 500];
 
 final List<Map<String, dynamic>> userRolesList = [
   {

@@ -49,9 +49,8 @@ class _ManageUsersPopupContentState extends State<ManageUsersPopupContent> {
   Set _globalLowRoleCodes = {};
   Set _globalHighRoleCodes = {};
 
-  Set _selectedRoles = {};
+  final Set _selectedRoles = {};
 
-  bool _dataLoading = true;
   bool _dataUpdating = false;
 
   @override
@@ -59,7 +58,7 @@ class _ManageUsersPopupContentState extends State<ManageUsersPopupContent> {
     if (!widget.isNew) {
       _fetchData();
     }
-    // _checkSelfRole();
+    _checkSelfRole();
     super.initState();
   }
 
@@ -368,22 +367,23 @@ class _ManageUsersPopupContentState extends State<ManageUsersPopupContent> {
 
   Future<void> _fetchData() async {
     final APIService apiService = APIService();
-    if (mounted) {
+
+    try {
       MemberModel memberInfo = await apiService.fetchMemberInfo(context: context, memberUserName: widget.userName!);
-      _userNameController.text = memberInfo.username!;
+      _userNameController.text = memberInfo.username;
       _fullNameController.text = memberInfo.name ?? '';
       _emailController.text = memberInfo.email ?? "";
       _phoneNumberController.text = memberInfo.phoneNumber ?? "";
       _selectedCountryCode = memberInfo.country ?? "";
       _fromDateController.text = CustomFormat().formatDate(memberInfo.fromDate) ?? "";
       _expiryDateController.text = CustomFormat().formatDate(memberInfo.expireDate) ?? "";
-
       List<dynamic> rolesList = memberInfo.strRoles ?? [];
-
       _selectedRoles.addAll(rolesList);
       _handleCheckboxes();
+    } catch (e) {
+      if (mounted) if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
     }
-    _dataLoading = false;
+
     setState(() {});
   }
 

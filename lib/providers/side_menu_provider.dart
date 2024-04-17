@@ -25,7 +25,7 @@ class SideMenuProvider with ChangeNotifier {
   void updateDrawerBasedOnScreenSize(double width) {
     if (width != _previousScreenWidth && !_isDesktop && width > desktopBreakPoint) {
       _isDesktop = true;
-      shellScaffoldKey.currentState?.closeDrawer();
+      rootScaffoldKey.currentState?.closeDrawer();
 
       _previousScreenWidth = width;
       notifyListeners();
