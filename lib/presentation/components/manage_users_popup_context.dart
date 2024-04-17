@@ -44,8 +44,10 @@ class _ManageUsersPopupContentState extends State<ManageUsersPopupContent> {
   final List<Map<String, dynamic>> _userRolesList = userRolesList;
   final _formKey = GlobalKey<FormState>();
 
-  final Set _globalLowRoleCodes = {};
-  final Set _globalHighRoleCodes = {};
+  Set _globalLowRoleCodes = {};
+  Set _globalHighRoleCodes = {};
+
+  Set _selectedRoles = {};
 
   bool _dataLoading = true;
   bool _dataUpdating = false;
@@ -53,7 +55,7 @@ class _ManageUsersPopupContentState extends State<ManageUsersPopupContent> {
   @override
   void initState() {
     if (!widget.isNew) _fetchData();
-
+    _checkSelfRole();
     super.initState();
   }
 
@@ -194,31 +196,37 @@ class _ManageUsersPopupContentState extends State<ManageUsersPopupContent> {
                           onTap: _userRolesList[index]['state'] == "hidden"
                               ? null
                               : () {
-                                  _changeUserRoles(index);
+                                  ScaffoldMessenger.of(context).removeCurrentSnackBar();
+
+                                  if (_globalHighRoleCodes.contains(_userRolesList[index]["code"])) {
+                                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("이미 선택권한의 하위권한이 선택 또는 존재합니다.")));
+                                  } else {
+                                    //if checked : unchecked
+                                    _userRolesList[index]['checked'] ? _selectedRoles.remove(_userRolesList[index]['code']) : _selectedRoles.add(_userRolesList[index]['code']);
+                                    _handleCheckboxes();
+                                  }
                                 },
                           onHover: (value) {},
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Checkbox(
-                                  overlayColor: const MaterialStatePropertyAll(Colors.transparent),
-                                  visualDensity: VisualDensity.compact,
-                                  value: _userRolesList[index]['checked'],
-                                  onChanged: _userRolesList[index]['state'] == "hidden"
-                                      ? null
-                                      : (newValue) {
-                                          _changeUserRoles(index);
-                                        },
-                                ),
-                                const Gap(5),
-                                Flexible(
-                                    child: Text(
-                                  _userRolesList[index]['label'],
-                                  style: TextStyle(color: _userRolesList[index]['state'] == 'hidden' ? Colors.black45 : Colors.black),
-                                )),
-                              ],
+                          child: IgnorePointer(
+                            ignoring: true,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Checkbox(
+                                    visualDensity: VisualDensity.compact,
+                                    value: _userRolesList[index]['checked'],
+                                    onChanged: (newValue) {},
+                                  ),
+                                  const Gap(5),
+                                  Flexible(
+                                      child: Text(
+                                    _userRolesList[index]['label'],
+                                    style: TextStyle(color: _userRolesList[index]['state'] == 'hidden' ? Colors.black38 : Colors.black),
+                                  )),
+                                ],
+                              ),
                             ),
                           ),
                         );
@@ -326,17 +334,17 @@ class _ManageUsersPopupContentState extends State<ManageUsersPopupContent> {
           );
   }
 
+  Future<void> _checkSelfRole() async {
+    List<String> myRolesList = await Provider.of<MyinfoProvifer>(context, listen: false).getRolesList();
+    if (!myRolesList.contains('ROLE_SUPER')) {
+      _userRolesList[0]['state'] = 'hidden';
+      _userRolesList[0]['checked'] = false;
+      _globalLowRoleCodes.add('ROLE_SUPER');
+    }
+    setState(() {});
+  }
+
   Future<void> _fetchData() async {
-    // await Future.delayed(Duration(seconds: 2));
-
-    // //not showing super admin and admin from the chosen list depending on self role
-    // List<String> myRolesList = await Provider.of<MyinfoProvifer>(context, listen: false).getRolesList();
-
-    // _globalHighRoleCodes.addAll(myRolesList);
-    // _globalLowRoleCodes.addAll(myRolesList);
-
-    //updating checkbox
-
     final APIService apiService = APIService();
     if (mounted) {
       MemberModel memberInfo = await apiService.fetchMemberInfo(context: context, memberUserName: widget.userName);
@@ -351,63 +359,11 @@ class _ManageUsersPopupContentState extends State<ManageUsersPopupContent> {
 
       List<dynamic> rolesList = memberInfo.strRoles ?? [];
       // print(rolesList);
-      _globalHighRoleCodes.addAll(rolesList);
-      // _globalLowRoleCodes.addAll(rolesList);
 
-      for (String role in rolesList) {
-        for (int i = 0; i < _userRolesList.length; i++) {
-          if (role == _userRolesList[i]['code']) {
-            _userRolesList[i]['checked'] = true;
-          }
-        }
-      }
+      _selectedRoles.addAll(rolesList);
+      _handleCheckboxes();
     }
     _dataLoading = false;
-    setState(() {});
-  }
-
-  void _changeUserRoles(index) {
-    //checking highrole list and showing popup
-    //updating checkbox only if the index role high low not available in global highlow list
-
-    if (!_userRolesList[index]["checked"]) {
-      if (_globalHighRoleCodes.contains(_userRolesList[index]["code"])) {
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).removeCurrentSnackBar();
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text("이미 선택권한의 하위권한이 선택 또는 존재합니다."),
-            ),
-          );
-        }
-      } else {
-        _userRolesList[index]['checked'] = true;
-      }
-    } else {
-      _userRolesList[index]['checked'] = false;
-    }
-
-    //extracting low and high roles
-    for (var role in _userRolesList) {
-      if (role['code'] == _userRolesList[index]['code']) {
-        if (_userRolesList[index]["checked"]) {
-          _globalLowRoleCodes.addAll(role["low"]);
-          _globalHighRoleCodes.addAll(role["high"]);
-        } else {
-          _globalLowRoleCodes.removeWhere((item) => role["low"].contains(item));
-          _globalHighRoleCodes.removeWhere((item) => role["high"].contains(item));
-        }
-      }
-    }
-
-    //updating state
-    for (int i = 0; i < _userRolesList.length; i++) {
-      _userRolesList[i]['state'] = "active";
-      if (_globalLowRoleCodes.contains(_userRolesList[i]["code"])) {
-        _userRolesList[i]['state'] = "hidden";
-      }
-    }
-
     setState(() {});
   }
 
@@ -441,6 +397,35 @@ class _ManageUsersPopupContentState extends State<ManageUsersPopupContent> {
     }
 
     _dataUpdating = false;
+    setState(() {});
+  }
+
+  void _handleCheckboxes() {
+    //resetting these 2 before checking and adding again
+    _globalLowRoleCodes = {};
+    _globalHighRoleCodes = {};
+
+    for (int i = 0; i < _userRolesList.length; i++) {
+      //if avilable in selected
+      if (_selectedRoles.contains(_userRolesList[i]['code'])) {
+        _userRolesList[i]['checked'] = true;
+        _globalLowRoleCodes.addAll(_userRolesList[i]['low']);
+        _globalHighRoleCodes.addAll(_userRolesList[i]['high']);
+      }
+      //if not available in selected list
+      else {
+        _userRolesList[i]['checked'] = false;
+      }
+
+      if (_globalLowRoleCodes.contains(_userRolesList[i]["code"])) {
+        _userRolesList[i]['state'] = "hidden";
+      } else {
+        _userRolesList[i]['state'] = "active";
+      }
+    }
+
+    _checkSelfRole();
+
     setState(() {});
   }
 }

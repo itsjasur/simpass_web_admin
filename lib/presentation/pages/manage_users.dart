@@ -2,17 +2,13 @@ import 'package:admin_simpass/data/api/api_service.dart';
 import 'package:admin_simpass/data/models/user_model.dart';
 import 'package:admin_simpass/globals/constants.dart';
 import 'package:admin_simpass/globals/formatters.dart';
-import 'package:admin_simpass/globals/global_keys.dart';
 import 'package:admin_simpass/globals/main_ui.dart';
 import 'package:admin_simpass/presentation/components/alert_dialog.dart';
 import 'package:admin_simpass/presentation/components/header.dart';
 import 'package:admin_simpass/presentation/components/manage_users_popup_context.dart';
 import 'package:admin_simpass/presentation/components/pagination.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
 
 class ManageUsers extends StatefulWidget {
   const ManageUsers({super.key});
@@ -53,16 +49,15 @@ class _ManageUsersState extends State<ManageUsers> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Container(
-        //   color: Colors.amber.shade100,
-        //   width: 800,
-        //   child: const ManageUsersPopupContent(
-        //     userId: 27,
-        //     userName: 'sadfsfdsf',
-        //   ),
-        // ),
+        Container(
+          color: Colors.yellow.shade50,
+          width: 800,
+          child: const ManageUsersPopupContent(
+            userId: 19,
+            userName: 'openadm',
+          ),
+        ),
         const Header(title: "Users"),
-
         _dataLoading
             ? const CircularProgressIndicator()
             : Expanded(
