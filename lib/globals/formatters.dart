@@ -19,15 +19,21 @@ class CustomFormat {
     return null;
   }
 
-  DateTime? formatDateReverse(String? dateTimeString) {
+  String? formatDateToString(String? dateTimeString) {
     if (dateTimeString != null) {
       //  Define the date format that matches the input string
-      DateFormat format = DateFormat("yyyy-MM-dd h:mm a");
+      DateFormat format = DateFormat("yyyy-MM-dd h:mm");
 
       // Parse the date string into a DateTime object
       DateTime dateTime = format.parse(dateTimeString);
 
-      return dateTime;
+      //  Create a DateFormat object with the desired format
+      DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm');
+
+      // Format the DateTime object as a string
+      String formattedString = formatter.format(dateTime);
+
+      return formattedString;
     }
 
     return null;

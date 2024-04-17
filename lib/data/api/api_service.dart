@@ -167,19 +167,20 @@ class APIService {
     }
   }
 
-  Future<void> memberInfoUpdate(BuildContext context, MemberModel requestModel) async {
+  Future<void> memberAddOrUpdate({required BuildContext context, required MemberAddUpdateModel requestModel, bool isNewMember = false}) async {
     try {
       String? accessToken = await getAccessToken();
 
       headers['Authorization'] = 'Bearer $accessToken';
-      Uri url = _urlMaker('admin/memberUpdate');
 
+      Uri url = isNewMember ? _urlMaker('admin/register') : _urlMaker('admin/memberUpdate');
       var body = json.encode(requestModel.toJson());
-
-      print(body);
       var response = await http.post(url, headers: headers, body: body);
 
-      response = await RequestHelper().post(context.mounted ? context : null, response, url, headers, body);
+      print(body);
+      print(response.body);
+
+      // response = await RequestHelper().post(context.mounted ? context : null, response, url, headers, body);
 
       if (response.statusCode == 200) {
         var decodedResponse = json.decode(utf8.decode(response.bodyBytes));

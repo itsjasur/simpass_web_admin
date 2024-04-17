@@ -8,6 +8,7 @@ import 'package:admin_simpass/presentation/components/header.dart';
 import 'package:admin_simpass/presentation/components/manage_users_popup_context.dart';
 import 'package:admin_simpass/presentation/components/pagination.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 
 class ManageUsers extends StatefulWidget {
@@ -49,15 +50,16 @@ class _ManageUsersState extends State<ManageUsers> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          color: Colors.yellow.shade50,
-          width: 800,
-          child: const ManageUsersPopupContent(
-            userId: 19,
-            userName: 'openadm',
-          ),
-        ),
-        const Header(title: "Users"),
+        // Container(
+        //   color: Colors.yellow.shade50,
+        //   width: 800,
+        //   child: const ManageUsersPopupContent(
+        //     isNew: true,
+        //     // userId: 19,
+        //     // userName: 'openadm',
+        //   ),
+        // ),
+        const Header(title: "사용자 관리"),
         _dataLoading
             ? const CircularProgressIndicator()
             : Expanded(
@@ -72,6 +74,23 @@ class _ManageUsersState extends State<ManageUsers> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Gap(20),
+                            Container(
+                              constraints: const BoxConstraints(minWidth: 100, minHeight: 40),
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(),
+                                onPressed: () {
+                                  showCustomDialog(
+                                    width: 800,
+                                    content: const ManageUsersPopupContent(
+                                      isNew: true,
+                                    ),
+                                    context: context,
+                                  );
+                                },
+                                child: const Text("신규등록 +"),
+                              ),
+                            ),
+                            const Gap(30),
                             SizedBox(
                               // width: 500,
                               child: Pagination(
@@ -184,25 +203,26 @@ class _ManageUsersState extends State<ManageUsers> {
                                           );
                                         }
                                         if (columnIndex == 6) {
-                                          if (_usersList[rowIndex].status == 'Y') {
-                                            return DataCell(
-                                              Container(
-                                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                                                decoration: BoxDecoration(
-                                                    color: Colors.green,
-                                                    borderRadius: BorderRadius.circular(
-                                                      3,
-                                                    )),
-                                                child: Text(
-                                                  _usersList[rowIndex].statusNm,
-                                                  style: const TextStyle(
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
+                                          Color containerColor = Colors.black38;
+                                          if (_usersList[rowIndex].status == 'Y') containerColor = Colors.green;
+                                          if (_usersList[rowIndex].status == 'W') containerColor = Colors.red;
+
+                                          return DataCell(
+                                            Container(
+                                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                                              constraints: const BoxConstraints(minWidth: 80),
+                                              decoration: BoxDecoration(
+                                                color: containerColor,
+                                                borderRadius: BorderRadius.circular(4),
                                               ),
-                                              onTap: () {},
-                                            );
-                                          } else {}
+                                              child: Text(
+                                                textAlign: TextAlign.center,
+                                                _usersList[rowIndex].statusNm,
+                                                style: const TextStyle(color: Colors.white),
+                                              ),
+                                            ),
+                                            onTap: () {},
+                                          );
                                         }
                                         if (columnIndex == 7) {
                                           return DataCell(
@@ -216,13 +236,9 @@ class _ManageUsersState extends State<ManageUsers> {
                                             onTap: () {
                                               showCustomDialog(
                                                 width: 800,
-                                                content: SizedBox(
-                                                  // width: 500,
-                                                  // height: 600,
-                                                  child: ManageUsersPopupContent(
-                                                    userId: _usersList[rowIndex].id,
-                                                    userName: _usersList[rowIndex].username,
-                                                  ),
+                                                content: ManageUsersPopupContent(
+                                                  userId: _usersList[rowIndex].id,
+                                                  userName: _usersList[rowIndex].username,
                                                 ),
                                                 context: context,
                                               );

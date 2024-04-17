@@ -86,3 +86,63 @@ class MemberModel {
     };
   }
 }
+
+class MemberAddUpdateModel {
+  int? id;
+  String username;
+  String name;
+  String country;
+  String phoneNumber;
+  String? password;
+  String email;
+  String? fromDate;
+  String? status;
+  String? expireDate;
+  List<dynamic>? roles;
+
+  MemberAddUpdateModel({
+    this.id,
+    required this.username,
+    required this.name,
+    this.password,
+    required this.country,
+    required this.phoneNumber,
+    required this.email,
+    this.fromDate,
+    this.expireDate,
+    this.status,
+    this.roles,
+  });
+
+  factory MemberAddUpdateModel.fromJson(Map<String, dynamic> json) {
+    return MemberAddUpdateModel(
+      id: json['id'] as int,
+      username: json['username'] as String,
+      email: json['email'] ?? "",
+      name: json['name'] ?? "",
+      password: json["password"],
+      country: json['country'] ?? "",
+      phoneNumber: json['phone_number'] ?? "",
+      fromDate: json['from_date'] ?? "",
+      expireDate: json['expire_date'] ?? "",
+      status: json['status'] ?? "",
+      roles: json['roles'] ?? [],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'username': username,
+      'email': email,
+      'password': password,
+      'name': name,
+      'status': status,
+      'from_date': fromDate,
+      'expire_date': expireDate,
+      'phone_number': phoneNumber,
+      'country': country,
+      'role': roles,
+    };
+  }
+}
