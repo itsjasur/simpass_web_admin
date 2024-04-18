@@ -18,6 +18,7 @@ Future<void> showCustomDialog({
       return Stack(
         children: [
           AlertDialog(
+            insetPadding: const EdgeInsets.symmetric(horizontal: 10),
             surfaceTintColor: Colors.white,
             backgroundColor: Colors.white,
             shape: RoundedRectangleBorder(

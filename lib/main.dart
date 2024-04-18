@@ -76,6 +76,13 @@ class MyApp extends StatelessWidget {
           backgroundColor: Colors.white,
         ),
 
+        bottomSheetTheme: const BottomSheetThemeData(
+          backgroundColor: Colors.white,
+          surfaceTintColor: Colors.transparent,
+          showDragHandle: true,
+          dragHandleColor: Colors.black12,
+        ),
+
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
             disabledBackgroundColor: Colors.black38,

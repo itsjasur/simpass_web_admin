@@ -1,19 +1,15 @@
 import 'package:admin_simpass/data/api/api_service.dart';
-import 'package:admin_simpass/data/models/user_model.dart';
+import 'package:admin_simpass/data/models/plans_model.dart';
 import 'package:admin_simpass/globals/constants.dart';
 import 'package:admin_simpass/globals/formatters.dart';
 import 'package:admin_simpass/globals/main_ui.dart';
-import 'package:admin_simpass/presentation/components/alert_dialog.dart';
-import 'package:admin_simpass/presentation/components/custom_menu_drop_down.dart';
+import 'package:admin_simpass/presentation/components/custom_alert_dialog.dart';
+import 'package:admin_simpass/presentation/components/custom_text_input.dart';
 import 'package:admin_simpass/presentation/components/header.dart';
-import 'package:admin_simpass/presentation/components/manage_users_popup_context.dart';
+import 'package:admin_simpass/presentation/components/manage_plans_filter_content.dart';
+import 'package:admin_simpass/presentation/components/manage_users_popup_contexnt.dart';
 import 'package:admin_simpass/presentation/components/pagination.dart';
-import 'package:admin_simpass/presentation/components/pagination_drop_down.dart';
-import 'package:admin_simpass/presentation/components/simple_drop_down.dart';
-import 'package:admin_simpass/presentation/pages/test.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 
 class ManagePlans extends StatefulWidget {
@@ -24,8 +20,6 @@ class ManagePlans extends StatefulWidget {
 }
 
 class _ManagePlansState extends State<ManagePlans> {
-  final List<UserModel> _usersList = [];
-
   int _totalCount = 0;
 
   int _currentPage = 1;
@@ -35,20 +29,35 @@ class _ManagePlansState extends State<ManagePlans> {
 
   final List _columns = mangePlansColumns;
 
-  final List<DropdownMenuEntry> _carriers = carriers.map((item) => DropdownMenuEntry(value: item['cd'], label: item['value'])).toList();
-  final List<DropdownMenuEntry> _mvnos = mvnos.map((item) => DropdownMenuEntry(value: item['cd'], label: item['value'])).toList();
+  final List<PlanModel> _plansList = [];
 
-  String? _selectedCarrier;
-  String? _selectedMvno;
+  late ManagePlansModel _plansInfo;
+
+  ManagePlansRequestModel _requestModel = ManagePlansRequestModel(
+    agentCd: '',
+    carrierCd: '',
+    carrierPlanType: '',
+    carrierType: '',
+    mvnoCd: '',
+    status: '',
+    usimPlanNm: '',
+    page: 1,
+    rowLimit: 10,
+  );
+
+  int? _filterBadgeNumber;
+
+  final TextEditingController _searchTextController = TextEditingController();
 
   @override
   void initState() {
-    _fetchUsers();
+    _fetchPlansData();
     super.initState();
   }
 
   @override
   void dispose() {
+    _searchTextController.dispose();
     super.dispose();
   }
 
@@ -63,7 +72,11 @@ class _ManagePlansState extends State<ManagePlans> {
       children: [
         const Header(title: "사용자 관리"),
         _dataLoading
-            ? const CircularProgressIndicator()
+            ? const Expanded(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              )
             : Expanded(
                 child: LayoutBuilder(
                   builder: (context, constraints) => SingleChildScrollView(
@@ -72,32 +85,67 @@ class _ManagePlansState extends State<ManagePlans> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        //FILTER GOES HERE
+                        // ManagePlansFilterContent(
+                        //   agents: _agents,
+                        //   carriers: _carriers,
+                        //   mvnos: _mvnos,
+                        //   planTypes: _planTypes,
+                        //   statuses: _statuses,
+                        //   subscriberTarget: _subscriberTarget,
+                        //   onApply: _fetchPlansData,
+                        // ),
 
                         const Gap(20),
-
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: Wrap(
                             direction: Axis.horizontal,
-                            spacing: 10,
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            spacing: 20,
                             runSpacing: 10,
                             children: [
-                              Container(
-                                constraints: const BoxConstraints(
-                                  maxWidth: 200,
-                                ),
-                                child: LayoutBuilder(
-                                  builder: (context, constraints) => CustomDropDownMenu(
-                                    label: const Text("통신사"),
-                                    requestFocusOnTap: true,
-                                    enableSearch: true,
-                                    onSelected: (selectedItem) {
-                                      _selectedCarrier = selectedItem;
+                              Badge(
+                                alignment: Alignment.topLeft,
+                                isLabelVisible: _filterBadgeNumber != null,
+                                label: Text(_filterBadgeNumber.toString()),
+                                textStyle: const TextStyle(fontSize: 14),
+                                backgroundColor: Colors.redAccent,
+                                child: SizedBox(
+                                  height: 47,
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.black26,
+                                    ),
+                                    onPressed: () {
+                                      showCustomDialog(
+                                        context: context,
+                                        content: ManagePlansFilterContent(
+                                          info: _plansInfo,
+                                          requestModel: _requestModel,
+                                          onApply: (requestModel) async {
+                                            setState(() {
+                                              _requestModel = requestModel;
+                                              _filterBadgeNumber = _requestModel.countNonEmptyFields();
+                                            });
+
+                                            await Future.delayed(Duration.zero);
+                                            _fetchPlansData();
+                                          },
+                                        ),
+                                      );
                                     },
-                                    width: constraints.maxWidth,
-                                    items: _carriers,
-                                    selectedItem: _selectedCarrier,
+                                    child: const Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.sort,
+                                          color: Colors.white,
+                                          size: 17,
+                                        ),
+                                        SizedBox(width: 5),
+                                        Text("필터"),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -105,18 +153,28 @@ class _ManagePlansState extends State<ManagePlans> {
                                 constraints: const BoxConstraints(
                                   maxWidth: 300,
                                 ),
-                                child: LayoutBuilder(
-                                  builder: (context, constraints) => CustomDropDownMenu(
-                                    requestFocusOnTap: true,
-                                    enableSearch: true,
-                                    enableFilter: true,
-                                    label: const Text("브랜드"),
-                                    onSelected: (selectedItem) {
-                                      _selectedMvno = selectedItem;
-                                    },
-                                    items: _mvnos,
-                                    width: constraints.maxWidth,
-                                    selectedItem: _selectedMvno,
+                                child: CustomTextInput(
+                                  controller: _searchTextController,
+                                  title: '요금제명',
+                                ),
+                              ),
+                              SizedBox(
+                                height: 47,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    _fetchPlansData();
+                                  },
+                                  child: const Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        Icons.search_outlined,
+                                        color: Colors.white,
+                                        size: 17,
+                                      ),
+                                      SizedBox(width: 5),
+                                      Text("검색"),
+                                    ],
                                   ),
                                 ),
                               ),
@@ -124,7 +182,7 @@ class _ManagePlansState extends State<ManagePlans> {
                           ),
                         ),
 
-                        ///
+                        /// ADD BUTTON
                         Container(
                           margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                           constraints: const BoxConstraints(
@@ -153,8 +211,8 @@ class _ManagePlansState extends State<ManagePlans> {
                               if (currentPage != _currentPage || perPage != _perPage) {
                                 _currentPage = currentPage;
                                 _perPage = perPage;
-                                _usersList.clear();
-                                await _fetchUsers();
+                                _plansList.clear();
+                                await _fetchPlansData();
                               }
                             },
                           ),
@@ -192,8 +250,8 @@ class _ManagePlansState extends State<ManagePlans> {
                                       _sortAscending = ascending;
                                       _sortColumnIndex = columnIndex;
 
-                                      void mysort<T>(Comparable<T> Function(UserModel model) getField) {
-                                        _usersList.sort((a, b) {
+                                      void mysort<T>(Comparable<T> Function(PlanModel model) getField) {
+                                        _plansList.sort((a, b) {
                                           final aValue = getField(a);
                                           final bValue = getField(b);
 
@@ -201,12 +259,21 @@ class _ManagePlansState extends State<ManagePlans> {
                                         });
                                       }
 
+                                      // sorting table on tap on header
                                       if (columnIndex == 0) mysort((model) => model.id);
-                                      if (columnIndex == 1) mysort((model) => model.username.toLowerCase());
-                                      if (columnIndex == 2) mysort((model) => model.name.toLowerCase());
-                                      if (columnIndex == 3) _usersList.sort((a, b) => _sortAscending ? a.countryNm.compareTo(b.countryNm) : b.countryNm.compareTo(a.countryNm));
-                                      if (columnIndex == 6) _usersList.sort((a, b) => _sortAscending ? a.statusNm.compareTo(b.status) : b.statusNm.compareTo(a.statusNm));
-                                      if (columnIndex == 7) _usersList.sort((a, b) => _sortAscending ? a.fromDate.compareTo(b.fromDate) : b.fromDate.compareTo(a.fromDate));
+                                      if (columnIndex == 1) mysort((model) => model.status.toLowerCase());
+                                      if (columnIndex == 2) mysort((model) => model.usimPlanNm.toLowerCase());
+                                      if (columnIndex == 3) mysort((model) => model.carrierNm.toLowerCase());
+                                      if (columnIndex == 4) mysort((model) => model.mvnoNm.toLowerCase());
+                                      if (columnIndex == 5) mysort((model) => model.agentNm.toLowerCase());
+                                      if (columnIndex == 6) mysort((model) => model.carrierTypeNm.toLowerCase());
+                                      if (columnIndex == 7) mysort((model) => model.carrierPlanTypeNm.toLowerCase());
+                                      if (columnIndex == 8) mysort((model) => model.basicFee);
+                                      if (columnIndex == 9) mysort((model) => model.salesFee);
+                                      if (columnIndex == 10) mysort((model) => model.message.toLowerCase());
+                                      if (columnIndex == 12) mysort((model) => model.cellData.toLowerCase());
+                                      if (columnIndex == 13) mysort((model) => model.videoEtc.toLowerCase());
+                                      if (columnIndex == 14) mysort((model) => model.qos.toLowerCase());
 
                                       setState(() {});
                                     },
@@ -215,7 +282,7 @@ class _ManagePlansState extends State<ManagePlans> {
                                 },
                               ),
                               rows: List.generate(
-                                _usersList.length,
+                                _plansList.length,
                                 (rowIndex) => DataRow(
                                   // onSelectChanged: (value) {},
 
@@ -224,15 +291,15 @@ class _ManagePlansState extends State<ManagePlans> {
                                     (columnIndex) {
                                       if (columnIndex == 0) {
                                         return DataCell(
-                                          Text(_usersList[rowIndex].id.toString()),
+                                          Text(_plansList[rowIndex].id.toString()),
                                           onTap: () async {},
                                         );
                                       }
 
                                       if (columnIndex == 1) {
                                         Color containerColor = Colors.black38;
-                                        if (_usersList[rowIndex].status == 'Y') containerColor = Colors.green;
-                                        if (_usersList[rowIndex].status == 'W') containerColor = Colors.red;
+                                        if (_plansList[rowIndex].status == 'Y') containerColor = Colors.green;
+                                        if (_plansList[rowIndex].status == 'N') containerColor = Colors.redAccent;
 
                                         return DataCell(
                                           Container(
@@ -244,7 +311,7 @@ class _ManagePlansState extends State<ManagePlans> {
                                             ),
                                             child: Text(
                                               textAlign: TextAlign.center,
-                                              _usersList[rowIndex].statusNm,
+                                              _plansList[rowIndex].statusNm,
                                               style: const TextStyle(color: Colors.white),
                                             ),
                                           ),
@@ -252,44 +319,105 @@ class _ManagePlansState extends State<ManagePlans> {
                                         );
                                       }
 
-                                      if (columnIndex == 1) {
-                                        return DataCell(
-                                          Text(_usersList[rowIndex].username),
-                                          onTap: () {},
-                                        );
-                                      }
                                       if (columnIndex == 2) {
                                         return DataCell(
-                                          Text(_usersList[rowIndex].name),
+                                          Text(_plansList[rowIndex].usimPlanNm),
                                           onTap: () {},
                                         );
                                       }
+
                                       if (columnIndex == 3) {
                                         return DataCell(
-                                          Text(_usersList[rowIndex].countryNm),
+                                          Text(_plansList[rowIndex].carrierNm),
                                           onTap: () {},
                                         );
                                       }
                                       if (columnIndex == 4) {
                                         return DataCell(
-                                          Text(_usersList[rowIndex].phoneNumber),
+                                          Text(_plansList[rowIndex].mvnoNm),
                                           onTap: () {},
                                         );
                                       }
                                       if (columnIndex == 5) {
                                         return DataCell(
                                           placeholder: false,
-                                          Text(_usersList[rowIndex].email),
+                                          Text(_plansList[rowIndex].agentNm),
+                                          onTap: () {},
+                                        );
+                                      }
+
+                                      if (columnIndex == 6) {
+                                        return DataCell(
+                                          placeholder: false,
+                                          Text(_plansList[rowIndex].carrierTypeNm),
                                           onTap: () {},
                                         );
                                       }
 
                                       if (columnIndex == 7) {
                                         return DataCell(
-                                          Text(CustomFormat().formatDate(_usersList[rowIndex].fromDate) ?? ""),
+                                          placeholder: false,
+                                          Text(_plansList[rowIndex].carrierPlanTypeNm),
                                           onTap: () {},
                                         );
                                       }
+
+                                      if (columnIndex == 8) {
+                                        return DataCell(
+                                          placeholder: false,
+                                          Text(CustomFormat().wonify(_plansList[rowIndex].basicFee)),
+                                          onTap: () {},
+                                        );
+                                      }
+
+                                      if (columnIndex == 9) {
+                                        return DataCell(
+                                          placeholder: false,
+                                          Text(CustomFormat().wonify(_plansList[rowIndex].salesFee)),
+                                          onTap: () {},
+                                        );
+                                      }
+
+                                      if (columnIndex == 10) {
+                                        return DataCell(
+                                          placeholder: false,
+                                          Text(_plansList[rowIndex].voice),
+                                          onTap: () {},
+                                        );
+                                      }
+
+                                      if (columnIndex == 11) {
+                                        return DataCell(
+                                          placeholder: false,
+                                          Text(_plansList[rowIndex].message),
+                                          onTap: () {},
+                                        );
+                                      }
+
+                                      if (columnIndex == 12) {
+                                        return DataCell(
+                                          placeholder: false,
+                                          Text(_plansList[rowIndex].cellData),
+                                          onTap: () {},
+                                        );
+                                      }
+
+                                      if (columnIndex == 13) {
+                                        return DataCell(
+                                          placeholder: false,
+                                          Text(_plansList[rowIndex].videoEtc),
+                                          onTap: () {},
+                                        );
+                                      }
+
+                                      if (columnIndex == 14) {
+                                        return DataCell(
+                                          placeholder: false,
+                                          Text(_plansList[rowIndex].qos),
+                                          onTap: () {},
+                                        );
+                                      }
+
                                       if (columnIndex == 15) {
                                         return DataCell(
                                           const Icon(Icons.edit_outlined, color: MainUi.mainColor),
@@ -297,8 +425,8 @@ class _ManagePlansState extends State<ManagePlans> {
                                             showCustomDialog(
                                               width: 800,
                                               content: ManageUsersPopupContent(
-                                                userId: _usersList[rowIndex].id,
-                                                userName: _usersList[rowIndex].username,
+                                                userId: _plansList[rowIndex].id,
+                                                userName: _plansList[rowIndex].agentCd,
                                               ),
                                               context: context,
                                             );
@@ -324,25 +452,25 @@ class _ManagePlansState extends State<ManagePlans> {
     );
   }
 
-  Future<void> _fetchUsers() async {
-    // List<UserModel> newList = ROWS.map((json) => UserModel.fromJson(json)).toList();
-    // _usersList.addAll(newList);
-    // setState(() {});
-
-    if (_currentPage == 1) _usersList.clear();
+  Future<void> _fetchPlansData() async {
+    if (_currentPage == 1) _plansList.clear();
 
     try {
       final APIService apiService = APIService();
-      var result = await apiService.fetchUsers(context: context, page: _currentPage, rowLimit: _perPage);
+      var result = await apiService.fetchPlansInfo(
+        context: context,
+        requestModel: _requestModel.copyWith(
+          rowLimit: _perPage,
+          page: _currentPage,
+          usimPlanNm: _searchTextController.text,
+        ),
+      );
 
-      if (result['data'] != null && result['data']['result'] == 'SUCCESS') {
-        Map data = result['data'];
-        List rows = data['rows'];
-        _totalCount = data['totalNum'];
+      _plansList.addAll(result.planList);
 
-        List<UserModel> newList = rows.map((json) => UserModel.fromJson(json)).toList();
-        _usersList.addAll(newList);
-      }
+      _plansInfo = result;
+
+      _totalCount = result.totalNum;
 
       _dataLoading = false;
       setState(() {});

@@ -12,12 +12,13 @@ class CustomDropDownMenu extends StatelessWidget {
   final bool enableFilter;
   final bool requestFocusOnTap;
   final TextEditingController? controller;
+  final double menuHeight;
   final String? errorText;
 
   const CustomDropDownMenu({
     super.key,
     required this.items,
-    this.width = 200,
+    this.width = 100,
     this.selectedItem,
     this.onSelected,
     this.label,
@@ -27,13 +28,14 @@ class CustomDropDownMenu extends StatelessWidget {
     this.enableSearch = false,
     this.requestFocusOnTap = false,
     this.enableFilter = false,
+    this.menuHeight = 300,
   });
 
   @override
   Widget build(BuildContext context) {
     return DropdownMenu(
       width: width + 7,
-      menuHeight: 300,
+      menuHeight: menuHeight,
       enableSearch: enableSearch,
       enableFilter: enableFilter,
       errorText: errorText,
@@ -44,6 +46,10 @@ class CustomDropDownMenu extends StatelessWidget {
       initialSelection: selectedItem,
       onSelected: onSelected,
       enabled: enabled,
+      textStyle: const TextStyle(
+        fontSize: 14,
+        color: Colors.black87,
+      ),
       menuStyle: MenuStyle(
         padding: MaterialStateProperty.all(EdgeInsets.zero),
         // backgroundColor: MaterialStateProperty.all(Colors.white),
@@ -52,16 +58,16 @@ class CustomDropDownMenu extends StatelessWidget {
       ),
       dropdownMenuEntries: items,
       inputDecorationTheme: InputDecorationTheme(
-        // fillColor: Colors.white,
-        // helperText: '', //leaves empty place for error text
-
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 10,
           vertical: 15,
         ),
-
+        constraints: const BoxConstraints(
+          minHeight: 40,
+        ),
+        isDense: true,
         labelStyle: const TextStyle(
-          fontSize: 15,
+          fontSize: 14,
           color: Colors.black45,
         ),
         floatingLabelStyle: const TextStyle(
@@ -77,19 +83,12 @@ class CustomDropDownMenu extends StatelessWidget {
             color: MainUi.mainColor,
           ),
         ),
-        constraints: const BoxConstraints(
-          minHeight: 50,
-          // minWidth: 100,
-        ),
-
         disabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
           borderSide: const BorderSide(
             color: Colors.black45,
           ),
         ),
-
-        // isDense: true,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
           borderSide: const BorderSide(
@@ -102,14 +101,11 @@ class CustomDropDownMenu extends StatelessWidget {
             color: Colors.red,
           ),
         ),
-
         errorMaxLines: 3,
-
         errorStyle: const TextStyle(
           color: Colors.red,
           // height: 0.5,
         ),
-
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
           borderSide: const BorderSide(

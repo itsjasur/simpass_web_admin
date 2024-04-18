@@ -38,6 +38,16 @@ class CustomFormat {
 
     return null;
   }
+
+  String wonify(double? amount) {
+    if (amount == null || amount < 0) {
+      amount = 0;
+    }
+
+    String stringAmount = NumberFormat("#,###").format(amount).toString();
+
+    return ('₩ ${stringAmount.toString()}');
+  }
 }
 
 class PhoneNumberFormatter extends TextInputFormatter {

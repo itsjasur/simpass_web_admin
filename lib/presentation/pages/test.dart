@@ -14,6 +14,29 @@ List mvnos = [
   {"cd": "SVM", "value": "SK 7모바일"}
 ];
 
+List agents = [
+  {"cd": "SP", "value": "심패스"},
+  {"cd": "FS", "value": "퍼스트상사"},
+  {"cd": "SJ", "value": "에스제이"}
+];
+
+List planTypes = [
+  {"cd": "PR", "value": "선불"},
+  {"cd": "PO", "value": "후불"},
+  {"cd": "RT", "value": "랜탈"}
+];
+
+List subscriberTarget = [
+  {"cd": "P", "value": "일반"},
+  {"cd": "J", "value": "청소년"},
+  {"cd": "S", "value": "시니어"}
+];
+
+List statuses = [
+  {"cd": "Y", "value": "사용중"},
+  {"cd": "N", "value": "미사용"}
+];
+
 Map<String, dynamic> plansInfo = {
   "carrier_type": [
     {"cd": "PR", "value": "선불"},

@@ -2,11 +2,13 @@ import 'dart:convert';
 import 'package:admin_simpass/data/api/request_helper.dart';
 import 'package:admin_simpass/data/models/login_model.dart';
 import 'package:admin_simpass/data/models/member_model.dart';
+import 'package:admin_simpass/data/models/plans_model.dart';
 import 'package:admin_simpass/data/models/profile_model.dart';
 import 'package:admin_simpass/data/models/signup_model.dart';
 import 'package:admin_simpass/providers/auth_provider.dart';
 import 'package:admin_simpass/providers/myinfo_provider.dart';
 import 'package:admin_simpass/sensitive.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
@@ -170,9 +172,6 @@ class APIService {
       var body = json.encode(requestModel.toJson());
       var response = await http.post(url, headers: headers, body: body);
 
-      print(body);
-      print(response.body);
-
       response = await RequestHelper().post(context.mounted ? context : null, response, url, headers, body);
 
       if (response.statusCode == 200) {
@@ -187,6 +186,30 @@ class APIService {
       }
     } catch (e) {
       if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+  }
+
+  Future<ManagePlansModel> fetchPlansInfo({required BuildContext context, required ManagePlansRequestModel requestModel}) async {
+    try {
+      String? accessToken = await getAccessToken();
+
+      headers['Authorization'] = 'Bearer $accessToken';
+
+      Uri url = _urlMaker('agent/plan');
+      var body = json.encode(requestModel.toJson());
+      var response = await http.post(url, headers: headers, body: body);
+
+      response = await RequestHelper().post(context.mounted ? context : null, response, url, headers, body);
+
+      if (response.statusCode == 200) {
+        var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
+
+        return ManagePlansModel.fromJson(decodedResponse['data']);
+      } else {
+        throw "Plans data request data error";
+      }
+    } catch (e) {
+      rethrow;
     }
   }
 }

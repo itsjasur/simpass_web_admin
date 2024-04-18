@@ -3,10 +3,11 @@ import 'package:admin_simpass/data/models/user_model.dart';
 import 'package:admin_simpass/globals/constants.dart';
 import 'package:admin_simpass/globals/formatters.dart';
 import 'package:admin_simpass/globals/main_ui.dart';
-import 'package:admin_simpass/presentation/components/alert_dialog.dart';
+import 'package:admin_simpass/presentation/components/custom_alert_dialog.dart';
 import 'package:admin_simpass/presentation/components/header.dart';
-import 'package:admin_simpass/presentation/components/manage_users_popup_context.dart';
+import 'package:admin_simpass/presentation/components/manage_users_popup_contexnt.dart';
 import 'package:admin_simpass/presentation/components/pagination.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
@@ -51,7 +52,11 @@ class _ManageUsersState extends State<ManageUsers> {
       children: [
         const Header(title: "사용자 관리"),
         _dataLoading
-            ? const CircularProgressIndicator()
+            ? const Expanded(
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              )
             : Expanded(
                 child: LayoutBuilder(
                   builder: (context, constraints) => SingleChildScrollView(
@@ -196,7 +201,7 @@ class _ManageUsersState extends State<ManageUsers> {
                                       if (columnIndex == 6) {
                                         Color containerColor = Colors.black38;
                                         if (_usersList[rowIndex].status == 'Y') containerColor = Colors.green;
-                                        if (_usersList[rowIndex].status == 'W') containerColor = Colors.red;
+                                        if (_usersList[rowIndex].status == 'W') containerColor = Colors.redAccent;
 
                                         return DataCell(
                                           Container(
@@ -259,6 +264,8 @@ class _ManageUsersState extends State<ManageUsers> {
     // List<UserModel> newList = ROWS.map((json) => UserModel.fromJson(json)).toList();
     // _usersList.addAll(newList);
     // setState(() {});
+
+    await Future.delayed(const Duration(seconds: 1));
 
     if (_currentPage == 1) _usersList.clear();
 

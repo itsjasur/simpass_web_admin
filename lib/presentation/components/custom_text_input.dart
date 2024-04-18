@@ -32,7 +32,7 @@ class CustomTextInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextFormField(
       style: const TextStyle(
-        fontSize: 15,
+        fontSize: 14,
         color: Colors.black87,
       ),
       controller: controller,
@@ -50,12 +50,14 @@ class CustomTextInput extends StatelessWidget {
         // helperText: '', //leaves empty place for error text
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 10,
-          vertical: 18,
+          vertical: 17.5,
         ),
+        constraints: const BoxConstraints(minHeight: 40),
+        isDense: true,
 
         labelText: title,
         labelStyle: const TextStyle(
-          fontSize: 15,
+          fontSize: 14,
           color: Colors.black45,
         ),
         floatingLabelStyle: const TextStyle(
@@ -71,8 +73,7 @@ class CustomTextInput extends StatelessWidget {
             color: MainUi.mainColor,
           ),
         ),
-        constraints: const BoxConstraints(minHeight: 50),
-        // isDense: true,
+
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(5),
           borderSide: const BorderSide(
