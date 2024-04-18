@@ -3,7 +3,6 @@ import 'package:admin_simpass/globals/main_ui.dart';
 import 'package:admin_simpass/presentation/components/hoverable_icon_button.dart';
 import 'package:admin_simpass/presentation/components/pagination_drop_down.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
 
 class Pagination extends StatefulWidget {
   final Function(int currentPage, int perPage)? onUpdated;
@@ -30,6 +29,19 @@ class _PaginationState extends State<Pagination> {
   void initState() {
     _updateNumbers();
     super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant Pagination oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.totalCount != widget.totalCount) {
+      _updateNumbers();
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   void _updateNumbers() {

@@ -105,6 +105,13 @@ class MyApp extends StatelessWidget {
           ),
         ),
 
+        scrollbarTheme: ScrollbarThemeData(
+          thumbColor: MaterialStatePropertyAll(Colors.grey.withOpacity(0.2)),
+          thickness: const MaterialStatePropertyAll(12),
+          thumbVisibility: const MaterialStatePropertyAll(true),
+          trackVisibility: const MaterialStatePropertyAll(false),
+        ),
+
         checkboxTheme: const CheckboxThemeData(
           // checkColor: MaterialStatePropertyAll(Colors.red),
           side: BorderSide(

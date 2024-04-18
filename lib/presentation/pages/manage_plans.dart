@@ -9,7 +9,9 @@ import 'package:admin_simpass/presentation/components/header.dart';
 import 'package:admin_simpass/presentation/components/manage_plans_filter_content.dart';
 import 'package:admin_simpass/presentation/components/manage_users_popup_contexnt.dart';
 import 'package:admin_simpass/presentation/components/pagination.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 
 class ManagePlans extends StatefulWidget {
@@ -30,6 +32,8 @@ class _ManagePlansState extends State<ManagePlans> {
   final List _columns = mangePlansColumns;
 
   final List<PlanModel> _plansList = [];
+
+  final ScrollController _horizontalScrolCntr = ScrollController();
 
   late ManagePlansModel _plansInfo;
 
@@ -218,224 +222,233 @@ class _ManagePlansState extends State<ManagePlans> {
                           ),
                         ),
                         const Gap(20),
-                        SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 20),
-                            constraints: BoxConstraints(
-                              minWidth: constraints.maxWidth - 10,
-                            ),
-                            child: DataTable(
-                              sortColumnIndex: _sortColumnIndex,
-                              sortAscending: _sortAscending,
-                              showCheckboxColumn: false,
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey.shade200),
-                              ),
-                              border: TableBorder.all(
-                                color: Colors.transparent, // Make border color transparent
-                                width: 0,
-                              ),
-                              dataRowMinHeight: 40,
-                              columnSpacing: 40,
-                              headingRowHeight: 50,
-                              headingTextStyle: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                              ),
-                              columns: List.generate(
-                                _columns.length,
-                                (index) {
-                                  return DataColumn(
-                                    onSort: (columnIndex, ascending) {
-                                      _sortAscending = ascending;
-                                      _sortColumnIndex = columnIndex;
-
-                                      void mysort<T>(Comparable<T> Function(PlanModel model) getField) {
-                                        _plansList.sort((a, b) {
-                                          final aValue = getField(a);
-                                          final bValue = getField(b);
-
-                                          return ascending ? Comparable.compare(aValue, bValue) : Comparable.compare(bValue, aValue);
-                                        });
-                                      }
-
-                                      // sorting table on tap on header
-                                      if (columnIndex == 0) mysort((model) => model.id);
-                                      if (columnIndex == 1) mysort((model) => model.status.toLowerCase());
-                                      if (columnIndex == 2) mysort((model) => model.usimPlanNm.toLowerCase());
-                                      if (columnIndex == 3) mysort((model) => model.carrierNm.toLowerCase());
-                                      if (columnIndex == 4) mysort((model) => model.mvnoNm.toLowerCase());
-                                      if (columnIndex == 5) mysort((model) => model.agentNm.toLowerCase());
-                                      if (columnIndex == 6) mysort((model) => model.carrierTypeNm.toLowerCase());
-                                      if (columnIndex == 7) mysort((model) => model.carrierPlanTypeNm.toLowerCase());
-                                      if (columnIndex == 8) mysort((model) => model.basicFee);
-                                      if (columnIndex == 9) mysort((model) => model.salesFee);
-                                      if (columnIndex == 10) mysort((model) => model.message.toLowerCase());
-                                      if (columnIndex == 12) mysort((model) => model.cellData.toLowerCase());
-                                      if (columnIndex == 13) mysort((model) => model.videoEtc.toLowerCase());
-                                      if (columnIndex == 14) mysort((model) => model.qos.toLowerCase());
-
-                                      setState(() {});
-                                    },
-                                    label: Text(_columns[index]),
-                                  );
-                                },
-                              ),
-                              rows: List.generate(
-                                _plansList.length,
-                                (rowIndex) => DataRow(
-                                  // onSelectChanged: (value) {},
-
-                                  cells: List.generate(
+                        Scrollbar(
+                          controller: _horizontalScrolCntr,
+                          scrollbarOrientation: ScrollbarOrientation.top,
+                          child: Scrollbar(
+                            controller: _horizontalScrolCntr,
+                            scrollbarOrientation: ScrollbarOrientation.bottom,
+                            child: SingleChildScrollView(
+                              controller: _horizontalScrolCntr,
+                              scrollDirection: Axis.horizontal,
+                              child: Container(
+                                margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                                constraints: BoxConstraints(
+                                  minWidth: constraints.maxWidth - 10,
+                                ),
+                                child: DataTable(
+                                  sortColumnIndex: _sortColumnIndex,
+                                  sortAscending: _sortAscending,
+                                  showCheckboxColumn: false,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.grey.shade200),
+                                  ),
+                                  border: TableBorder.all(
+                                    color: Colors.transparent, // Make border color transparent
+                                    width: 0,
+                                  ),
+                                  dataRowMinHeight: 40,
+                                  columnSpacing: 40,
+                                  headingRowHeight: 50,
+                                  headingTextStyle: const TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                  columns: List.generate(
                                     _columns.length,
-                                    (columnIndex) {
-                                      if (columnIndex == 0) {
-                                        return DataCell(
-                                          Text(_plansList[rowIndex].id.toString()),
-                                          onTap: () async {},
-                                        );
-                                      }
+                                    (index) {
+                                      return DataColumn(
+                                        onSort: (columnIndex, ascending) {
+                                          _sortAscending = ascending;
+                                          _sortColumnIndex = columnIndex;
 
-                                      if (columnIndex == 1) {
-                                        Color containerColor = Colors.black38;
-                                        if (_plansList[rowIndex].status == 'Y') containerColor = Colors.green;
-                                        if (_plansList[rowIndex].status == 'N') containerColor = Colors.redAccent;
+                                          void mysort<T>(Comparable<T> Function(PlanModel model) getField) {
+                                            _plansList.sort((a, b) {
+                                              final aValue = getField(a);
+                                              final bValue = getField(b);
 
-                                        return DataCell(
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                                            constraints: const BoxConstraints(minWidth: 80),
-                                            decoration: BoxDecoration(
-                                              color: containerColor,
-                                              borderRadius: BorderRadius.circular(30),
-                                            ),
-                                            child: Text(
-                                              textAlign: TextAlign.center,
-                                              _plansList[rowIndex].statusNm,
-                                              style: const TextStyle(color: Colors.white),
-                                            ),
-                                          ),
-                                          onTap: () {},
-                                        );
-                                      }
+                                              return ascending ? Comparable.compare(aValue, bValue) : Comparable.compare(bValue, aValue);
+                                            });
+                                          }
 
-                                      if (columnIndex == 2) {
-                                        return DataCell(
-                                          Text(_plansList[rowIndex].usimPlanNm),
-                                          onTap: () {},
-                                        );
-                                      }
+                                          // sorting table on tap on header
+                                          if (columnIndex == 0) mysort((model) => model.id);
+                                          if (columnIndex == 1) mysort((model) => model.status.toLowerCase());
+                                          if (columnIndex == 2) mysort((model) => model.usimPlanNm.toLowerCase());
+                                          if (columnIndex == 3) mysort((model) => model.carrierNm.toLowerCase());
+                                          if (columnIndex == 4) mysort((model) => model.mvnoNm.toLowerCase());
+                                          if (columnIndex == 5) mysort((model) => model.agentNm.toLowerCase());
+                                          if (columnIndex == 6) mysort((model) => model.carrierTypeNm.toLowerCase());
+                                          if (columnIndex == 7) mysort((model) => model.carrierPlanTypeNm.toLowerCase());
+                                          if (columnIndex == 8) mysort((model) => model.basicFee);
+                                          if (columnIndex == 9) mysort((model) => model.salesFee);
+                                          if (columnIndex == 10) mysort((model) => model.message.toLowerCase());
+                                          if (columnIndex == 12) mysort((model) => model.cellData.toLowerCase());
+                                          if (columnIndex == 13) mysort((model) => model.videoEtc.toLowerCase());
+                                          if (columnIndex == 14) mysort((model) => model.qos.toLowerCase());
 
-                                      if (columnIndex == 3) {
-                                        return DataCell(
-                                          Text(_plansList[rowIndex].carrierNm),
-                                          onTap: () {},
-                                        );
-                                      }
-                                      if (columnIndex == 4) {
-                                        return DataCell(
-                                          Text(_plansList[rowIndex].mvnoNm),
-                                          onTap: () {},
-                                        );
-                                      }
-                                      if (columnIndex == 5) {
-                                        return DataCell(
-                                          placeholder: false,
-                                          Text(_plansList[rowIndex].agentNm),
-                                          onTap: () {},
-                                        );
-                                      }
-
-                                      if (columnIndex == 6) {
-                                        return DataCell(
-                                          placeholder: false,
-                                          Text(_plansList[rowIndex].carrierTypeNm),
-                                          onTap: () {},
-                                        );
-                                      }
-
-                                      if (columnIndex == 7) {
-                                        return DataCell(
-                                          placeholder: false,
-                                          Text(_plansList[rowIndex].carrierPlanTypeNm),
-                                          onTap: () {},
-                                        );
-                                      }
-
-                                      if (columnIndex == 8) {
-                                        return DataCell(
-                                          placeholder: false,
-                                          Text(CustomFormat().wonify(_plansList[rowIndex].basicFee)),
-                                          onTap: () {},
-                                        );
-                                      }
-
-                                      if (columnIndex == 9) {
-                                        return DataCell(
-                                          placeholder: false,
-                                          Text(CustomFormat().wonify(_plansList[rowIndex].salesFee)),
-                                          onTap: () {},
-                                        );
-                                      }
-
-                                      if (columnIndex == 10) {
-                                        return DataCell(
-                                          placeholder: false,
-                                          Text(_plansList[rowIndex].voice),
-                                          onTap: () {},
-                                        );
-                                      }
-
-                                      if (columnIndex == 11) {
-                                        return DataCell(
-                                          placeholder: false,
-                                          Text(_plansList[rowIndex].message),
-                                          onTap: () {},
-                                        );
-                                      }
-
-                                      if (columnIndex == 12) {
-                                        return DataCell(
-                                          placeholder: false,
-                                          Text(_plansList[rowIndex].cellData),
-                                          onTap: () {},
-                                        );
-                                      }
-
-                                      if (columnIndex == 13) {
-                                        return DataCell(
-                                          placeholder: false,
-                                          Text(_plansList[rowIndex].videoEtc),
-                                          onTap: () {},
-                                        );
-                                      }
-
-                                      if (columnIndex == 14) {
-                                        return DataCell(
-                                          placeholder: false,
-                                          Text(_plansList[rowIndex].qos),
-                                          onTap: () {},
-                                        );
-                                      }
-
-                                      if (columnIndex == 15) {
-                                        return DataCell(
-                                          const Icon(Icons.edit_outlined, color: MainUi.mainColor),
-                                          onTap: () {
-                                            showCustomDialog(
-                                              width: 800,
-                                              content: ManageUsersPopupContent(
-                                                userId: _plansList[rowIndex].id,
-                                                userName: _plansList[rowIndex].agentCd,
-                                              ),
-                                              context: context,
-                                            );
-                                          },
-                                        );
-                                      }
-
-                                      return DataCell(onTap: () {}, const SizedBox());
+                                          setState(() {});
+                                        },
+                                        label: Text(_columns[index]),
+                                      );
                                     },
+                                  ),
+                                  rows: List.generate(
+                                    _plansList.length,
+                                    (rowIndex) => DataRow(
+                                      // onSelectChanged: (value) {},
+
+                                      cells: List.generate(
+                                        _columns.length,
+                                        (columnIndex) {
+                                          if (columnIndex == 0) {
+                                            return DataCell(
+                                              Text(_plansList[rowIndex].id.toString()),
+                                              onTap: () async {},
+                                            );
+                                          }
+
+                                          if (columnIndex == 1) {
+                                            Color containerColor = Colors.black38;
+                                            if (_plansList[rowIndex].status == 'Y') containerColor = Colors.green;
+                                            if (_plansList[rowIndex].status == 'N') containerColor = Colors.redAccent;
+
+                                            return DataCell(
+                                              Container(
+                                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                                                constraints: const BoxConstraints(minWidth: 80),
+                                                decoration: BoxDecoration(
+                                                  color: containerColor,
+                                                  borderRadius: BorderRadius.circular(30),
+                                                ),
+                                                child: Text(
+                                                  textAlign: TextAlign.center,
+                                                  _plansList[rowIndex].statusNm,
+                                                  style: const TextStyle(color: Colors.white),
+                                                ),
+                                              ),
+                                              onTap: () {},
+                                            );
+                                          }
+
+                                          if (columnIndex == 2) {
+                                            return DataCell(
+                                              Text(_plansList[rowIndex].usimPlanNm),
+                                              onTap: () {},
+                                            );
+                                          }
+
+                                          if (columnIndex == 3) {
+                                            return DataCell(
+                                              Text(_plansList[rowIndex].carrierNm),
+                                              onTap: () {},
+                                            );
+                                          }
+                                          if (columnIndex == 4) {
+                                            return DataCell(
+                                              Text(_plansList[rowIndex].mvnoNm),
+                                              onTap: () {},
+                                            );
+                                          }
+                                          if (columnIndex == 5) {
+                                            return DataCell(
+                                              placeholder: false,
+                                              Text(_plansList[rowIndex].agentNm),
+                                              onTap: () {},
+                                            );
+                                          }
+
+                                          if (columnIndex == 6) {
+                                            return DataCell(
+                                              placeholder: false,
+                                              Text(_plansList[rowIndex].carrierTypeNm),
+                                              onTap: () {},
+                                            );
+                                          }
+
+                                          if (columnIndex == 7) {
+                                            return DataCell(
+                                              placeholder: false,
+                                              Text(_plansList[rowIndex].carrierPlanTypeNm),
+                                              onTap: () {},
+                                            );
+                                          }
+
+                                          if (columnIndex == 8) {
+                                            return DataCell(
+                                              placeholder: false,
+                                              Text(CustomFormat().wonify(_plansList[rowIndex].basicFee)),
+                                              onTap: () {},
+                                            );
+                                          }
+
+                                          if (columnIndex == 9) {
+                                            return DataCell(
+                                              placeholder: false,
+                                              Text(CustomFormat().wonify(_plansList[rowIndex].salesFee)),
+                                              onTap: () {},
+                                            );
+                                          }
+
+                                          if (columnIndex == 10) {
+                                            return DataCell(
+                                              placeholder: false,
+                                              Text(_plansList[rowIndex].voice),
+                                              onTap: () {},
+                                            );
+                                          }
+
+                                          if (columnIndex == 11) {
+                                            return DataCell(
+                                              placeholder: false,
+                                              Text(_plansList[rowIndex].message),
+                                              onTap: () {},
+                                            );
+                                          }
+
+                                          if (columnIndex == 12) {
+                                            return DataCell(
+                                              placeholder: false,
+                                              Text(_plansList[rowIndex].cellData),
+                                              onTap: () {},
+                                            );
+                                          }
+
+                                          if (columnIndex == 13) {
+                                            return DataCell(
+                                              placeholder: false,
+                                              Text(_plansList[rowIndex].videoEtc),
+                                              onTap: () {},
+                                            );
+                                          }
+
+                                          if (columnIndex == 14) {
+                                            return DataCell(
+                                              placeholder: false,
+                                              Text(_plansList[rowIndex].qos),
+                                              onTap: () {},
+                                            );
+                                          }
+
+                                          if (columnIndex == 15) {
+                                            return DataCell(
+                                              const Icon(Icons.edit_outlined, color: MainUi.mainColor),
+                                              onTap: () {
+                                                showCustomDialog(
+                                                  width: 800,
+                                                  content: ManageUsersPopupContent(
+                                                    userId: _plansList[rowIndex].id,
+                                                    userName: _plansList[rowIndex].agentCd,
+                                                  ),
+                                                  context: context,
+                                                );
+                                              },
+                                            );
+                                          }
+
+                                          return DataCell(onTap: () {}, const SizedBox());
+                                        },
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
@@ -471,8 +484,10 @@ class _ManagePlansState extends State<ManagePlans> {
       _plansInfo = result;
 
       _totalCount = result.totalNum;
+      print(_totalCount);
 
       _dataLoading = false;
+
       setState(() {});
     } catch (e) {
       if (mounted) {
