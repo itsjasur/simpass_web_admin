@@ -13,17 +13,17 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-class ManageUsersPopupContent extends StatefulWidget {
+class UpdateAddUserContent extends StatefulWidget {
   final String? userName;
   final int? userId;
   final bool isNew;
-  const ManageUsersPopupContent({super.key, this.userName, this.userId, this.isNew = false});
+  const UpdateAddUserContent({super.key, this.userName, this.userId, this.isNew = false});
 
   @override
-  State<ManageUsersPopupContent> createState() => _ManageUsersPopupContentState();
+  State<UpdateAddUserContent> createState() => _UpdateAddUserContentState();
 }
 
-class _ManageUsersPopupContentState extends State<ManageUsersPopupContent> {
+class _UpdateAddUserContentState extends State<UpdateAddUserContent> {
   final TextEditingController _userNameController = TextEditingController();
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();

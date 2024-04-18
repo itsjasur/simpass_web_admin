@@ -7,7 +7,7 @@ import 'package:admin_simpass/presentation/components/custom_alert_dialog.dart';
 import 'package:admin_simpass/presentation/components/custom_text_input.dart';
 import 'package:admin_simpass/presentation/components/header.dart';
 import 'package:admin_simpass/presentation/components/manage_plans_filter_content.dart';
-import 'package:admin_simpass/presentation/components/manage_users_popup_contexnt.dart';
+import 'package:admin_simpass/presentation/components/update_add_user_content.dart';
 import 'package:admin_simpass/presentation/components/pagination.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -198,7 +198,7 @@ class _ManagePlansState extends State<ManagePlans> {
                             onPressed: () {
                               showCustomDialog(
                                 width: 800,
-                                content: const ManageUsersPopupContent(
+                                content: const UpdateAddUserContent(
                                   isNew: true,
                                 ),
                                 context: context,
@@ -435,7 +435,7 @@ class _ManagePlansState extends State<ManagePlans> {
                                               onTap: () {
                                                 showCustomDialog(
                                                   width: 800,
-                                                  content: ManageUsersPopupContent(
+                                                  content: UpdateAddUserContent(
                                                     userId: _plansList[rowIndex].id,
                                                     userName: _plansList[rowIndex].agentCd,
                                                   ),
