@@ -162,13 +162,12 @@ class APIService {
     }
   }
 
-  Future<void> memberAddOrUpdate({required BuildContext context, required MemberAddUpdateModel requestModel, bool isNewMember = false}) async {
+  Future<void> memberAddOrUpdate({required BuildContext context, required MemberAddUpdateModel requestModel, required bool isNew}) async {
     try {
       String? accessToken = await getAccessToken();
-
       headers['Authorization'] = 'Bearer $accessToken';
 
-      Uri url = isNewMember ? _urlMaker('admin/register') : _urlMaker('admin/memberUpdate');
+      Uri url = isNew ? _urlMaker('admin/register') : _urlMaker('admin/memberUpdate');
       var body = json.encode(requestModel.toJson());
       var response = await http.post(url, headers: headers, body: body);
 
@@ -189,7 +188,7 @@ class APIService {
     }
   }
 
-  Future<ManagePlansModel> fetchPlansInfo({required BuildContext context, required ManagePlansRequestModel requestModel}) async {
+  Future<ManagePlansModel> fetchPlansInfo({required BuildContext context, required ManagePlanSearchModel requestModel}) async {
     try {
       String? accessToken = await getAccessToken();
 
@@ -210,6 +209,28 @@ class APIService {
       }
     } catch (e) {
       rethrow;
+    }
+  }
+
+  Future<void> updateOrAddPlan({required BuildContext context, required PlanAddUpdateModel requestModel}) async {
+    String? accessToken = await getAccessToken();
+    headers['Authorization'] = 'Bearer $accessToken';
+
+    Uri url = _urlMaker('agent/plan');
+    var body = json.encode(requestModel.toJson());
+    var response = await http.post(url, headers: headers, body: body);
+
+    response = await RequestHelper().post(context.mounted ? context : null, response, url, headers, body);
+
+    if (response.statusCode == 200) {
+      var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(decodedResponse['message'])),
+        );
+      }
+    } else {
+      throw "Update data incorrect";
     }
   }
 }

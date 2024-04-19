@@ -6,8 +6,9 @@ import 'package:go_router/go_router.dart';
 
 class ManagePlansFilterContent extends StatefulWidget {
   final ManagePlansModel info;
-  final ManagePlansRequestModel? requestModel;
-  final Function(ManagePlansRequestModel)? onApply;
+  final ManagePlanSearchModel? requestModel;
+
+  final Function(ManagePlanSearchModel)? onApply;
   const ManagePlansFilterContent({super.key, this.onApply, this.requestModel, required this.info});
 
   @override
@@ -73,7 +74,7 @@ class _ManagePlansFilterContentState extends State<ManagePlansFilterContent> {
     });
 
     if (widget.requestModel != null) {
-      ManagePlansRequestModel model = widget.requestModel!;
+      ManagePlanSearchModel model = widget.requestModel!;
       _selectedCarrierCode = model.carrierCd;
       _selectedMvnoCode = model.mvnoCd;
       _selectedAgentCode = model.agentCd;
@@ -246,7 +247,8 @@ class _ManagePlansFilterContentState extends State<ManagePlansFilterContent> {
               spacing: 15,
               runSpacing: 15,
               children: [
-                SizedBox(
+                Container(
+                  constraints: const BoxConstraints(minWidth: 100),
                   height: 47,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -258,14 +260,45 @@ class _ManagePlansFilterContentState extends State<ManagePlansFilterContent> {
                     child: const Text("취소"),
                   ),
                 ),
-                SizedBox(
+                Container(
+                  constraints: const BoxConstraints(minWidth: 100),
+                  height: 47,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blueGrey,
+                    ),
+                    onPressed: () {
+                      // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('pop up')));
+                      if (widget.onApply != null) {
+                        widget.onApply!(
+                          ManagePlanSearchModel(
+                            usimPlanNm: '',
+                            carrierCd: "",
+                            mvnoCd: "",
+                            agentCd: "",
+                            carrierPlanType: "",
+                            carrierType: "",
+                            status: "",
+                            page: 1,
+                            rowLimit: 10,
+                          ),
+                        );
+                      }
+
+                      context.pop();
+                    },
+                    child: const Text("초기화"),
+                  ),
+                ),
+                Container(
+                  constraints: const BoxConstraints(minWidth: 100),
                   height: 47,
                   child: ElevatedButton(
                     onPressed: () {
                       // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('pop up')));
                       if (widget.onApply != null) {
                         widget.onApply!(
-                          ManagePlansRequestModel(
+                          ManagePlanSearchModel(
                             usimPlanNm: '',
                             carrierCd: _selectedCarrierCode,
                             mvnoCd: _selectedMvnoCode,

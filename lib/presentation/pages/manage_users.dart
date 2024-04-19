@@ -73,7 +73,6 @@ class _ManageUsersState extends State<ManageUsers> {
                             style: ElevatedButton.styleFrom(),
                             onPressed: () {
                               showCustomDialog(
-                                width: 800,
                                 content: const UpdateAddUserContent(
                                   isNew: true,
                                 ),
@@ -234,7 +233,6 @@ class _ManageUsersState extends State<ManageUsers> {
                                             const Icon(Icons.edit_outlined, color: MainUi.mainColor),
                                             onTap: () {
                                               showCustomDialog(
-                                                width: 800,
                                                 content: UpdateAddUserContent(
                                                   userId: _usersList[rowIndex].id,
                                                   userName: _usersList[rowIndex].username,

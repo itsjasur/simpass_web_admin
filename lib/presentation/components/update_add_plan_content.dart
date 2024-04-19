@@ -5,23 +5,21 @@ import 'package:admin_simpass/globals/validators.dart';
 import 'package:admin_simpass/presentation/components/button_circular_indicator.dart';
 import 'package:admin_simpass/presentation/components/custom_menu_drop_down.dart';
 import 'package:admin_simpass/presentation/components/custom_text_input.dart';
-import 'package:flutter/cupertino.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
-class AddNewPlanContent extends StatefulWidget {
+class AddOrUpdatePlanContent extends StatefulWidget {
   final ManagePlansModel info;
-  const AddNewPlanContent({super.key, required this.info});
+  final PlanModel? selectedPlan;
+  const AddOrUpdatePlanContent({super.key, required this.info, this.selectedPlan});
 
   @override
-  State<AddNewPlanContent> createState() => _AddNewPlanContentState();
+  State<AddOrUpdatePlanContent> createState() => _AddOrUpdatePlanContentState();
 }
 
-class _AddNewPlanContentState extends State<AddNewPlanContent> {
+class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
   String _selectedCarrierCode = "";
   String _selectedMvnoCode = "";
   String _selectedAgentCode = "";
@@ -100,6 +98,29 @@ class _AddNewPlanContentState extends State<AddNewPlanContent> {
     _selectedStatusCodeCntr.addListener(() {
       if (_selectedStatusCodeCntr.text.isEmpty) _selectedStatusCode = "";
     });
+
+    if (widget.selectedPlan != null) {
+      PlanModel model = widget.selectedPlan!;
+
+      _selectedCarrierCode = model.carrierCd;
+      _selectedMvnoCode = model.mvnoCd;
+      _selectedAgentCode = model.agentCd;
+      _selectedPlanTypeCode = model.carrierType;
+      _selectedSubscriberTargetCode = model.carrierPlanType;
+      _selectedStatusCode = model.status;
+
+      print(model.status);
+
+      _planNameController.text = model.usimPlanNm;
+      _baseAmountController.text = CustomFormat().commafy(model.basicFee);
+      _saleAmountController.text = CustomFormat().commafy(model.salesFee).toString();
+      _smsController.text = model.message ?? "";
+      _dataController.text = model.cellData ?? "";
+      _voiceController.text = model.voice ?? "";
+      _videoEtcController.text = model.videoEtc ?? "";
+      _qosController.text = model.qos ?? "";
+      _priorityController.text = CustomFormat().commafy(model.priority);
+    }
   }
 
   @override
@@ -137,9 +158,9 @@ class _AddNewPlanContentState extends State<AddNewPlanContent> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Gap(20),
-              const Text(
-                "신규 요금제 등록",
-                style: TextStyle(
+              Text(
+                widget.selectedPlan == null ? "신규 요금제 등록" : "요금제 업테이트",
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
                 ),
@@ -166,7 +187,6 @@ class _AddNewPlanContentState extends State<AddNewPlanContent> {
                         errorText: _selectedCarrierCodeErr,
                         items: _carriers,
                         onSelected: (selectedItem) {
-                          print(selectedItem);
                           _selectedCarrierCode = selectedItem;
                           _selectedCarrierCodeErr = null;
 
@@ -298,7 +318,7 @@ class _AddNewPlanContentState extends State<AddNewPlanContent> {
                           _selectedStatusCodeErr = null;
                           setState(() {});
                         },
-                        items: _subscriberTarget,
+                        items: _statuses,
                         width: constraints.maxWidth,
                         selectedItem: _selectedStatusCode,
                       ),
@@ -389,6 +409,10 @@ class _AddNewPlanContentState extends State<AddNewPlanContent> {
                     child: CustomTextInput(
                       controller: _priorityController,
                       title: '우선순위',
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        CurrencyInputFormatter(),
+                      ],
                     ),
                   ),
                 ],
@@ -403,7 +427,6 @@ class _AddNewPlanContentState extends State<AddNewPlanContent> {
                   children: [
                     Container(
                       height: 47,
-                      width: 100,
                       constraints: const BoxConstraints(minWidth: 100),
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
@@ -463,5 +486,10 @@ class _AddNewPlanContentState extends State<AddNewPlanContent> {
     ];
 
     return errs.every((err) => err == null);
+  }
+
+  void _updateOrAddPlan() {
+//start here
+    // updateOrAddPlan
   }
 }

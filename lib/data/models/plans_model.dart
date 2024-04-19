@@ -71,110 +71,113 @@ class CodeNamePair {
 }
 
 class PlanModel {
-  int num;
-  int id;
-  String usimPlanNm;
-  String carrierCd;
-  String carrierNm;
-  String mvnoCd;
-  String mvnoNm;
-  String agentCd;
-  String agentNm;
-  double basicFee;
-  double salesFee;
-  double discountFee;
-  String voice;
-  String message;
-  String cellData;
-  String videoEtc;
-  String qos;
-  String carrierPlanType;
-  String carrierPlanTypeNm;
-  String carrierType;
-  String carrierTypeNm;
-  double usimFee;
-  double planFee;
-  String fromDate;
-  String expireDate;
-  String status;
-  String statusNm;
-  int regBy;
-  String regTime;
-  int updateBy;
-  String updateTime;
+  int? num;
+  final int id;
+  final String usimPlanNm;
+  final String carrierCd;
+  final String carrierNm;
+  final String mvnoCd;
+  final String mvnoNm;
+  final String agentCd;
+  final String agentNm;
+  final double basicFee;
+  final double salesFee;
+  double? discountFee;
+  String? voice;
+  String? message;
+  String? cellData;
+  String? videoEtc;
+  String? qos;
+  final String carrierPlanType;
+  String? carrierPlanTypeNm;
+  final String carrierType;
+  String? carrierTypeNm;
+  double? usimFee;
+  double? planFee;
+  String? fromDate;
+  String? expireDate;
+  final String status;
+  String? statusNm;
+  int? regBy;
+  String? regTime;
+  int? updateBy;
+  String? updateTime;
+  int? priority;
 
   PlanModel({
-    this.num = 0,
-    this.id = 0,
-    this.usimPlanNm = '',
-    this.carrierCd = '',
-    this.carrierNm = '',
-    this.mvnoCd = '',
-    this.mvnoNm = '',
-    this.agentCd = '',
-    this.agentNm = '',
-    this.basicFee = 0,
-    this.salesFee = 0,
-    this.discountFee = 0,
-    this.voice = '',
-    this.message = '',
-    this.cellData = '',
-    this.videoEtc = '',
-    this.qos = '',
-    this.carrierPlanType = '',
-    this.carrierPlanTypeNm = '',
-    this.carrierType = '',
-    this.carrierTypeNm = '',
-    this.usimFee = 0,
-    this.planFee = 0,
-    this.fromDate = '',
-    this.expireDate = '',
-    this.status = '',
-    this.statusNm = '',
-    this.regBy = 0,
-    this.regTime = '',
-    this.updateBy = 0,
-    this.updateTime = '',
+    this.num,
+    required this.id,
+    required this.usimPlanNm,
+    required this.carrierCd,
+    required this.carrierNm,
+    required this.mvnoCd,
+    required this.mvnoNm,
+    required this.agentCd,
+    required this.agentNm,
+    required this.basicFee,
+    required this.salesFee,
+    this.discountFee,
+    this.voice,
+    this.message,
+    this.cellData,
+    this.videoEtc,
+    this.qos,
+    required this.carrierPlanType,
+    this.carrierPlanTypeNm,
+    required this.carrierType,
+    this.carrierTypeNm,
+    this.usimFee,
+    this.planFee,
+    this.fromDate,
+    this.expireDate,
+    required this.status,
+    this.statusNm,
+    this.regBy,
+    this.regTime,
+    this.updateBy,
+    this.updateTime,
+    this.priority,
   });
 
   factory PlanModel.fromJson(Map<String, dynamic> json) {
     return PlanModel(
-      num: json['num'] ?? 0,
-      id: json['id'] ?? 0,
-      usimPlanNm: json['usim_plan_nm'] ?? '',
-      carrierCd: json['carrier_cd'] ?? '',
-      carrierNm: json['carrier_nm'] ?? '',
-      mvnoCd: json['mvno_cd'] ?? '',
-      mvnoNm: json['mvno_nm'] ?? '',
-      agentCd: json['agent_cd'] ?? '',
-      agentNm: json['agent_nm'] ?? '',
-      basicFee: json['basic_fee'] ?? 0,
-      salesFee: json['sales_fee'] ?? 0,
-      discountFee: json['discount_fee'] ?? 0,
-      voice: json['voice'] ?? '',
-      message: json['message'] ?? '',
-      cellData: json['cell_data'] ?? '',
-      videoEtc: json['video_etc'] ?? '',
-      qos: json['qos'] ?? '',
-      carrierPlanType: json['carrier_plan_type'] ?? '',
-      carrierPlanTypeNm: json['carrier_plan_type_nm'] ?? '',
-      carrierType: json['carrier_type'] ?? '',
-      carrierTypeNm: json['carrier_type_nm'] ?? '',
-      usimFee: json['usim_fee'] ?? 0,
-      planFee: json['plan_fee'] ?? 0,
-      fromDate: json['from_date'] ?? '',
-      expireDate: json['expire_date'] ?? '',
-      status: json['status'] ?? '',
-      statusNm: json['status_nm'] ?? '',
-      regBy: json['reg_by'] ?? 0,
-      regTime: json['reg_time'] ?? '',
+      num: json['num'],
+      id: json['id'],
+      usimPlanNm: json['usim_plan_nm'],
+      carrierCd: json['carrier_cd'],
+      carrierNm: json['carrier_nm'],
+      mvnoCd: json['mvno_cd'],
+      mvnoNm: json['mvno_nm'],
+      agentCd: json['agent_cd'],
+      agentNm: json['agent_nm'],
+      basicFee: json['basic_fee'],
+      salesFee: json['sales_fee'],
+      discountFee: json['discount_fee'],
+      voice: json['voice'],
+      message: json['message'],
+      cellData: json['cell_data'],
+      videoEtc: json['video_etc'],
+      qos: json['qos'],
+      carrierPlanType: json['carrier_plan_type'],
+      carrierPlanTypeNm: json['carrier_plan_type_nm'],
+      carrierType: json['carrier_type'],
+      carrierTypeNm: json['carrier_type_nm'],
+      usimFee: json['usim_fee'],
+      planFee: json['plan_fee'],
+      fromDate: json['from_date'],
+      expireDate: json['expire_date'],
+      status: json['status'],
+      statusNm: json['status_nm'],
+      regBy: json['reg_by'],
+      regTime: json['reg_time'],
       updateBy: json['update_by'] ?? 0,
-      updateTime: json['update_time'] ?? '',
+      updateTime: json['update_time'],
+      priority: json['priority'],
     );
   }
 }
 
-class ManagePlansRequestModel {
+class ManagePlanSearchModel {
   String usimPlanNm; // 요금제명
   String carrierCd; // 통신사
   String mvnoCd; // 브랜드
@@ -185,7 +188,7 @@ class ManagePlansRequestModel {
   int page;
   int rowLimit;
 
-  ManagePlansRequestModel({
+  ManagePlanSearchModel({
     this.usimPlanNm = '',
     this.carrierCd = '',
     this.mvnoCd = '',
@@ -211,7 +214,7 @@ class ManagePlansRequestModel {
     };
   }
 
-  ManagePlansRequestModel copyWith({
+  ManagePlanSearchModel copyWith({
     String? usimPlanNm,
     String? carrierCd,
     String? mvnoCd,
@@ -222,7 +225,7 @@ class ManagePlansRequestModel {
     int? page,
     int? rowLimit,
   }) {
-    return ManagePlansRequestModel(
+    return ManagePlanSearchModel(
       usimPlanNm: usimPlanNm ?? this.usimPlanNm,
       carrierCd: carrierCd ?? this.carrierCd,
       mvnoCd: mvnoCd ?? this.mvnoCd,
@@ -249,9 +252,95 @@ class ManagePlansRequestModel {
       carrierType,
       status,
     ];
-
     int count = fields.fold(0, (int sum, String field) => sum + (field.isNotEmpty ? 1 : 0));
-
     return count == 0 ? null : count;
+  }
+}
+
+// {
+//     "id": 235, //update 만 수정대상 ID
+//     "usim_plan_nm": "슬림유심1GB50분", //not null
+//     "carrier_cd": "LG", //not null
+//     "mvno_cd": "HVS", // not null
+//     "agent_cd": "SP", //not null
+//     "basic_fee": 10890,  //not null
+//     "sales_fee": 4950,  // not null
+//     "discount_fee": 5940, //not null
+//     "voice": "50분",
+//     "message": "0건",
+//     "cell_data": "1GB",
+//     "video_etc": "",
+//     "qos": "-",
+//     "carrier_plan_type": "P", //not nul
+//     "carrier_type": "PO", // not null
+//     "usim_fee": 0,
+//     "plan_fee": 0,
+//     "priority": 3000,
+//     "status": "Y"
+// }
+
+class PlanAddUpdateModel {
+  final int? id;
+  final String usimPlanNm;
+  final String carrierCd;
+  final String mvnoCd;
+  final String agentCd;
+  final int basicFee;
+  final int salesFee;
+
+  final String? voice;
+  final String? message;
+  final String? cellData;
+  final String? videoEtc;
+  final String? qos;
+  final String carrierPlanType;
+  final String carrierType;
+  final int? usimFee;
+  final int? planFee;
+  final int? priority;
+  final String? status;
+
+  PlanAddUpdateModel({
+    required this.id,
+    required this.usimPlanNm,
+    required this.carrierCd,
+    required this.mvnoCd,
+    required this.agentCd,
+    required this.basicFee,
+    required this.salesFee,
+    required this.voice,
+    required this.message,
+    required this.cellData,
+    this.videoEtc,
+    this.qos,
+    required this.carrierPlanType,
+    required this.carrierType,
+    this.usimFee,
+    this.planFee,
+    required this.priority,
+    required this.status,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'usim_plan_nm': usimPlanNm,
+      'carrier_cd': carrierCd,
+      'mvno_cd': mvnoCd,
+      'agent_cd': agentCd,
+      'basic_fee': basicFee,
+      'sales_fee': salesFee,
+      'voice': voice,
+      'message': message,
+      'cell_data': cellData,
+      'video_etc': videoEtc,
+      'qos': qos,
+      'carrier_plan_type': carrierPlanType,
+      'carrier_type': carrierType,
+      'usim_fee': usimFee,
+      'plan_fee': planFee,
+      'priority': priority,
+      'status': status,
+    };
   }
 }

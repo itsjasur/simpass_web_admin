@@ -3,15 +3,13 @@ import 'package:admin_simpass/data/models/plans_model.dart';
 import 'package:admin_simpass/globals/constants.dart';
 import 'package:admin_simpass/globals/formatters.dart';
 import 'package:admin_simpass/globals/main_ui.dart';
-import 'package:admin_simpass/presentation/components/add_new_plan_content.dart';
+import 'package:admin_simpass/presentation/components/update_add_plan_content.dart';
 import 'package:admin_simpass/presentation/components/custom_alert_dialog.dart';
 import 'package:admin_simpass/presentation/components/custom_text_input.dart';
 import 'package:admin_simpass/presentation/components/header.dart';
 import 'package:admin_simpass/presentation/components/plans_filter_content.dart';
-import 'package:admin_simpass/presentation/components/update_add_user_content.dart';
 import 'package:admin_simpass/presentation/components/pagination.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 
 class ManagePlans extends StatefulWidget {
@@ -31,7 +29,7 @@ class _ManagePlansState extends State<ManagePlans> {
   final ScrollController _horizontalScrolCntr = ScrollController();
   late ManagePlansModel _plansInfo;
 
-  ManagePlansRequestModel _requestModel = ManagePlansRequestModel(
+  ManagePlanSearchModel _requestModel = ManagePlanSearchModel(
     agentCd: '',
     carrierCd: '',
     carrierPlanType: '',
@@ -83,7 +81,7 @@ class _ManagePlansState extends State<ManagePlans> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // AddNewPlanContent(info: _plansInfo),
+                        // AddOrUpdatePlanContent(info: _plansInfo),
                         const Gap(20),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -181,8 +179,9 @@ class _ManagePlansState extends State<ManagePlans> {
                             style: ElevatedButton.styleFrom(),
                             onPressed: () {
                               showCustomDialog(
-                                // width: 800,
-                                content: AddNewPlanContent(info: _plansInfo),
+                                content: AddOrUpdatePlanContent(
+                                  info: _plansInfo,
+                                ),
                                 context: context,
                               );
                             },
@@ -263,14 +262,14 @@ class _ManagePlansState extends State<ManagePlans> {
                                           if (columnIndex == 3) mysort((model) => model.carrierNm.toLowerCase());
                                           if (columnIndex == 4) mysort((model) => model.mvnoNm.toLowerCase());
                                           if (columnIndex == 5) mysort((model) => model.agentNm.toLowerCase());
-                                          if (columnIndex == 6) mysort((model) => model.carrierTypeNm.toLowerCase());
-                                          if (columnIndex == 7) mysort((model) => model.carrierPlanTypeNm.toLowerCase());
+                                          if (columnIndex == 6) mysort((model) => model.carrierTypeNm ?? "".toLowerCase());
+                                          if (columnIndex == 7) mysort((model) => model.carrierPlanTypeNm ?? "".toLowerCase());
                                           if (columnIndex == 8) mysort((model) => model.basicFee);
                                           if (columnIndex == 9) mysort((model) => model.salesFee);
-                                          if (columnIndex == 10) mysort((model) => model.message.toLowerCase());
-                                          if (columnIndex == 12) mysort((model) => model.cellData.toLowerCase());
-                                          if (columnIndex == 13) mysort((model) => model.videoEtc.toLowerCase());
-                                          if (columnIndex == 14) mysort((model) => model.qos.toLowerCase());
+                                          if (columnIndex == 10) mysort((model) => model.message ?? "".toLowerCase());
+                                          if (columnIndex == 12) mysort((model) => model.cellData ?? "".toLowerCase());
+                                          if (columnIndex == 13) mysort((model) => model.videoEtc ?? "".toLowerCase());
+                                          if (columnIndex == 14) mysort((model) => model.qos ?? "".toLowerCase());
 
                                           setState(() {});
                                         },
@@ -308,7 +307,7 @@ class _ManagePlansState extends State<ManagePlans> {
                                                 ),
                                                 child: Text(
                                                   textAlign: TextAlign.center,
-                                                  _plansList[rowIndex].statusNm,
+                                                  _plansList[rowIndex].statusNm ?? "",
                                                   style: const TextStyle(color: Colors.white),
                                                 ),
                                               ),
@@ -346,7 +345,7 @@ class _ManagePlansState extends State<ManagePlans> {
                                           if (columnIndex == 6) {
                                             return DataCell(
                                               placeholder: false,
-                                              Text(_plansList[rowIndex].carrierTypeNm),
+                                              Text(_plansList[rowIndex].carrierTypeNm ?? "-"),
                                               onTap: () {},
                                             );
                                           }
@@ -354,7 +353,7 @@ class _ManagePlansState extends State<ManagePlans> {
                                           if (columnIndex == 7) {
                                             return DataCell(
                                               placeholder: false,
-                                              Text(_plansList[rowIndex].carrierPlanTypeNm),
+                                              Text(_plansList[rowIndex].carrierPlanTypeNm ?? "-"),
                                               onTap: () {},
                                             );
                                           }
@@ -378,7 +377,7 @@ class _ManagePlansState extends State<ManagePlans> {
                                           if (columnIndex == 10) {
                                             return DataCell(
                                               placeholder: false,
-                                              Text(_plansList[rowIndex].voice),
+                                              Text(_plansList[rowIndex].voice ?? "-"),
                                               onTap: () {},
                                             );
                                           }
@@ -386,7 +385,7 @@ class _ManagePlansState extends State<ManagePlans> {
                                           if (columnIndex == 11) {
                                             return DataCell(
                                               placeholder: false,
-                                              Text(_plansList[rowIndex].message),
+                                              Text(_plansList[rowIndex].message ?? "-"),
                                               onTap: () {},
                                             );
                                           }
@@ -394,7 +393,7 @@ class _ManagePlansState extends State<ManagePlans> {
                                           if (columnIndex == 12) {
                                             return DataCell(
                                               placeholder: false,
-                                              Text(_plansList[rowIndex].cellData),
+                                              Text(_plansList[rowIndex].cellData ?? "-"),
                                               onTap: () {},
                                             );
                                           }
@@ -402,7 +401,7 @@ class _ManagePlansState extends State<ManagePlans> {
                                           if (columnIndex == 13) {
                                             return DataCell(
                                               placeholder: false,
-                                              Text(_plansList[rowIndex].videoEtc),
+                                              Text(_plansList[rowIndex].videoEtc ?? "-"),
                                               onTap: () {},
                                             );
                                           }
@@ -410,7 +409,7 @@ class _ManagePlansState extends State<ManagePlans> {
                                           if (columnIndex == 14) {
                                             return DataCell(
                                               placeholder: false,
-                                              Text(_plansList[rowIndex].qos),
+                                              Text(_plansList[rowIndex].qos ?? "-"),
                                               onTap: () {},
                                             );
                                           }
@@ -419,11 +418,11 @@ class _ManagePlansState extends State<ManagePlans> {
                                             return DataCell(
                                               const Icon(Icons.edit_outlined, color: MainUi.mainColor),
                                               onTap: () {
+                                                //updating plan
                                                 showCustomDialog(
-                                                  width: 800,
-                                                  content: UpdateAddUserContent(
-                                                    userId: _plansList[rowIndex].id,
-                                                    userName: _plansList[rowIndex].agentCd,
+                                                  content: AddOrUpdatePlanContent(
+                                                    info: _plansInfo,
+                                                    selectedPlan: _plansList[rowIndex],
                                                   ),
                                                   context: context,
                                                 );

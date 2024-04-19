@@ -50,6 +50,16 @@ class CustomFormat {
 
     return ('₩ ${stringAmount.toString()}');
   }
+
+  String commafy(num? amount) {
+    if (amount == null || amount < 0) {
+      return "";
+    }
+
+    String stringAmount = NumberFormat("#,###").format(amount).toString();
+
+    return (stringAmount.toString());
+  }
 }
 
 class PhoneNumberFormatter extends TextInputFormatter {
