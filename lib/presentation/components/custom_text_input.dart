@@ -12,6 +12,7 @@ class CustomTextInput extends StatelessWidget {
   final String? initialValue;
   final bool readOnly;
   final int? maxlength;
+  final TextInputType? keyboardType;
   final List<TextInputFormatter>? inputFormatters;
 
   const CustomTextInput({
@@ -26,6 +27,7 @@ class CustomTextInput extends StatelessWidget {
     this.inputFormatters,
     this.maxlength,
     this.initialValue,
+    this.keyboardType,
   });
 
   @override
@@ -36,6 +38,7 @@ class CustomTextInput extends StatelessWidget {
         color: Colors.black87,
       ),
       controller: controller,
+      keyboardType: keyboardType,
       validator: validator,
       inputFormatters: inputFormatters,
       enabled: enabled,

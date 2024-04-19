@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
@@ -77,6 +79,26 @@ class PhoneNumberFormatter extends TextInputFormatter {
     return newValue.copyWith(
       text: buffer.toString(),
       selection: TextSelection.collapsed(offset: newCursorPosition),
+    );
+  }
+}
+
+class CurrencyInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    if (newValue.selection.baseOffset == 0) {
+      return newValue;
+    }
+
+    String text = newValue.text.replaceAll(',', '');
+
+    double doubleValue = double.parse(text);
+
+    String formattedText = NumberFormat("#,###").format(doubleValue);
+
+    return newValue.copyWith(
+      text: formattedText,
+      selection: TextSelection.collapsed(offset: formattedText.length),
     );
   }
 }

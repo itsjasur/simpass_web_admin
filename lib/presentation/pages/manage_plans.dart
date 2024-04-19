@@ -3,13 +3,13 @@ import 'package:admin_simpass/data/models/plans_model.dart';
 import 'package:admin_simpass/globals/constants.dart';
 import 'package:admin_simpass/globals/formatters.dart';
 import 'package:admin_simpass/globals/main_ui.dart';
+import 'package:admin_simpass/presentation/components/add_new_plan_content.dart';
 import 'package:admin_simpass/presentation/components/custom_alert_dialog.dart';
 import 'package:admin_simpass/presentation/components/custom_text_input.dart';
 import 'package:admin_simpass/presentation/components/header.dart';
-import 'package:admin_simpass/presentation/components/manage_plans_filter_content.dart';
+import 'package:admin_simpass/presentation/components/plans_filter_content.dart';
 import 'package:admin_simpass/presentation/components/update_add_user_content.dart';
 import 'package:admin_simpass/presentation/components/pagination.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
@@ -23,18 +23,12 @@ class ManagePlans extends StatefulWidget {
 
 class _ManagePlansState extends State<ManagePlans> {
   int _totalCount = 0;
-
   int _currentPage = 1;
   int _perPage = perPageCounts[0];
-
   bool _dataLoading = true;
-
   final List _columns = mangePlansColumns;
-
   final List<PlanModel> _plansList = [];
-
   final ScrollController _horizontalScrolCntr = ScrollController();
-
   late ManagePlansModel _plansInfo;
 
   ManagePlansRequestModel _requestModel = ManagePlansRequestModel(
@@ -74,7 +68,7 @@ class _ManagePlansState extends State<ManagePlans> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Header(title: "사용자 관리"),
+        const Header(title: "요금제 관리"),
         _dataLoading
             ? const Expanded(
                 child: Center(
@@ -89,16 +83,7 @@ class _ManagePlansState extends State<ManagePlans> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // ManagePlansFilterContent(
-                        //   agents: _agents,
-                        //   carriers: _carriers,
-                        //   mvnos: _mvnos,
-                        //   planTypes: _planTypes,
-                        //   statuses: _statuses,
-                        //   subscriberTarget: _subscriberTarget,
-                        //   onApply: _fetchPlansData,
-                        // ),
-
+                        // AddNewPlanContent(info: _plansInfo),
                         const Gap(20),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -162,7 +147,8 @@ class _ManagePlansState extends State<ManagePlans> {
                                   title: '요금제명',
                                 ),
                               ),
-                              SizedBox(
+                              Container(
+                                constraints: const BoxConstraints(minWidth: 120),
                                 height: 47,
                                 child: ElevatedButton(
                                   onPressed: () {
@@ -185,28 +171,26 @@ class _ManagePlansState extends State<ManagePlans> {
                             ],
                           ),
                         ),
+                        const Gap(10),
 
                         /// ADD BUTTON
                         Container(
+                          height: 47,
                           margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                          constraints: const BoxConstraints(
-                            minWidth: 100,
-                            minHeight: 40,
-                          ),
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(),
                             onPressed: () {
                               showCustomDialog(
-                                width: 800,
-                                content: const UpdateAddUserContent(
-                                  isNew: true,
-                                ),
+                                // width: 800,
+                                content: AddNewPlanContent(info: _plansInfo),
                                 context: context,
                               );
                             },
                             child: const Text("신규등록 +"),
                           ),
                         ),
+                        const Gap(10),
+
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: Pagination(
@@ -216,6 +200,8 @@ class _ManagePlansState extends State<ManagePlans> {
                                 _currentPage = currentPage;
                                 _perPage = perPage;
                                 _plansList.clear();
+
+                                setState(() {});
                                 await _fetchPlansData();
                               }
                             },

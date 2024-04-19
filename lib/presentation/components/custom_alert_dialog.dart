@@ -21,13 +21,11 @@ Future<void> showCustomDialog({
             insetPadding: const EdgeInsets.symmetric(horizontal: 10),
             surfaceTintColor: Colors.white,
             backgroundColor: Colors.white,
+            // contentPadding: EdgeInsets.all(10),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5), // Adjust the radius here
             ),
-            content: SizedBox(
-              width: 600,
-              child: content,
-            ),
+            content: content,
           ),
           const IgnorePointer(
             ignoring: true,

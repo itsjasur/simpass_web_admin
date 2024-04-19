@@ -66,11 +66,9 @@ class _ManageUsersState extends State<ManageUsers> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
+                          height: 47,
                           margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                          constraints: const BoxConstraints(
-                            minWidth: 100,
-                            minHeight: 40,
-                          ),
+                          constraints: const BoxConstraints(minWidth: 100),
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(),
                             onPressed: () {
@@ -94,6 +92,7 @@ class _ManageUsersState extends State<ManageUsers> {
                                 _currentPage = currentPage;
                                 _perPage = perPage;
                                 _usersList.clear();
+                                setState(() {});
                                 await _fetchUsers();
                               }
                             },
@@ -270,8 +269,6 @@ class _ManageUsersState extends State<ManageUsers> {
     // _usersList.addAll(newList);
     // setState(() {});
 
-    await Future.delayed(const Duration(seconds: 1));
-
     if (_currentPage == 1) _usersList.clear();
 
     try {
@@ -287,6 +284,7 @@ class _ManageUsersState extends State<ManageUsers> {
         _usersList.addAll(newList);
       }
 
+      await Future.delayed(const Duration(seconds: 1));
       _dataLoading = false;
       setState(() {});
     } catch (e) {

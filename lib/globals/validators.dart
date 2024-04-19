@@ -100,4 +100,14 @@ class InputValidator {
     }
     return null;
   }
+
+  String? validateForNoneEmpty(String? value, String? name) {
+    value = value?.replaceAll(' ', '');
+
+    if (value == null || value.isEmpty) {
+      return '$name 입력하세요.';
+    }
+
+    return null;
+  }
 }
