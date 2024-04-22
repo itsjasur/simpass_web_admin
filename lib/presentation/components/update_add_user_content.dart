@@ -419,9 +419,6 @@ class _UpdateAddUserContentState extends State<UpdateAddUserContent> {
           roles: _selectedRoles.toList(),
         ),
       );
-
-      await Future.delayed(const Duration(seconds: 1));
-      if (mounted) context.pop();
     }
 
     _dataUpdating = false;

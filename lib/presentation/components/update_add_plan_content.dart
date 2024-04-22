@@ -1,3 +1,4 @@
+import 'package:admin_simpass/data/api/api_service.dart';
 import 'package:admin_simpass/data/models/plans_model.dart';
 import 'package:admin_simpass/globals/constants.dart';
 import 'package:admin_simpass/globals/formatters.dart';
@@ -13,7 +14,8 @@ import 'package:go_router/go_router.dart';
 class AddOrUpdatePlanContent extends StatefulWidget {
   final ManagePlansModel info;
   final PlanModel? selectedPlan;
-  const AddOrUpdatePlanContent({super.key, required this.info, this.selectedPlan});
+  final Function() callback;
+  const AddOrUpdatePlanContent({super.key, required this.info, this.selectedPlan, required this.callback});
 
   @override
   State<AddOrUpdatePlanContent> createState() => _AddOrUpdatePlanContentState();
@@ -109,7 +111,7 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
       _selectedSubscriberTargetCode = model.carrierPlanType;
       _selectedStatusCode = model.status;
 
-      print(model.status);
+      // print(model.status);
 
       _planNameController.text = model.usimPlanNm;
       _baseAmountController.text = CustomFormat().commafy(model.basicFee);
@@ -184,6 +186,7 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
                         requestFocusOnTap: true,
                         enableSearch: true,
                         enableFilter: true,
+                        enabled: widget.selectedPlan == null,
                         errorText: _selectedCarrierCodeErr,
                         items: _carriers,
                         onSelected: (selectedItem) {
@@ -207,6 +210,7 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
                         enableSearch: true,
                         controller: _selectedMvnoCodeCntr,
                         enableFilter: true,
+                        enabled: widget.selectedPlan == null,
                         label: const Text("브랜드"),
                         errorText: _selectedMvnoCodeErr,
                         onSelected: (selectedItem) {
@@ -297,6 +301,7 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
                     ),
                     child: CustomTextInput(
                       controller: _planNameController,
+                      enabled: widget.selectedPlan == null,
                       title: '요금제명',
                       validator: (value) => InputValidator().validateForNoneEmpty(value, '요금제명'),
                     ),
@@ -447,13 +452,7 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
                             ? null
                             : () {
                                 print('button clicked');
-                                bool errs = _checkDropDownValues();
-                                bool form = _formKey.currentState!.validate();
-
-                                if (errs && form) {
-                                  print('read to upload');
-                                }
-                                setState(() {});
+                                _updateOrAddPlan();
                               },
                         child: _dataUpdating ? const ButtonCircularProgressIndicator() : const Text("저장"),
                       ),
@@ -488,8 +487,43 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
     return errs.every((err) => err == null);
   }
 
-  void _updateOrAddPlan() {
-//start here
-    // updateOrAddPlan
+  Future<void> _updateOrAddPlan() async {
+    _dataUpdating = true;
+    setState(() {});
+
+    print("update plan called");
+
+    bool errs = _checkDropDownValues();
+    bool form = _formKey.currentState!.validate();
+
+    if (errs && form) {
+      final APIService apiService = APIService();
+      bool result = await apiService.updateOrAddPlan(
+          context: context,
+          requestModel: PlanAddUpdateModel(
+            id: widget.selectedPlan?.id,
+            usimPlanNm: _planNameController.text,
+            carrierCd: _selectedCarrierCode,
+            mvnoCd: _selectedMvnoCode,
+            agentCd: _selectedAgentCode,
+            basicFee: CustomFormat().deCommafy(_baseAmountController.text),
+            salesFee: CustomFormat().deCommafy(_saleAmountController.text),
+            voice: _voiceController.text,
+            message: _smsController.text,
+            cellData: _dataController.text,
+            carrierPlanType: _selectedSubscriberTargetCode,
+            carrierType: _selectedPlanTypeCode,
+            priority: int.tryParse(_priorityController.text),
+            status: _selectedStatusCode,
+          ));
+
+      if (result) {
+        await widget.callback();
+        if (mounted) context.pop();
+      }
+    }
+
+    _dataUpdating = false;
+    setState(() {});
   }
 }

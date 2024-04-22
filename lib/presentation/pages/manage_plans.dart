@@ -101,7 +101,7 @@ class _ManagePlansState extends State<ManagePlans> {
                                   height: 47,
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.black26,
+                                      backgroundColor: Colors.grey,
                                     ),
                                     onPressed: () {
                                       showCustomDialog(
@@ -181,6 +181,7 @@ class _ManagePlansState extends State<ManagePlans> {
                               showCustomDialog(
                                 content: AddOrUpdatePlanContent(
                                   info: _plansInfo,
+                                  callback: _fetchPlansData,
                                 ),
                                 context: context,
                               );
@@ -198,9 +199,6 @@ class _ManagePlansState extends State<ManagePlans> {
                               if (currentPage != _currentPage || perPage != _perPage) {
                                 _currentPage = currentPage;
                                 _perPage = perPage;
-                                _plansList.clear();
-
-                                setState(() {});
                                 await _fetchPlansData();
                               }
                             },
@@ -423,6 +421,7 @@ class _ManagePlansState extends State<ManagePlans> {
                                                   content: AddOrUpdatePlanContent(
                                                     info: _plansInfo,
                                                     selectedPlan: _plansList[rowIndex],
+                                                    callback: _fetchPlansData,
                                                   ),
                                                   context: context,
                                                 );
@@ -451,7 +450,7 @@ class _ManagePlansState extends State<ManagePlans> {
   }
 
   Future<void> _fetchPlansData() async {
-    if (_currentPage == 1) _plansList.clear();
+    _plansList.clear();
 
     try {
       final APIService apiService = APIService();
@@ -469,7 +468,6 @@ class _ManagePlansState extends State<ManagePlans> {
       _plansInfo = result;
 
       _totalCount = result.totalNum;
-      print(_totalCount);
 
       _dataLoading = false;
 

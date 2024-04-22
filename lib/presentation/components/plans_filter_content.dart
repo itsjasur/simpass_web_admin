@@ -252,7 +252,7 @@ class _ManagePlansFilterContentState extends State<ManagePlansFilterContent> {
                   height: 47,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black26,
+                      backgroundColor: Colors.grey,
                     ),
                     onPressed: () {
                       context.pop();

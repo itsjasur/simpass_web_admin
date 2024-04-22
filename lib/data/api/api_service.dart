@@ -8,8 +8,8 @@ import 'package:admin_simpass/data/models/signup_model.dart';
 import 'package:admin_simpass/providers/auth_provider.dart';
 import 'package:admin_simpass/providers/myinfo_provider.dart';
 import 'package:admin_simpass/sensitive.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -163,6 +163,8 @@ class APIService {
   }
 
   Future<void> memberAddOrUpdate({required BuildContext context, required MemberAddUpdateModel requestModel, required bool isNew}) async {
+    var messenger = ScaffoldMessenger.of(context);
+
     try {
       String? accessToken = await getAccessToken();
       headers['Authorization'] = 'Bearer $accessToken';
@@ -172,19 +174,17 @@ class APIService {
       var response = await http.post(url, headers: headers, body: body);
 
       response = await RequestHelper().post(context.mounted ? context : null, response, url, headers, body);
+      var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode == 200) {
-        var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(decodedResponse['message'])),
-          );
-        }
+        await Future.delayed(const Duration(seconds: 1));
+        messenger.showSnackBar(SnackBar(content: Text(decodedResponse['message'])));
+        if (context.mounted) context.pop();
       } else {
-        throw "Update data incorrect";
+        throw decodedResponse['message'] ?? "Update data incorrect";
       }
     } catch (e) {
-      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      messenger.showSnackBar(SnackBar(content: Text(e.toString())));
     }
   }
 
@@ -199,46 +199,42 @@ class APIService {
       var response = await http.post(url, headers: headers, body: body);
 
       response = await RequestHelper().post(context.mounted ? context : null, response, url, headers, body);
+      var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode == 200) {
-        var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
-
         return ManagePlansModel.fromJson(decodedResponse['data']);
       } else {
-        throw "Plans data request data error";
+        throw decodedResponse['message'] ?? "Plans data request data error";
       }
     } catch (e) {
       rethrow;
     }
   }
 
-  Future<void> updateOrAddPlan({required BuildContext context, required PlanAddUpdateModel requestModel}) async {
-    String? accessToken = await getAccessToken();
-    headers['Authorization'] = 'Bearer $accessToken';
+  Future<bool> updateOrAddPlan({required BuildContext context, required PlanAddUpdateModel requestModel}) async {
+    var messenger = ScaffoldMessenger.of(context);
 
-    Uri url = _urlMaker('agent/plan');
-    var body = json.encode(requestModel.toJson());
-    var response = await http.post(url, headers: headers, body: body);
+    try {
+      String? accessToken = await getAccessToken();
+      headers['Authorization'] = 'Bearer $accessToken';
 
-    response = await RequestHelper().post(context.mounted ? context : null, response, url, headers, body);
+      Uri url = _urlMaker('agent/setPlan');
+      var body = json.encode(requestModel.toJson());
+      var response = await http.post(url, headers: headers, body: body);
 
-    if (response.statusCode == 200) {
+      response = await RequestHelper().post(context.mounted ? context : null, response, url, headers, body);
+
       var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(decodedResponse['message'])),
-        );
+
+      if (response.statusCode == 200) {
+        messenger.showSnackBar(SnackBar(content: Text(decodedResponse['message'])));
+        return true;
+      } else {
+        throw decodedResponse['message'] ?? "Data error";
       }
-    } else {
-      throw "Update data incorrect";
+    } catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text(e.toString())));
     }
+    return false;
   }
 }
-
-
-
-
-
-// rootScaffoldMessengerKey.currentState?.showSnackBar(const SnackBar(
-//   content: Text("SnackBar using the root ScaffoldMessenger."),
-// ));

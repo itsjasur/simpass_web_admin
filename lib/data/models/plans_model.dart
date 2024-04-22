@@ -257,28 +257,6 @@ class ManagePlanSearchModel {
   }
 }
 
-// {
-//     "id": 235, //update 만 수정대상 ID
-//     "usim_plan_nm": "슬림유심1GB50분", //not null
-//     "carrier_cd": "LG", //not null
-//     "mvno_cd": "HVS", // not null
-//     "agent_cd": "SP", //not null
-//     "basic_fee": 10890,  //not null
-//     "sales_fee": 4950,  // not null
-//     "discount_fee": 5940, //not null
-//     "voice": "50분",
-//     "message": "0건",
-//     "cell_data": "1GB",
-//     "video_etc": "",
-//     "qos": "-",
-//     "carrier_plan_type": "P", //not nul
-//     "carrier_type": "PO", // not null
-//     "usim_fee": 0,
-//     "plan_fee": 0,
-//     "priority": 3000,
-//     "status": "Y"
-// }
-
 class PlanAddUpdateModel {
   final int? id;
   final String usimPlanNm;

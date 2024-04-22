@@ -91,7 +91,6 @@ class _ManageUsersState extends State<ManageUsers> {
                                 _currentPage = currentPage;
                                 _perPage = perPage;
                                 _usersList.clear();
-                                setState(() {});
                                 await _fetchUsers();
                               }
                             },

@@ -30,7 +30,7 @@ class Header extends StatelessWidget {
                         borderRadius: BorderRadius.circular(5),
                         onTap: () {
                           controller.isDesktop ? controller.toggleDrawer() : rootScaffoldKey.currentState?.openDrawer();
-                          print(controller.isSideMenuOpen);
+                          // print(controller.isSideMenuOpen);
 
                           // print('open drawe clicked');
                         },

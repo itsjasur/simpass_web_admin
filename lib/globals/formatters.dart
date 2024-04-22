@@ -41,7 +41,7 @@ class CustomFormat {
     return null;
   }
 
-  String wonify(double? amount) {
+  String wonify(num? amount) {
     if (amount == null || amount < 0) {
       amount = 0;
     }
@@ -59,6 +59,15 @@ class CustomFormat {
     String stringAmount = NumberFormat("#,###").format(amount).toString();
 
     return (stringAmount.toString());
+  }
+
+  int deCommafy(String? value) {
+    if (value == null) {
+      return 0;
+    }
+    String pureValue = value.replaceAll(',', '').replaceAll(' ', '');
+
+    return (int.tryParse(pureValue) ?? 0);
   }
 }
 
