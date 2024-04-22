@@ -1,10 +1,10 @@
-import 'package:admin_simpass/presentation/pages/manage_plans.dart';
-import 'package:admin_simpass/presentation/pages/manage_users.dart';
+import 'package:admin_simpass/presentation/pages/applications_page.dart';
+import 'package:admin_simpass/presentation/pages/manage_plans_page.dart';
+import 'package:admin_simpass/presentation/pages/manage_users_page.dart';
 import 'package:admin_simpass/presentation/pages/menu_shell.dart';
 import 'package:admin_simpass/presentation/pages/login_page.dart';
 import 'package:admin_simpass/presentation/pages/not_found_page.dart';
 import 'package:admin_simpass/presentation/pages/profile_page.dart';
-import 'package:admin_simpass/presentation/pages/application_receipt_status.dart';
 import 'package:admin_simpass/presentation/pages/signup_page.dart';
 import 'package:admin_simpass/providers/auth_provider.dart';
 import 'package:admin_simpass/providers/menu_navigation_provider.dart';
@@ -36,12 +36,17 @@ final appRouter = GoRouter(
         GoRoute(
           name: 'manage-users',
           path: '/',
-          builder: (context, state) => const ManageUsers(),
+          builder: (context, state) => const ManageUsersPage(),
         ),
         GoRoute(
           name: 'manager-plans',
           path: '/manage-plans',
-          builder: (context, state) => const ManagePlans(),
+          builder: (context, state) => const ManagePlansPage(),
+        ),
+        GoRoute(
+          name: 'applications',
+          path: '/applications',
+          builder: (context, state) => const ApplicationsPage(),
         ),
       ],
       builder: (context, state, child) => MenuShell(child: child),
@@ -59,7 +64,7 @@ final appRouter = GoRouter(
 
     // User is not logged in and not heading to login, redirects to login
     if (!isLoggedIn && !goingToLogin) {
-      print("redirecting to login");
+      // print("redirecting to login");
       return '/login';
     }
 

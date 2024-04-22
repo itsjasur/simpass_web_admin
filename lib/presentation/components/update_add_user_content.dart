@@ -4,7 +4,7 @@ import 'package:admin_simpass/globals/constants.dart';
 import 'package:admin_simpass/globals/formatters.dart';
 import 'package:admin_simpass/globals/validators.dart';
 import 'package:admin_simpass/presentation/components/button_circular_indicator.dart';
-import 'package:admin_simpass/presentation/components/custom_menu_drop_down.dart';
+import 'package:admin_simpass/presentation/components/custom_drop_down_menu.dart';
 import 'package:admin_simpass/presentation/components/custom_text_input.dart';
 import 'package:admin_simpass/presentation/components/date_time_picker.dart';
 import 'package:admin_simpass/providers/myinfo_provider.dart';
@@ -34,8 +34,8 @@ class _UpdateAddUserContentState extends State<UpdateAddUserContent> {
 
   String? _countryErrorText;
 
-  final TextEditingController _fromDateController = TextEditingController(text: CustomFormat().formatDate(DateTime.now().toString()));
-  final TextEditingController _expiryDateController = TextEditingController(text: CustomFormat().formatDate(DateTime.now().add(const Duration(days: 365)).toString()));
+  final TextEditingController _fromDateController = TextEditingController(text: CustomFormat().formatDateWithTime(DateTime.now().toString()));
+  final TextEditingController _expiryDateController = TextEditingController(text: CustomFormat().formatDateWithTime(DateTime.now().add(const Duration(days: 365)).toString()));
 
   String _selectedCountryCode = countryNameCodelist[0]['code'];
   String _selectedStatusCode = memberStatuses[0]['code'];
@@ -272,7 +272,7 @@ class _UpdateAddUserContentState extends State<UpdateAddUserContent> {
                           title: '시작일자',
                           onTap: () async {
                             String? selectedDate = await showDateTimePicker(context);
-                            if (selectedDate != null) _fromDateController.text = CustomFormat().formatDate(selectedDate) ?? "";
+                            if (selectedDate != null) _fromDateController.text = CustomFormat().formatDateWithTime(selectedDate) ?? "";
                           },
                           readOnly: true,
                         ),
@@ -297,7 +297,7 @@ class _UpdateAddUserContentState extends State<UpdateAddUserContent> {
                           controller: _expiryDateController,
                           onTap: () async {
                             String? selectedDate = await showDateTimePicker(context);
-                            if (selectedDate != null) _expiryDateController.text = CustomFormat().formatDate(selectedDate) ?? "";
+                            if (selectedDate != null) _expiryDateController.text = CustomFormat().formatDateWithTime(selectedDate) ?? "";
                           },
                           readOnly: true,
                           title: '종료일자',
@@ -380,8 +380,8 @@ class _UpdateAddUserContentState extends State<UpdateAddUserContent> {
       _emailController.text = memberInfo.email ?? "";
       _phoneNumberController.text = memberInfo.phoneNumber ?? "";
       _selectedCountryCode = memberInfo.country ?? "";
-      _fromDateController.text = CustomFormat().formatDate(memberInfo.fromDate) ?? "";
-      _expiryDateController.text = CustomFormat().formatDate(memberInfo.expireDate) ?? "";
+      _fromDateController.text = CustomFormat().formatDateWithTime(memberInfo.fromDate) ?? "";
+      _expiryDateController.text = CustomFormat().formatDateWithTime(memberInfo.expireDate) ?? "";
       List<dynamic> rolesList = memberInfo.strRoles ?? [];
       _selectedRoles.addAll(rolesList);
       _handleCheckboxes();

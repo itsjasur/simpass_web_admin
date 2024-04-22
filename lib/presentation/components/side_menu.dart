@@ -59,7 +59,9 @@ class SideMenu extends StatelessWidget {
             SideMenuWidget(
               title: "신청서 접수현황",
               iconSrc: "assets/icons/regis.svg",
-              press: () {},
+              press: () {
+                context.go('/applications');
+              },
               isSelected: value.openSideMenuIndex == 3,
             ),
             SideMenuWidget(

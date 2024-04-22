@@ -5,7 +5,7 @@ import 'package:admin_simpass/globals/formatters.dart';
 import 'package:admin_simpass/globals/validators.dart';
 import 'package:admin_simpass/presentation/components/button_circular_indicator.dart';
 import 'package:admin_simpass/presentation/components/clickable_logo.dart';
-import 'package:admin_simpass/presentation/components/custom_menu_drop_down.dart';
+import 'package:admin_simpass/presentation/components/custom_drop_down_menu.dart';
 import 'package:admin_simpass/presentation/components/custom_text_button.dart';
 import 'package:admin_simpass/presentation/components/custom_text_input.dart';
 import 'package:flutter/material.dart';

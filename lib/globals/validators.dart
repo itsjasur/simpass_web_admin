@@ -110,4 +110,36 @@ class InputValidator {
 
     return null;
   }
+
+  String? validateDate(String? value) {
+    value = value?.replaceAll('-', '');
+
+    // checking if the field is empty
+    if (value == null || value.isEmpty) {
+      return "날짜 입력하세요";
+    }
+
+    if (value.length >= 4) {
+      int yyyy = int.parse(value.substring(0, 4));
+      if (yyyy < 1900 || yyyy > 2025) {
+        return "잘못된 날짜 연도 ";
+      }
+    }
+
+    if (value.length >= 6) {
+      int mm = int.parse(value.substring(4, 6));
+      if (mm < 01 || mm > 12) {
+        return "잘못된 날짜 월";
+      }
+    }
+
+    if (value.length >= 8) {
+      int dd = int.parse(value.substring(6, 8));
+      if (dd < 01 || dd > 31) {
+        return "잘못된 날짜 일";
+      }
+    }
+
+    return null;
+  }
 }

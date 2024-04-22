@@ -1,10 +1,9 @@
 import 'package:admin_simpass/data/api/api_service.dart';
 import 'package:admin_simpass/data/models/plans_model.dart';
-import 'package:admin_simpass/globals/constants.dart';
 import 'package:admin_simpass/globals/formatters.dart';
 import 'package:admin_simpass/globals/validators.dart';
 import 'package:admin_simpass/presentation/components/button_circular_indicator.dart';
-import 'package:admin_simpass/presentation/components/custom_menu_drop_down.dart';
+import 'package:admin_simpass/presentation/components/custom_drop_down_menu.dart';
 import 'package:admin_simpass/presentation/components/custom_text_input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -60,7 +59,6 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
   List<DropdownMenuEntry> _subscriberTarget = [];
   List<DropdownMenuEntry> _statuses = [];
 
-  final List<Map<String, dynamic>> _userRolesList = userRolesList;
   final _formKey = GlobalKey<FormState>();
 
   bool _dataUpdating = false;
@@ -451,7 +449,6 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
                         onPressed: _dataUpdating
                             ? null
                             : () {
-                                print('button clicked');
                                 _updateOrAddPlan();
                               },
                         child: _dataUpdating ? const ButtonCircularProgressIndicator() : const Text("저장"),
@@ -490,8 +487,6 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
   Future<void> _updateOrAddPlan() async {
     _dataUpdating = true;
     setState(() {});
-
-    print("update plan called");
 
     bool errs = _checkDropDownValues();
     bool form = _formKey.currentState!.validate();

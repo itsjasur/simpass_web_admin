@@ -24,6 +24,11 @@ const List countryNameCodelist = [
   {"code": 'EN', "label": '영어권 국가'},
 ];
 
+const List applicationsSearchTypeList = [
+  {"code": 'applyDate', "label": '접수일자'},
+  {"code": 'regisDate', "label": '개통일자'},
+  {"code": 'status', "label": '상태'},
+];
 final List<int> perPageCounts = [50, 10, 100, 250, 500];
 
 final List<Map<String, dynamic>> userRolesList = [
@@ -155,3 +160,5 @@ final List<Map<String, dynamic>> memberStatuses = [
 
 final List manageMembersColumns = ['No.', '아이디', '이름', '국가', '휴대전화', '이매일', '상태', '시작일자', '액션'];
 final List mangePlansColumns = ['No.', '상태', '요금제명', '통신사', '브랜드', '대리점', '서비스 유형', '가입대상', '기본료', '판매금액', '음성', '문자', '데이터', '영상/기타', 'QOS', '액션'];
+
+final List applicationsColumns = ['No.', '판매점영', '상태', '접수번호', '고객명', '후대펀', '가입정보', '가입신청서', '접수일자', '개통일자', '서명여부'];

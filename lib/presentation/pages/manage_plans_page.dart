@@ -12,14 +12,14 @@ import 'package:admin_simpass/presentation/components/pagination.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-class ManagePlans extends StatefulWidget {
-  const ManagePlans({super.key});
+class ManagePlansPage extends StatefulWidget {
+  const ManagePlansPage({super.key});
 
   @override
-  State<ManagePlans> createState() => _ManagePlansState();
+  State<ManagePlansPage> createState() => _ManagePlansPageState();
 }
 
-class _ManagePlansState extends State<ManagePlans> {
+class _ManagePlansPageState extends State<ManagePlansPage> {
   int _totalCount = 0;
   int _currentPage = 1;
   int _perPage = perPageCounts[0];
@@ -81,7 +81,6 @@ class _ManagePlansState extends State<ManagePlans> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // AddOrUpdatePlanContent(info: _plansInfo),
                         const Gap(20),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -464,11 +463,8 @@ class _ManagePlansState extends State<ManagePlans> {
       );
 
       _plansList.addAll(result.planList);
-
       _plansInfo = result;
-
       _totalCount = result.totalNum;
-
       _dataLoading = false;
 
       setState(() {});

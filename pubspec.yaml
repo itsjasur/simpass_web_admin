@@ -48,6 +48,9 @@ dependencies:
   omni_datetime_picker:
     path: packages/omni_datetime_picker
 
+  firebase_core: 
+  firebase_messaging: 
+
 
 
 

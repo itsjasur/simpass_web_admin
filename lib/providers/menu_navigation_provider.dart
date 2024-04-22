@@ -17,6 +17,9 @@ class MenuIndexProvider with ChangeNotifier {
       case '/manage-plans':
         newIndex = 2;
         break;
+      case '/applications':
+        newIndex = 3;
+        break;
       default:
         newIndex = -1; // Default or not found
         break;

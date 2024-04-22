@@ -4,13 +4,11 @@ import 'package:admin_simpass/globals/constants.dart';
 import 'package:admin_simpass/globals/formatters.dart';
 import 'package:admin_simpass/globals/validators.dart';
 import 'package:admin_simpass/presentation/components/button_circular_indicator.dart';
-import 'package:admin_simpass/presentation/components/custom_menu_drop_down.dart';
+import 'package:admin_simpass/presentation/components/custom_drop_down_menu.dart';
 import 'package:admin_simpass/presentation/components/custom_text_input.dart';
 import 'package:admin_simpass/presentation/components/header.dart';
-import 'package:admin_simpass/providers/menu_navigation_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -397,8 +395,8 @@ class _ProfilePageState extends State<ProfilePage> {
       _phoneNumberController.text = result.phoneNumber ?? "";
       _selectedCountryCode = result.countryValue?["code"] ?? "";
       _selectedStatusCode = result.status ?? "";
-      _startDateController.text = CustomFormat().formatDate(result.fromDate ?? "") ?? "";
-      _expiryDateController.text = CustomFormat().formatDate(result.expireDate ?? "") ?? "";
+      _startDateController.text = CustomFormat().formatDateWithTime(result.fromDate ?? "") ?? "";
+      _expiryDateController.text = CustomFormat().formatDateWithTime(result.expireDate ?? "") ?? "";
       _userId = result.id;
     } catch (e) {
       if (mounted) {

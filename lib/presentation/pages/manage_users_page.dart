@@ -7,18 +7,17 @@ import 'package:admin_simpass/presentation/components/custom_alert_dialog.dart';
 import 'package:admin_simpass/presentation/components/header.dart';
 import 'package:admin_simpass/presentation/components/update_add_user_content.dart';
 import 'package:admin_simpass/presentation/components/pagination.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-class ManageUsers extends StatefulWidget {
-  const ManageUsers({super.key});
+class ManageUsersPage extends StatefulWidget {
+  const ManageUsersPage({super.key});
 
   @override
-  State<ManageUsers> createState() => _ManageUsersState();
+  State<ManageUsersPage> createState() => _ManageUsersPageState();
 }
 
-class _ManageUsersState extends State<ManageUsers> {
+class _ManageUsersPageState extends State<ManageUsersPage> {
   final List<UserModel> _usersList = [];
 
   int _totalCount = 0;
@@ -223,7 +222,7 @@ class _ManageUsersState extends State<ManageUsers> {
                                         }
                                         if (columnIndex == 7) {
                                           return DataCell(
-                                            Text(CustomFormat().formatDate(_usersList[rowIndex].fromDate) ?? ""),
+                                            Text(CustomFormat().formatDateWithTime(_usersList[rowIndex].fromDate) ?? ""),
                                             onTap: () {},
                                           );
                                         }

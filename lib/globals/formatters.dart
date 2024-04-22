@@ -1,10 +1,8 @@
-import 'dart:math';
-
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class CustomFormat {
-  String? formatDate(String? dateTimeString) {
+  String? formatDateWithTime(String? dateTimeString) {
     if (dateTimeString != null) {
       // parsing the string into a DateTime object
       DateTime dateTime = DateTime.parse(dateTimeString);
@@ -15,6 +13,21 @@ class CustomFormat {
       //  the DateTime object using the output format
       String formattedDateTime = outputFormat.format(dateTime);
 
+      return formattedDateTime;
+    }
+
+    return null;
+  }
+
+  String? formatDate(String? dateTimeString) {
+    if (dateTimeString != null) {
+      // parsing the string into a DateTime object
+      DateTime dateTime = DateTime.parse(dateTimeString);
+
+      //  output format for a more readable date and time
+      DateFormat outputFormat = DateFormat("yyyy-MM-dd");
+      //  the DateTime object using the output format
+      String formattedDateTime = outputFormat.format(dateTime);
       return formattedDateTime;
     }
 
@@ -118,6 +131,28 @@ class CurrencyInputFormatter extends TextInputFormatter {
     return newValue.copyWith(
       text: formattedText,
       selection: TextSelection.collapsed(offset: formattedText.length),
+    );
+  }
+}
+
+class DateFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(TextEditingValue oldValue, TextEditingValue newValue) {
+    String newText = newValue.text.replaceAll('-', '');
+
+    if (newText.length > 8) {
+      newText = newText.substring(0, 8);
+    }
+
+    StringBuffer buffer = StringBuffer();
+    for (int i = 0; i < newText.length; i++) {
+      if ((i == 4 || i == 6) && i != 0) buffer.write('-');
+      buffer.write(newText[i]);
+    }
+
+    return newValue.copyWith(
+      text: buffer.toString(),
+      selection: TextSelection.collapsed(offset: buffer.length),
     );
   }
 }
