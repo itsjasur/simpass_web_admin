@@ -124,12 +124,13 @@ class MyApp extends StatelessWidget {
         ),
 
         outlinedButtonTheme: OutlinedButtonThemeData(
-          style: ElevatedButton.styleFrom(
+          style: OutlinedButton.styleFrom(
             padding: const EdgeInsetsDirectional.symmetric(horizontal: 8, vertical: 10),
             disabledBackgroundColor: Colors.black38,
             disabledForegroundColor: Colors.white70,
-            foregroundColor: Colors.black,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+            foregroundColor: Colors.black87,
+            side: const BorderSide(color: Colors.black54),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
           ),
         ),
 

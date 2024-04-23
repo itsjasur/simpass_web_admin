@@ -293,4 +293,29 @@ class APIService {
 
     return false;
   }
+
+  Future<ApplicationDetailsModel> fetchApplicationDetails({required BuildContext context, required String applicationId}) async {
+    try {
+      String? accessToken = await getAccessToken();
+      headers['Authorization'] = 'Bearer $accessToken';
+
+      Uri url = _urlMaker('agent/actDetail');
+      var body = json.encode({"act_no": applicationId});
+      var response = await http.post(url, headers: headers, body: body);
+
+      print(body);
+
+      response = await RequestHelper().post(context.mounted ? context : null, response, url, headers, body);
+      var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
+      // print(jsonEncode(decodedResponse));
+
+      if (response.statusCode == 200 && decodedResponse['result'] == 'SUCCESS') {
+        return ApplicationDetailsModel.fromJson(decodedResponse["data"]['act_detail_info']);
+      } else {
+        throw decodedResponse['message'] ?? "Application details request data error";
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

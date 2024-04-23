@@ -4,6 +4,7 @@ import 'package:admin_simpass/globals/constants.dart';
 import 'package:admin_simpass/globals/formatters.dart';
 import 'package:admin_simpass/globals/main_ui.dart';
 import 'package:admin_simpass/globals/validators.dart';
+import 'package:admin_simpass/presentation/components/application_detais_content.dart';
 import 'package:admin_simpass/presentation/components/application_status_update_content.dart';
 import 'package:admin_simpass/presentation/components/custom_alert_dialog.dart';
 import 'package:admin_simpass/presentation/components/custom_drop_down_menu.dart';
@@ -339,11 +340,11 @@ class RApplicationsPageState extends State<ApplicationsPage> {
                                                     ),
                                                     if (editable)
                                                       const Padding(
-                                                        padding: EdgeInsets.only(left: 5),
+                                                        padding: EdgeInsets.only(left: 3),
                                                         child: Icon(
                                                           Icons.edit_outlined,
                                                           color: Colors.white,
-                                                          size: 16,
+                                                          size: 15,
                                                         ),
                                                       ),
                                                   ],
@@ -395,8 +396,17 @@ class RApplicationsPageState extends State<ApplicationsPage> {
                                           if (columnIndex == 6) {
                                             return DataCell(
                                               placeholder: false,
-                                              OutlinedButton(onPressed: () {}, child: const Text('가입정보')),
-                                              onTap: () {},
+                                              OutlinedButton(
+                                                  onPressed: () {
+                                                    showCustomDialog(
+                                                      context: context,
+                                                      content: ApplicationDetailsContent(
+                                                        applicationId: _applicationsList[rowIndex].actNo ?? "",
+                                                      ),
+                                                    );
+                                                  },
+                                                  child: const Text('가입정보')),
+                                              // onTap: () {},
                                             );
                                           }
 

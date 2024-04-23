@@ -1,3 +1,4 @@
+import 'package:admin_simpass/presentation/components/application_detais_content.dart';
 import 'package:admin_simpass/presentation/pages/applications_page.dart';
 import 'package:admin_simpass/presentation/pages/manage_plans_page.dart';
 import 'package:admin_simpass/presentation/pages/manage_users_page.dart';
@@ -36,7 +37,7 @@ final appRouter = GoRouter(
         GoRoute(
           name: 'manage-users',
           path: '/',
-          builder: (context, state) => const ManageUsersPage(),
+          builder: (context, state) => const ApplicationDetailsContent(applicationId: 'as'),
         ),
         GoRoute(
           name: 'manager-plans',

@@ -21,7 +21,7 @@ Future<void> showCustomDialog({
             insetPadding: const EdgeInsets.symmetric(horizontal: 10),
             surfaceTintColor: Colors.white,
             backgroundColor: Colors.white,
-            // contentPadding: EdgeInsets.all(10),
+            // contentPadding: EdgeInsets.all(0),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5), // Adjust the radius here
             ),
