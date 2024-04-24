@@ -1,5 +1,3 @@
-import 'package:admin_simpass/presentation/components/application_details_content.dart';
-import 'package:admin_simpass/presentation/components/registration_image_viewer_content.dart';
 import 'package:admin_simpass/presentation/pages/applications_page.dart';
 import 'package:admin_simpass/presentation/pages/manage_plans_page.dart';
 import 'package:admin_simpass/presentation/pages/manage_users_page.dart';
@@ -9,9 +7,9 @@ import 'package:admin_simpass/presentation/pages/not_found_page.dart';
 import 'package:admin_simpass/presentation/pages/profile_page.dart';
 import 'package:admin_simpass/presentation/pages/retailers_page.dart';
 import 'package:admin_simpass/presentation/pages/signup_page.dart';
-import 'package:admin_simpass/presentation/pages/test.dart';
 import 'package:admin_simpass/providers/auth_provider.dart';
 import 'package:admin_simpass/providers/menu_navigation_provider.dart';
+import 'package:admin_simpass/providers/myinfo_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -46,7 +44,7 @@ final appRouter = GoRouter(
         ),
         GoRoute(
           name: 'manage-users',
-          path: '/',
+          path: '/manage-users',
           builder: (context, state) => const ManageUsersPage(),
         ),
         GoRoute(
@@ -68,15 +66,25 @@ final appRouter = GoRouter(
       builder: (context, state, child) => MenuShell(child: child),
     ),
   ],
-  redirect: (context, state) {
+  redirect: (context, state) async {
     final isLoggedIn = context.read<AuthServiceProvider>().isLoggedIn;
     final goingToLogin = state.matchedLocation == '/login';
+    final goingToHome = state.matchedLocation == '/';
+    final goingToMangeUsers = state.matchedLocation == '/manage-users';
 
     //updating side menu state if user opens from url
     WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<MenuIndexProvider>().updateMenuIndexWithUrl(state.matchedLocation);
       // Provider.of<MenuIndexProvider>(context, listen: false).updateMenuIndex(state.matchedLocation);
     });
+
+    final myInfoProvider = Provider.of<MyinfoProvifer>(context, listen: false);
+    List<String> roles = await myInfoProvider.getRolesList();
+
+    //checking if the user is admin or super admin
+    bool isAdmin = roles.contains("ROLE_SUPER") || roles.contains("ROLE_ADMIN");
+
+    // print(isAdmin);
 
     // User is not logged in and not heading to login, redirects to login
     if (!isLoggedIn && !goingToLogin) {
@@ -86,7 +94,16 @@ final appRouter = GoRouter(
 
     // User is logged in but heading to login, redirects to home
     if (isLoggedIn && goingToLogin) {
-      return '/';
+      return '/applications';
+    }
+
+    if (isLoggedIn && goingToHome) {
+      return '/applications';
+    }
+
+    //if not admin and going to manage users
+    if (goingToMangeUsers && !isAdmin) {
+      return '/applications';
     }
 
     // No need to redirect

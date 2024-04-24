@@ -38,7 +38,7 @@ class APIService {
         if (context.mounted) {
           await Provider.of<AuthServiceProvider>(context, listen: false).loggedIn(context, loginResponse.token, loginResponse.refreshToken);
         }
-        if (context.mounted) await Provider.of<MyinfoProvifer>(context, listen: false).setRolesList(loginResponse.roles);
+        if (context.mounted) await Provider.of<MyinfoProvifer>(context, listen: false).updateRoles(loginResponse.roles);
       } else {
         throw 'Incorrect credentials';
       }

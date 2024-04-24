@@ -11,7 +11,7 @@ class MenuIndexProvider with ChangeNotifier {
       case '/profile':
         newIndex = 0;
         break;
-      case '/': // this is for manage members
+      case '/manage-users': // this is for manage members
         newIndex = 1;
         break;
       case '/manage-plans':

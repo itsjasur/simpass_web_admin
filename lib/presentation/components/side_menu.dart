@@ -1,12 +1,34 @@
 import 'package:admin_simpass/presentation/components/clickable_logo.dart';
 import 'package:admin_simpass/providers/menu_navigation_provider.dart';
+import 'package:admin_simpass/providers/myinfo_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:admin_simpass/presentation/components/side_menu_tile.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-class SideMenu extends StatelessWidget {
+class SideMenu extends StatefulWidget {
   const SideMenu({super.key});
+
+  @override
+  State<SideMenu> createState() => _SideMenuState();
+}
+
+class _SideMenuState extends State<SideMenu> {
+  bool isAdmin = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkUserRole();
+  }
+
+  Future<void> _checkUserRole() async {
+    final myInfoProvider = Provider.of<MyinfoProvifer>(context, listen: false);
+    List<String> roles = await myInfoProvider.getRolesList();
+    setState(() {
+      isAdmin = roles.contains("ROLE_SUPER") || roles.contains("ROLE_ADMIN");
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,14 +62,15 @@ class SideMenu extends StatelessWidget {
               },
               isSelected: value.openSideMenuIndex == 0,
             ),
-            SideMenuWidget(
-              title: "사용자 관리",
-              iconSrc: "assets/icons/admin.svg",
-              press: () {
-                context.go('/');
-              },
-              isSelected: value.openSideMenuIndex == 1,
-            ),
+            if (isAdmin)
+              SideMenuWidget(
+                title: "사용자 관리",
+                iconSrc: "assets/icons/admin.svg",
+                press: () {
+                  context.go('/manage-users');
+                },
+                isSelected: value.openSideMenuIndex == 1,
+              ),
             SideMenuWidget(
               title: "요금제 관리",
               iconSrc: "assets/icons/plans.svg",
