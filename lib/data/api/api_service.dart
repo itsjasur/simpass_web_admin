@@ -354,7 +354,7 @@ class APIService {
       if (response.statusCode == 200 && decodedResponse['result'] == 'SUCCESS') {
         return RetailersModel.fromJson(decodedResponse["data"]);
       } else {
-        throw decodedResponse['message'] ?? "Applications request data error";
+        throw decodedResponse['message'] ?? "Retailer request data error";
       }
     } catch (e) {
       rethrow;
@@ -379,11 +379,60 @@ class APIService {
         messenger.showSnackBar(SnackBar(content: Text(decodedResponse['message'])));
         return true;
       } else {
-        throw decodedResponse['message'] ?? "Applications request data error";
+        throw decodedResponse['message'] ?? "Retailer request data error";
       }
     } catch (e) {
       messenger.showSnackBar(SnackBar(content: Text(e.toString())));
     }
     return false;
+  }
+
+  Future<PartnerModel> fetchRetailerDetails({required BuildContext context, required String retailerCode}) async {
+    try {
+      String? accessToken = await getAccessToken();
+      headers['Authorization'] = 'Bearer $accessToken';
+
+      Uri url = _urlMaker('agent/partnerDetail');
+      var body = json.encode({"partner_cd": retailerCode});
+      var response = await http.post(url, headers: headers, body: body);
+
+      response = await RequestHelper().post(context.mounted ? context : null, response, url, headers, body);
+      var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
+      // print(jsonEncode(decodedResponse));
+
+      if (response.statusCode == 200 && decodedResponse['result'] == 'SUCCESS') {
+        return PartnerModel.fromJson(decodedResponse["data"]['partner_info']);
+      } else {
+        throw decodedResponse['message'] ?? "Retailer details request data error";
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<String?> fetchRetailerImageByFileName({required BuildContext context, required String retailerCode, required String fileName}) async {
+    try {
+      String? accessToken = await getAccessToken();
+      headers['Authorization'] = 'Bearer $accessToken';
+
+      Uri url = _urlMaker('agent/partnerAttach');
+      var body = json.encode({
+        "partner_cd": retailerCode,
+        "file_name": fileName,
+      });
+
+      var response = await http.post(url, headers: headers, body: body);
+
+      response = await RequestHelper().post(context.mounted ? context : null, response, url, headers, body);
+      var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
+
+      if (response.statusCode == 200 && decodedResponse['result'] == 'SUCCESS') {
+        return decodedResponse["data"]['image'];
+      } else {
+        throw decodedResponse['message'] ?? "Retailer image request data error";
+      }
+    } catch (e) {
+      rethrow;
+    }
   }
 }

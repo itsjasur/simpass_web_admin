@@ -20,6 +20,10 @@ class MenuIndexProvider with ChangeNotifier {
       case '/applications':
         newIndex = 3;
         break;
+
+      case '/retailers':
+        newIndex = 4;
+        break;
       default:
         newIndex = -1; // Default or not found
         break;
