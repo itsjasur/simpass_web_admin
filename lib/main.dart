@@ -11,7 +11,6 @@ import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp();
 
   runApp(MultiProvider(
     providers: [
@@ -46,9 +45,14 @@ class MyApp extends StatelessWidget {
         Locale('ko', 'KO'), // Korean
         // ...
       ],
+
+      // themeMode: ThemeMode.light,
+      // darkTheme: ThemeData.dark(), // Optional, ensure this is set properly
+
       theme: ThemeData(
         // colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
         colorScheme: const ColorScheme.light(
+          // brightness: Brightness.light,
           primary: MainUi.mainColor,
           secondary: MainUi.mainColor,
           background: Colors.white,
@@ -85,6 +89,7 @@ class MyApp extends StatelessWidget {
           showDragHandle: true,
           dragHandleColor: Colors.black12,
         ),
+        scaffoldBackgroundColor: Colors.white,
 
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(

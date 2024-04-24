@@ -4,13 +4,15 @@ import 'package:admin_simpass/globals/constants.dart';
 import 'package:admin_simpass/globals/formatters.dart';
 import 'package:admin_simpass/globals/main_ui.dart';
 import 'package:admin_simpass/globals/validators.dart';
-import 'package:admin_simpass/presentation/components/application_detais_content.dart';
+import 'package:admin_simpass/presentation/components/application_details_content.dart';
 import 'package:admin_simpass/presentation/components/application_status_update_content.dart';
 import 'package:admin_simpass/presentation/components/custom_alert_dialog.dart';
 import 'package:admin_simpass/presentation/components/custom_drop_down_menu.dart';
 import 'package:admin_simpass/presentation/components/custom_text_input.dart';
 import 'package:admin_simpass/presentation/components/header.dart';
+import 'package:admin_simpass/presentation/components/registration_image_viewer_content.dart';
 import 'package:admin_simpass/presentation/components/pagination.dart';
+import 'package:admin_simpass/presentation/pages/test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
@@ -417,7 +419,17 @@ class RApplicationsPageState extends State<ApplicationsPage> {
                                                 Icons.file_present_outlined,
                                                 color: MainUi.mainColor,
                                               ),
-                                              onTap: () {},
+                                              onTap: () {
+                                                if (context.mounted) {
+                                                  if (context.mounted) {
+                                                    showDialog(
+                                                      barrierColor: Colors.black,
+                                                      context: context,
+                                                      builder: (context) => RegistrationImageViewerContent(binaryImageList: binaryImage['data']['apply_forms_list']),
+                                                    );
+                                                  }
+                                                }
+                                              },
                                             );
                                           }
 

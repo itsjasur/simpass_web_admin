@@ -32,9 +32,6 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-
-
-
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
@@ -47,9 +44,11 @@ dependencies:
   intl: ^0.18.1
   omni_datetime_picker:
     path: packages/omni_datetime_picker
-
-  firebase_core: 
-  firebase_messaging: 
+  printing: ^5.12.0
+  pdf: ^3.10.8
+  syncfusion_flutter_pdf: ^25.1.41
+  js:
+  html:
 
 
 
@@ -79,6 +78,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/logo.png
+    - assets/pd.pdf
     - assets/icons/
 
   # An image asset can refer to one or more resolution-specific "variants", see

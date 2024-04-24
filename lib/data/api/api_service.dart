@@ -248,8 +248,6 @@ class APIService {
       var body = json.encode(requestModel.toJson());
       var response = await http.post(url, headers: headers, body: body);
 
-      print(body);
-
       response = await RequestHelper().post(context.mounted ? context : null, response, url, headers, body);
       var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
       // print(jsonEncode(decodedResponse));
@@ -274,7 +272,6 @@ class APIService {
       Uri url = _urlMaker('agent/setApplyStatus');
       var body = json.encode(requestModel.toJson());
       var response = await http.post(url, headers: headers, body: body);
-      print(body);
 
       response = await RequestHelper().post(context.mounted ? context : null, response, url, headers, body);
       var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
@@ -303,8 +300,6 @@ class APIService {
       var body = json.encode({"act_no": applicationId});
       var response = await http.post(url, headers: headers, body: body);
 
-      print(body);
-
       response = await RequestHelper().post(context.mounted ? context : null, response, url, headers, body);
       var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
       // print(jsonEncode(decodedResponse));
@@ -313,6 +308,29 @@ class APIService {
         return ApplicationDetailsModel.fromJson(decodedResponse["data"]['act_detail_info']);
       } else {
         throw decodedResponse['message'] ?? "Application details request data error";
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List> fetchApplicationImages({required BuildContext context, required String applicationId}) async {
+    try {
+      String? accessToken = await getAccessToken();
+      headers['Authorization'] = 'Bearer $accessToken';
+
+      Uri url = _urlMaker('agent/actAttachs');
+      var body = json.encode({"act_no": applicationId});
+      var response = await http.post(url, headers: headers, body: body);
+
+      response = await RequestHelper().post(context.mounted ? context : null, response, url, headers, body);
+      var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
+      // print(jsonEncode(decodedResponse));
+
+      if (response.statusCode == 200 && decodedResponse['result'] == 'SUCCESS') {
+        return decodedResponse["data"]['apply_attach_list'];
+      } else {
+        throw decodedResponse['message'] ?? "Application details images request data error";
       }
     } catch (e) {
       rethrow;

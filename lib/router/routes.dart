@@ -1,4 +1,5 @@
-import 'package:admin_simpass/presentation/components/application_detais_content.dart';
+import 'package:admin_simpass/presentation/components/application_details_content.dart';
+import 'package:admin_simpass/presentation/components/registration_image_viewer_content.dart';
 import 'package:admin_simpass/presentation/pages/applications_page.dart';
 import 'package:admin_simpass/presentation/pages/manage_plans_page.dart';
 import 'package:admin_simpass/presentation/pages/manage_users_page.dart';
@@ -7,6 +8,7 @@ import 'package:admin_simpass/presentation/pages/login_page.dart';
 import 'package:admin_simpass/presentation/pages/not_found_page.dart';
 import 'package:admin_simpass/presentation/pages/profile_page.dart';
 import 'package:admin_simpass/presentation/pages/signup_page.dart';
+import 'package:admin_simpass/presentation/pages/test.dart';
 import 'package:admin_simpass/providers/auth_provider.dart';
 import 'package:admin_simpass/providers/menu_navigation_provider.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +19,13 @@ final appRouter = GoRouter(
   initialLocation: '/',
   errorBuilder: (context, state) => const NotFoundPage(),
   routes: [
+    // GoRoute(
+    //   name: 'image-viewer',
+    //   path: '/',
+    //   builder: (context, state) => RegistrationImageViewerContent(
+    //     binaryImageList: binaryImage['data']['apply_forms_list'],
+    //   ),
+    // ),
     GoRoute(
       name: 'login',
       path: '/login',
@@ -37,7 +46,7 @@ final appRouter = GoRouter(
         GoRoute(
           name: 'manage-users',
           path: '/',
-          builder: (context, state) => const ApplicationDetailsContent(applicationId: 'as'),
+          builder: (context, state) => const ManageUsersPage(),
         ),
         GoRoute(
           name: 'manager-plans',

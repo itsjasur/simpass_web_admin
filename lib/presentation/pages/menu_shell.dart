@@ -1,3 +1,4 @@
+import 'package:admin_simpass/globals/global_keys.dart';
 import 'package:admin_simpass/providers/side_menu_provider.dart';
 import 'package:admin_simpass/presentation/components/side_menu.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,7 @@ class MenuShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      key: shellScaffoldKey,
       drawer: const SideMenu(),
       body: Row(
         mainAxisSize: MainAxisSize.max,
