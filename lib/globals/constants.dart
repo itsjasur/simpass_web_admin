@@ -162,3 +162,5 @@ final List manageMembersColumns = ['No.', '아이디', '이름', '국가', '휴�
 final List mangePlansColumns = ['No.', '상태', '요금제명', '통신사', '브랜드', '대리점', '서비스 유형', '가입대상', '기본료', '판매금액', '음성', '문자', '데이터', '영상/기타', 'QOS', '액션'];
 
 final List applicationsColumns = ['No.', '판매점영', '상태', '접수번호', '고객명', '후대펀', '가입정보', '가입신청서', '접수일자', '개통일자', '서명여부'];
+
+final List retailersColumns = ['No.', '상태', '만매점명', '대표자명', '연락처', '사업자번호', '접수일자', '계약일자', '상세정보'];

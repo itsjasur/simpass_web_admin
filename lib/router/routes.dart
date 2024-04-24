@@ -7,6 +7,7 @@ import 'package:admin_simpass/presentation/pages/menu_shell.dart';
 import 'package:admin_simpass/presentation/pages/login_page.dart';
 import 'package:admin_simpass/presentation/pages/not_found_page.dart';
 import 'package:admin_simpass/presentation/pages/profile_page.dart';
+import 'package:admin_simpass/presentation/pages/retailers_page.dart';
 import 'package:admin_simpass/presentation/pages/signup_page.dart';
 import 'package:admin_simpass/presentation/pages/test.dart';
 import 'package:admin_simpass/providers/auth_provider.dart';
@@ -57,6 +58,11 @@ final appRouter = GoRouter(
           name: 'applications',
           path: '/applications',
           builder: (context, state) => const ApplicationsPage(),
+        ),
+        GoRoute(
+          name: 'retailers',
+          path: '/retailers',
+          builder: (context, state) => const RetailersPage(),
         ),
       ],
       builder: (context, state, child) => MenuShell(child: child),

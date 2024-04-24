@@ -5,6 +5,7 @@ import 'package:admin_simpass/data/models/login_model.dart';
 import 'package:admin_simpass/data/models/member_model.dart';
 import 'package:admin_simpass/data/models/plans_model.dart';
 import 'package:admin_simpass/data/models/profile_model.dart';
+import 'package:admin_simpass/data/models/retailers_model.dart';
 import 'package:admin_simpass/data/models/signup_model.dart';
 import 'package:admin_simpass/providers/auth_provider.dart';
 import 'package:admin_simpass/providers/myinfo_provider.dart';
@@ -335,5 +336,54 @@ class APIService {
     } catch (e) {
       rethrow;
     }
+  }
+
+  Future<RetailersModel> fetchRetailers({required BuildContext context, Map? requestModel}) async {
+    try {
+      String? accessToken = await getAccessToken();
+      headers['Authorization'] = 'Bearer $accessToken';
+
+      Uri url = _urlMaker('agent/partner');
+      var body = json.encode(requestModel);
+      var response = await http.post(url, headers: headers, body: body);
+
+      response = await RequestHelper().post(context.mounted ? context : null, response, url, headers, body);
+      var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
+      // print(jsonEncode(decodedResponse));
+
+      if (response.statusCode == 200 && decodedResponse['result'] == 'SUCCESS') {
+        return RetailersModel.fromJson(decodedResponse["data"]);
+      } else {
+        throw decodedResponse['message'] ?? "Applications request data error";
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<bool> updateRetailerStatus({required BuildContext context, required Map requestModel}) async {
+    var messenger = ScaffoldMessenger.of(context);
+
+    try {
+      String? accessToken = await getAccessToken();
+      headers['Authorization'] = 'Bearer $accessToken';
+
+      Uri url = _urlMaker('agent/setPartnerStatus');
+      var body = json.encode(requestModel);
+      var response = await http.post(url, headers: headers, body: body);
+
+      response = await RequestHelper().post(context.mounted ? context : null, response, url, headers, body);
+      var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
+
+      if (response.statusCode == 200 && decodedResponse['result'] == 'SUCCESS') {
+        messenger.showSnackBar(SnackBar(content: Text(decodedResponse['message'])));
+        return true;
+      } else {
+        throw decodedResponse['message'] ?? "Applications request data error";
+      }
+    } catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+    return false;
   }
 }

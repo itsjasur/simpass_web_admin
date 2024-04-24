@@ -67,14 +67,10 @@ class SideMenu extends StatelessWidget {
             SideMenuWidget(
               title: "판매점 계약현황",
               iconSrc: "assets/icons/partner.svg",
-              press: () {},
+              press: () {
+                context.go('/retailers');
+              },
               isSelected: value.openSideMenuIndex == 4,
-            ),
-            SideMenuWidget(
-              title: "판매점 계약현황",
-              iconSrc: "assets/icons/partner.svg",
-              press: () {},
-              isSelected: value.openSideMenuIndex == 5,
             ),
           ],
         );
