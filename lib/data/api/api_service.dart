@@ -327,8 +327,36 @@ class APIService {
       response = await RequestHelper().post(context.mounted ? context : null, response, url, headers, body);
       var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
 
-      if (response.statusCode == 200 && decodedResponse['result'] == 'SUCCESS' && decodedResponse['data']['apply_attach_list'] != null || decodedResponse['data']['apply_forms_list'] != null) {
+      if (response.statusCode == 200 && decodedResponse['result'] == 'SUCCESS') {
+        if (decodedResponse["data"]['apply_forms_list'] == null || decodedResponse["data"]['apply_attach_list'].isEmpty) throw "목록이 비어 있습니다.";
+
         return decodedResponse["data"]['apply_attach_list'];
+      } else {
+        throw decodedResponse['message'] ?? "Application details images request data error";
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<String>> fetchApplicationForms({required BuildContext context, required String applicationId}) async {
+    try {
+      String? accessToken = await getAccessToken();
+      headers['Authorization'] = 'Bearer $accessToken';
+
+      Uri url = _urlMaker('agent/actForms');
+      var body = json.encode({"act_no": applicationId});
+      var response = await http.post(url, headers: headers, body: body);
+
+      response = await RequestHelper().post(context.mounted ? context : null, response, url, headers, body);
+      var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
+
+      if (response.statusCode == 200 && decodedResponse['result'] == 'SUCCESS') {
+        if (decodedResponse["data"]['apply_forms_list'] == null || decodedResponse["data"]['apply_forms_list'].isEmpty) throw "목록이 비어 있습니다.";
+
+        List<dynamic> applyFormsList = decodedResponse["data"]['apply_forms_list'];
+        List<String> stringFormsList = applyFormsList.map((e) => e.toString()).toList();
+        return stringFormsList;
       } else {
         throw decodedResponse['message'] ?? "Application details images request data error";
       }

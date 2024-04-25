@@ -1,14 +1,20 @@
-import 'dart:convert'; // For base64Decode
+import 'dart:convert'; // For base64Decod
 import 'package:admin_simpass/globals/main_ui.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
+import 'package:js/js.dart';
+
+import 'package:flutter/foundation.dart';
+
+// ignore: avoid_web_libraries_in_flutter
+import 'dart:js_util';
 
 class RegistrationImageViewerContent extends StatefulWidget {
-  final List binaryImageList;
+  final List<String> binaryImageList;
   const RegistrationImageViewerContent({super.key, required this.binaryImageList});
 
   @override
@@ -18,16 +24,11 @@ class RegistrationImageViewerContent extends StatefulWidget {
 class _RegistrationImageViewerContentState extends State<RegistrationImageViewerContent> {
   double _rotationAngle = 0.0; // Rotation angle in radians
   int? _currentIndex;
-
   bool _sendingToPrint = false;
-
-  late final String base64Png;
-
   @override
   void initState() {
     super.initState();
 
-    base64Png = widget.binaryImageList[0];
     _currentIndex = 0;
   }
 
@@ -193,6 +194,8 @@ class _RegistrationImageViewerContentState extends State<RegistrationImageViewer
                             _sendingToPrint = true;
                           });
                           await Future.delayed(const Duration(milliseconds: 50));
+
+                          // _javaScriptCode();
                           _printPdf();
                           setState(() {
                             _sendingToPrint = false;
@@ -235,7 +238,7 @@ class _RegistrationImageViewerContentState extends State<RegistrationImageViewer
     );
   }
 
-  void _printPdf() async {
+  Future<void> _printPdf() async {
     var doc = pw.Document(
       compress: false,
       version: PdfVersion.pdf_1_5,
@@ -264,19 +267,39 @@ class _RegistrationImageViewerContentState extends State<RegistrationImageViewer
       );
     }
 
-    // // // Layout the PDF
+    if (kIsWeb) {
+      // Code for web
+      await Printing.layoutPdf(
+          format: PdfPageFormat.a4,
+          onLayout: (_) async {
+            var res = await _javaScriptCode();
+            return res;
+          });
+    } else {
+      // Code for other platforms
+      await Printing.layoutPdf(
+        format: PdfPageFormat.a4,
+        onLayout: (_) async => await doc.save(),
+      );
+    }
+
+    // final pdf = await rootBundle.load('pd.pdf');
     // await Printing.layoutPdf(
     //   format: PdfPageFormat.a4,
-    //   onLayout: (_) async => await doc.save(),
+    //   onLayout: (_) => pdf.buffer.asUint8List(),
     // );
 
-    final pdf = await rootBundle.load('pd.pdf');
-    await Printing.layoutPdf(
-      format: PdfPageFormat.a4,
-      onLayout: (_) => pdf.buffer.asUint8List(),
-    );
-
-    _sendingToPrint = false;
     setState(() {});
   }
+
+  Future<Uint8List> _javaScriptCode() async {
+    var jsPromise = createPdfFromImages(widget.binaryImageList);
+    var dartFuture = promiseToFuture(jsPromise); // Convert the JavaScript Promise to a Dart Future
+    var result = await dartFuture; // Await the resolved Future
+    if (result is Uint8List) return result;
+    throw "Could not receive pdf";
+  }
 }
+
+@JS('createPdfFromImages')
+external Uint8List createPdfFromImages(base64formslist);

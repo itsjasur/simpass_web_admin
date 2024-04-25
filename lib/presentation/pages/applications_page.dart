@@ -12,7 +12,6 @@ import 'package:admin_simpass/presentation/components/custom_text_input.dart';
 import 'package:admin_simpass/presentation/components/header.dart';
 import 'package:admin_simpass/presentation/components/registration_image_viewer_content.dart';
 import 'package:admin_simpass/presentation/components/pagination.dart';
-import 'package:admin_simpass/presentation/pages/test.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
@@ -40,7 +39,7 @@ class RApplicationsPageState extends State<ApplicationsPage> {
   String _selectedStatusCode = "";
 
   final List _columns = applicationsColumns;
-  List _base64ImagesList = [];
+  List<String> _base64ImagesList = [];
 
   List<ApplicationModel> _applicationsList = [];
 
@@ -512,7 +511,7 @@ class RApplicationsPageState extends State<ApplicationsPage> {
   Future<void> _fetchApplicationImages(String applicationId) async {
     try {
       final APIService apiService = APIService();
-      var result = await apiService.fetchApplicationAttachs(
+      var result = await apiService.fetchApplicationForms(
         context: context,
         applicationId: applicationId,
       );

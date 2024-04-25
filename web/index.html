@@ -41,6 +41,34 @@
   <!-- This script adds the flutter initialization JS code -->
   <script src="flutter.js" defer></script>
 
+  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+
+  <script>
+    async function createPdfFromImages(base64Images) {
+
+
+      const { PDFDocument } = PDFLib;
+      const pdfDoc = await PDFDocument.create();
+
+      for (const base64Image of base64Images) {
+        const pngImage = await pdfDoc.embedPng(base64Image);
+        const page = pdfDoc.addPage();
+        const { height, width } = page.getSize();
+        page.drawImage(pngImage, {
+          x: 0,
+          y: 0,
+          width: width,
+          height: height,
+        });
+      }
+
+      const pdfBytes = await pdfDoc.save();
+      return pdfBytes; // Ensure it returns raw binary data
+    }
+
+
+  </script>
+
 </head>
 
 <body>
