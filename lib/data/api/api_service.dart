@@ -315,7 +315,7 @@ class APIService {
     }
   }
 
-  Future<List> fetchApplicationImages({required BuildContext context, required String applicationId}) async {
+  Future<List> fetchApplicationAttachs({required BuildContext context, required String applicationId}) async {
     try {
       String? accessToken = await getAccessToken();
       headers['Authorization'] = 'Bearer $accessToken';
@@ -326,9 +326,8 @@ class APIService {
 
       response = await RequestHelper().post(context.mounted ? context : null, response, url, headers, body);
       var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
-      // print(jsonEncode(decodedResponse));
 
-      if (response.statusCode == 200 && decodedResponse['result'] == 'SUCCESS') {
+      if (response.statusCode == 200 && decodedResponse['result'] == 'SUCCESS' && decodedResponse['data']['apply_attach_list'] != null || decodedResponse['data']['apply_forms_list'] != null) {
         return decodedResponse["data"]['apply_attach_list'];
       } else {
         throw decodedResponse['message'] ?? "Application details images request data error";

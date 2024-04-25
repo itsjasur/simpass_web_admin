@@ -8,7 +8,6 @@ class AuthServiceProvider extends ChangeNotifier {
   bool get isLoggedIn => _isLoggedIn;
 
   Future<void> loggedIn(BuildContext context, accessToken, refreshToken) async {
-    print('logged in');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('accessToken', accessToken);
     await prefs.setString('refreshToken', refreshToken);
@@ -23,7 +22,6 @@ class AuthServiceProvider extends ChangeNotifier {
     await prefs.remove('accessToken');
     await prefs.remove('refreshToken');
 
-    print('logged out');
     _isLoggedIn = false;
     if (context.mounted) context.go('/login');
     notifyListeners();

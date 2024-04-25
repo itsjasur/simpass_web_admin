@@ -2,7 +2,6 @@ import 'package:admin_simpass/providers/auth_provider.dart';
 import 'package:admin_simpass/providers/side_menu_provider.dart';
 import 'package:admin_simpass/globals/global_keys.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 class Header extends StatelessWidget {
@@ -30,21 +29,13 @@ class Header extends StatelessWidget {
                         borderRadius: BorderRadius.circular(5),
                         onTap: () {
                           controller.isDesktop ? controller.toggleDrawer() : shellScaffoldKey.currentState?.openDrawer();
-                          // print(controller.isSideMenuOpen);
-                          // print('open drawe clicked');
                         },
                         child: AnimatedRotation(
                           duration: const Duration(milliseconds: 500), // Duration of the animation
-                          turns: controller.isSideMenuOpen ? 0 : 0.5, // 0.5 turns for 180 degrees
-
-                          child: SvgPicture.asset(
-                            "assets/icons/menu_handle.svg",
-                            height: 16,
-                            width: 16,
-                            colorFilter: const ColorFilter.mode(
-                              Colors.black,
-                              BlendMode.srcIn,
-                            ),
+                          turns: controller.isSideMenuOpen ? 0.5 : 0, // 0.5 turns for 180 degrees
+                          child: const Icon(
+                            Icons.menu_open,
+                            color: Colors.black87,
                           ),
                         ),
                       );
@@ -62,30 +53,11 @@ class Header extends StatelessWidget {
                 ],
               ),
             ),
-            Expanded(
-              flex: 3,
-              child: Wrap(
-                crossAxisAlignment: WrapCrossAlignment.center,
-                alignment: WrapAlignment.end,
-                children: [
-                  Text(
-                    authController.isLoggedIn ? "User logged in" : 'Not logged in',
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  OutlinedButton(
-                    onPressed: () async {
-                      await authController.loggedOut(context);
-                    },
-                    child: const Text('로그아웃'),
-                  ),
-                ],
-              ),
+            OutlinedButton(
+              onPressed: () async {
+                await authController.loggedOut(context);
+              },
+              child: const Text('로그아웃'),
             )
           ],
         ),

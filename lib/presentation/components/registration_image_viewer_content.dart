@@ -25,10 +25,10 @@ class _RegistrationImageViewerContentState extends State<RegistrationImageViewer
 
   @override
   void initState() {
-    base64Png = widget.binaryImageList[0];
-
     super.initState();
-    if (widget.binaryImageList.isNotEmpty) _currentIndex = 0;
+
+    base64Png = widget.binaryImageList[0];
+    _currentIndex = 0;
   }
 
   void _rotateImage() {

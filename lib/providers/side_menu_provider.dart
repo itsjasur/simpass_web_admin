@@ -14,6 +14,11 @@ class SideMenuProvider with ChangeNotifier {
   bool get sideMenuManuallyClosed => _sideMenuManuallyClosed;
   bool get isDesktop => _isDesktop;
 
+  void updateSideMenu(bool isOpen) {
+    _isSideMenuOpen = isOpen;
+    notifyListeners();
+  }
+
   // Function to toggle the drawer's state
   void toggleDrawer() {
     _isSideMenuOpen = !_isSideMenuOpen;

@@ -38,66 +38,68 @@ class _SideMenuState extends State<SideMenu> {
       backgroundColor: Colors.black,
       // width: 500,
       // shape: const BeveledRectangleBorder(borderRadius: BorderRadius.zero),
-      child: Consumer<MenuIndexProvider>(builder: (context, value, child) {
-        return ListView(
-          children: [
-            InkWell(
-              onTap: () {
-                context.go('/');
-              },
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-                alignment: Alignment.topLeft,
-                child: const ClickableLogo(
-                  height: 60,
-                  color: Colors.white,
+      child: Consumer<MenuIndexProvider>(
+        builder: (context, value, child) {
+          return ListView(
+            children: [
+              InkWell(
+                onTap: () {
+                  context.go('/');
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+                  alignment: Alignment.topLeft,
+                  child: const ClickableLogo(
+                    height: 60,
+                    color: Colors.white,
+                  ),
                 ),
               ),
-            ),
-            SideMenuWidget(
-              title: "나의 정보",
-              iconSrc: "assets/icons/user.svg",
-              press: () {
-                context.go('/profile');
-              },
-              isSelected: value.openSideMenuIndex == 0,
-            ),
-            if (isAdmin)
               SideMenuWidget(
-                title: "사용자 관리",
-                iconSrc: "assets/icons/admin.svg",
+                title: "나의 정보",
+                iconSrc: "assets/icons/user.svg",
                 press: () {
-                  context.go('/manage-users');
+                  context.go('/profile');
                 },
-                isSelected: value.openSideMenuIndex == 1,
+                isSelected: value.openSideMenuIndex == 0,
               ),
-            SideMenuWidget(
-              title: "요금제 관리",
-              iconSrc: "assets/icons/plans.svg",
-              press: () {
-                context.go('/manage-plans');
-              },
-              isSelected: value.openSideMenuIndex == 2,
-            ),
-            SideMenuWidget(
-              title: "신청서 접수현황",
-              iconSrc: "assets/icons/regis.svg",
-              press: () {
-                context.go('/applications');
-              },
-              isSelected: value.openSideMenuIndex == 3,
-            ),
-            SideMenuWidget(
-              title: "판매점 계약현황",
-              iconSrc: "assets/icons/partner.svg",
-              press: () {
-                context.go('/retailers');
-              },
-              isSelected: value.openSideMenuIndex == 4,
-            ),
-          ],
-        );
-      }),
+              if (isAdmin)
+                SideMenuWidget(
+                  title: "사용자 관리",
+                  iconSrc: "assets/icons/admin.svg",
+                  press: () {
+                    context.go('/manage-users');
+                  },
+                  isSelected: value.openSideMenuIndex == 1,
+                ),
+              SideMenuWidget(
+                title: "요금제 관리",
+                iconSrc: "assets/icons/plans.svg",
+                press: () {
+                  context.go('/manage-plans');
+                },
+                isSelected: value.openSideMenuIndex == 2,
+              ),
+              SideMenuWidget(
+                title: "신청서 접수현황",
+                iconSrc: "assets/icons/regis.svg",
+                press: () {
+                  context.go('/applications');
+                },
+                isSelected: value.openSideMenuIndex == 3,
+              ),
+              SideMenuWidget(
+                title: "판매점 계약현황",
+                iconSrc: "assets/icons/partner.svg",
+                press: () {
+                  context.go('/retailers');
+                },
+                isSelected: value.openSideMenuIndex == 4,
+              ),
+            ],
+          );
+        },
+      ),
     );
   }
 }

@@ -40,6 +40,7 @@ class RApplicationsPageState extends State<ApplicationsPage> {
   String _selectedStatusCode = "";
 
   final List _columns = applicationsColumns;
+  List _base64ImagesList = [];
 
   List<ApplicationModel> _applicationsList = [];
 
@@ -421,15 +422,15 @@ class RApplicationsPageState extends State<ApplicationsPage> {
                                                   Icons.file_present_outlined,
                                                   color: MainUi.mainColor,
                                                 ),
-                                                onTap: () {
-                                                  if (context.mounted) {
-                                                    if (context.mounted) {
-                                                      showDialog(
-                                                        barrierColor: Colors.black,
-                                                        context: context,
-                                                        builder: (context) => RegistrationImageViewerContent(binaryImageList: binaryImage['data']['apply_forms_list']),
-                                                      );
-                                                    }
+                                                onTap: () async {
+                                                  await _fetchApplicationImages(_applicationsList[rowIndex].actNo ?? "");
+
+                                                  if (_base64ImagesList.isNotEmpty && context.mounted) {
+                                                    showDialog(
+                                                      barrierColor: Colors.black,
+                                                      context: context,
+                                                      builder: (context) => RegistrationImageViewerContent(binaryImageList: _base64ImagesList),
+                                                    );
                                                   }
                                                 },
                                               );
@@ -506,5 +507,18 @@ class RApplicationsPageState extends State<ApplicationsPage> {
 
     _dataLoading = false;
     setState(() {});
+  }
+
+  Future<void> _fetchApplicationImages(String applicationId) async {
+    try {
+      final APIService apiService = APIService();
+      var result = await apiService.fetchApplicationAttachs(
+        context: context,
+        applicationId: applicationId,
+      );
+      _base64ImagesList = result;
+    } catch (e) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+    }
   }
 }

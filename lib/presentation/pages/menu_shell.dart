@@ -11,38 +11,39 @@ class MenuShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: shellScaffoldKey,
-      drawer: const SideMenu(),
-      body: Row(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Consumer<SideMenuProvider>(
-            builder: (context, controller, child) {
-              //updating side menu status depending on the screen size
+    return Consumer<SideMenuProvider>(builder: (context, controller, sideMenuChild) {
+      //updating side menu status depending on the screen size
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        controller.updateDrawerBasedOnScreenSize(MediaQuery.of(context).size.width);
+      });
 
-              WidgetsBinding.instance.addPostFrameCallback((_) {
-                controller.updateDrawerBasedOnScreenSize(MediaQuery.of(context).size.width);
-              });
+      // this should be called whenever screen size changes
+      double width = 0;
+      if (controller.isDesktop && !controller.sideMenuManuallyClosed) {
+        width = 300; // example open width, adjust as needed
+      }
 
-              // this should be called whenever screen size changes
-              double width = 0;
-              if (controller.isDesktop && !controller.sideMenuManuallyClosed) {
-                width = 300; // example open width, adjust as needed
-              }
-              return AnimatedContainer(
-                duration: const Duration(milliseconds: 200), // adjsting the duration to control the speed of the animation
-                width: width,
-                curve: Curves.fastOutSlowIn,
-                child: const SideMenu(), // Optional: Add a curve for the animation
-              );
-            },
-          ),
-          Expanded(
-            child: child,
-          ),
-        ],
-      ),
-    );
+      return Scaffold(
+        key: shellScaffoldKey,
+        drawer: const SideMenu(),
+        onDrawerChanged: (isOpen) {
+          controller.updateSideMenu(!isOpen);
+        },
+        body: Row(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200), // adjsting the duration to control the speed of the animation
+              width: width,
+              curve: Curves.fastOutSlowIn,
+              child: const SideMenu(), // Optional: Add a curve for the animation
+            ),
+            Expanded(
+              child: child,
+            ),
+          ],
+        ),
+      );
+    });
   }
 }

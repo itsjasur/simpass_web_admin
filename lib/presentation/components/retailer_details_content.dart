@@ -1,5 +1,4 @@
 import 'package:admin_simpass/data/api/api_service.dart';
-import 'package:admin_simpass/data/models/applications_model.dart';
 import 'package:admin_simpass/data/models/retailers_model.dart';
 import 'package:admin_simpass/presentation/components/custom_text_input.dart';
 import 'package:admin_simpass/presentation/components/image_viewer_content.dart';

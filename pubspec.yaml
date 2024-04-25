@@ -46,9 +46,7 @@ dependencies:
     path: packages/omni_datetime_picker
   printing: ^5.12.0
   pdf: ^3.10.8
-  syncfusion_flutter_pdf: ^25.1.41
-  js:
-  html:
+
 
 
 

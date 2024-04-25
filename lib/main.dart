@@ -1,5 +1,3 @@
-import 'package:admin_simpass/data/api/api_service.dart';
-import 'package:admin_simpass/data/models/profile_model.dart';
 import 'package:admin_simpass/globals/global_keys.dart';
 import 'package:admin_simpass/providers/auth_provider.dart';
 import 'package:admin_simpass/providers/myinfo_provider.dart';
@@ -31,6 +29,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      title: 'Simpass Admin',
       routerConfig: appRouter,
 
       key: rootScaffoldKey,
@@ -48,8 +47,8 @@ class MyApp extends StatelessWidget {
         // ...
       ],
 
-      // themeMode: ThemeMode.light,
-      // darkTheme: ThemeData.dark(), // Optional, ensure this is set properly
+      themeMode: ThemeMode.light,
+      darkTheme: ThemeData.dark(), // Optional, ensure this is set properly
 
       theme: ThemeData(
         // colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
@@ -60,12 +59,12 @@ class MyApp extends StatelessWidget {
           background: Colors.white,
         ),
 
-        // pageTransitionsTheme: const PageTransitionsTheme(
-        //   builders: {
-        //     TargetPlatform.macOS: NoAnimationPageTransitionsBuilder(),
-        //     // TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-        //   },
-        // ),
+        pageTransitionsTheme: const PageTransitionsTheme(
+          builders: {
+            TargetPlatform.macOS: NoTransitionsBuilder(),
+            TargetPlatform.windows: NoTransitionsBuilder(),
+          },
+        ),
         useMaterial3: true,
         // textTheme: GoogleFonts.notoSansKrTextTheme(Theme.of(context).textTheme),
         // textTheme: GoogleFonts.notoSansKRTextTheme(),
@@ -166,4 +165,10 @@ class MyApp extends StatelessWidget {
 //   }
 // }
 
-
+class NoTransitionsBuilder extends PageTransitionsBuilder {
+  const NoTransitionsBuilder();
+  @override
+  Widget buildTransitions<T>(PageRoute<T>? route, BuildContext? context, Animation<double> animation, Animation<double> secondaryAnimation, Widget? child) {
+    return child!;
+  }
+}

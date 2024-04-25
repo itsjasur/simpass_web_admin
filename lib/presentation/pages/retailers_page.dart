@@ -1,10 +1,6 @@
 import 'package:admin_simpass/data/api/api_service.dart';
-import 'package:admin_simpass/data/models/applications_model.dart';
 import 'package:admin_simpass/data/models/retailers_model.dart';
 import 'package:admin_simpass/globals/constants.dart';
-import 'package:admin_simpass/globals/main_ui.dart';
-import 'package:admin_simpass/presentation/components/application_details_content.dart';
-import 'package:admin_simpass/presentation/components/application_status_update_content.dart';
 import 'package:admin_simpass/presentation/components/custom_alert_dialog.dart';
 import 'package:admin_simpass/presentation/components/custom_drop_down_menu.dart';
 import 'package:admin_simpass/presentation/components/custom_text_input.dart';

@@ -353,13 +353,12 @@ class _ApplicationDetailsContentState extends State<ApplicationDetailsContent> {
   Future<void> _fetchApplicationImages() async {
     try {
       final APIService apiService = APIService();
-      var result = await apiService.fetchApplicationImages(
+      var result = await apiService.fetchApplicationAttachs(
         context: context,
         applicationId: widget.applicationId,
       );
       _base64ImagesList = result;
     } catch (e) {
-      // print(e);
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
     }
   }
