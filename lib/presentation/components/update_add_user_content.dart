@@ -55,11 +55,12 @@ class _UpdateAddUserContentState extends State<UpdateAddUserContent> {
 
   @override
   void initState() {
+    super.initState();
+
     if (!widget.isNew) {
       _fetchData();
     }
     _checkSelfRole();
-    super.initState();
   }
 
   @override
@@ -102,6 +103,7 @@ class _UpdateAddUserContentState extends State<UpdateAddUserContent> {
                 children: [
                   Expanded(
                     child: CustomTextInput(
+                      enabled: false,
                       controller: _userNameController,
                       title: '아이디',
                       validator: InputValidator().validateId,

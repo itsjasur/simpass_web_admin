@@ -74,31 +74,6 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
     _subscriberTarget = widget.info.carrierPlanType.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList();
     _statuses = widget.info.statusCd.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList();
 
-    //listener should come before model parsing to local variables
-    _selectedCarrierCodeCntr.addListener(() {
-      if (_selectedCarrierCodeCntr.text.isEmpty) _selectedCarrierCode = "";
-    });
-
-    _selectedMvnoCodeCntr.addListener(() {
-      if (_selectedMvnoCodeCntr.text.isEmpty) _selectedMvnoCode = "";
-    });
-
-    _selectedAgentCodeCntr.addListener(() {
-      if (_selectedAgentCodeCntr.text.isEmpty) _selectedAgentCode = "";
-    });
-
-    _selectedPlanTypeCodeCntr.addListener(() {
-      if (_selectedPlanTypeCodeCntr.text.isEmpty) _selectedPlanTypeCode = "";
-    });
-
-    _selectedSubscriberTargetCodeCntr.addListener(() {
-      if (_selectedSubscriberTargetCodeCntr.text.isEmpty) _selectedSubscriberTargetCode = "";
-    });
-
-    _selectedStatusCodeCntr.addListener(() {
-      if (_selectedStatusCodeCntr.text.isEmpty) _selectedStatusCode = "";
-    });
-
     if (widget.selectedPlan != null) {
       PlanModel model = widget.selectedPlan!;
 
@@ -465,6 +440,22 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
   }
 
   bool _checkDropDownValues() {
+    String checkTheOptions(TextEditingController cntr, List<CodeNamePair> items) {
+      for (var e in items) {
+        if (e.value == cntr.text) {
+          return e.cd;
+        }
+      }
+      return "";
+    }
+
+    _selectedCarrierCode = checkTheOptions(_selectedCarrierCodeCntr, widget.info.carrierCd);
+    _selectedMvnoCode = checkTheOptions(_selectedMvnoCodeCntr, widget.info.mvnoCd);
+    _selectedAgentCode = checkTheOptions(_selectedAgentCodeCntr, widget.info.agentCd);
+    _selectedPlanTypeCode = checkTheOptions(_selectedPlanTypeCodeCntr, widget.info.carrierType);
+    _selectedSubscriberTargetCode = checkTheOptions(_selectedSubscriberTargetCodeCntr, widget.info.carrierPlanType);
+    _selectedStatusCode = checkTheOptions(_selectedStatusCodeCntr, widget.info.statusCd);
+
     _selectedCarrierCodeErr = _selectedCarrierCode.isEmpty ? "통신사 선택하세요." : null;
     _selectedMvnoCodeErr = _selectedMvnoCode.isEmpty ? "브랜드 선택하세요." : null;
     _selectedAgentCodeErr = _selectedAgentCode.isEmpty ? "대리점 선택하세요." : null;
@@ -510,6 +501,8 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
             carrierType: _selectedPlanTypeCode,
             priority: int.tryParse(_priorityController.text),
             status: _selectedStatusCode,
+            qos: _qosController.text,
+            videoEtc: _videoEtcController.text,
           ));
 
       if (result) {

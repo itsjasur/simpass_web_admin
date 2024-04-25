@@ -1,5 +1,5 @@
 class ManagePlansModel {
-  final List<CarrierType> carrierType;
+  final List<CodeNamePair> carrierType;
   final List<CodeNamePair> mvnoCd;
   final List<CodeNamePair> carrierPlanType;
   final int lastPage;
@@ -27,7 +27,7 @@ class ManagePlansModel {
 
   factory ManagePlansModel.fromJson(Map<String, dynamic> json) {
     return ManagePlansModel(
-      carrierType: List<CarrierType>.from(json['carrier_type'].map((x) => CarrierType.fromJson(x))),
+      carrierType: List<CodeNamePair>.from(json['carrier_type'].map((x) => CodeNamePair.fromJson(x))),
       mvnoCd: List<CodeNamePair>.from(json['mvno_cd'].map((x) => CodeNamePair.fromJson(x))),
       carrierPlanType: List<CodeNamePair>.from(json['carrier_plan_type'].map((x) => CodeNamePair.fromJson(x))),
       lastPage: json['lastPage'],
@@ -42,19 +42,19 @@ class ManagePlansModel {
   }
 }
 
-class CarrierType {
-  final String cd;
-  final String value;
+// class CarrierType {
+//   final String cd;
+//   final String value;
 
-  CarrierType({required this.cd, required this.value});
+//   CarrierType({required this.cd, required this.value});
 
-  factory CarrierType.fromJson(Map<String, dynamic> json) {
-    return CarrierType(
-      cd: json['cd'],
-      value: json['value'],
-    );
-  }
-}
+//   factory CarrierType.fromJson(Map<String, dynamic> json) {
+//     return CarrierType(
+//       cd: json['cd'],
+//       value: json['value'],
+//     );
+//   }
+// }
 
 class CodeNamePair {
   final String cd;

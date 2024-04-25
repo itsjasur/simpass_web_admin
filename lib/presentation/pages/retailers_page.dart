@@ -97,8 +97,6 @@ class _RetailersPageState extends State<RetailersPage> {
                                   child: LayoutBuilder(
                                     builder: (context, constraints) => CustomDropDownMenu(
                                       controller: _statusCnt,
-                                      enableSearch: true,
-                                      requestFocusOnTap: true,
                                       label: const Text("상태"),
                                       items: _statusesList.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
                                       width: constraints.maxWidth,
