@@ -1,4 +1,6 @@
+import 'package:admin_simpass/globals/constants.dart';
 import 'package:admin_simpass/presentation/pages/applications_page.dart';
+import 'package:admin_simpass/presentation/pages/empty_page.dart';
 import 'package:admin_simpass/presentation/pages/manage_plans_page.dart';
 import 'package:admin_simpass/presentation/pages/manage_users_page.dart';
 import 'package:admin_simpass/presentation/pages/menu_shell.dart';
@@ -15,16 +17,9 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 final appRouter = GoRouter(
-  initialLocation: '/',
+  initialLocation: '/manage-plans',
   errorBuilder: (context, state) => const NotFoundPage(),
   routes: [
-    // GoRoute(
-    //   name: 'image-viewer',
-    //   path: '/',
-    //   builder: (context, state) => RegistrationImageViewerContent(
-    //     binaryImageList: binaryImage['data']['apply_forms_list'],
-    //   ),
-    // ),
     GoRoute(
       name: 'login',
       path: '/login',
@@ -37,6 +32,11 @@ final appRouter = GoRouter(
     ),
     ShellRoute(
       routes: [
+        GoRoute(
+          name: 'emptyhome',
+          path: '/',
+          builder: (context, state) => const EmptyHomePage(),
+        ),
         GoRoute(
           name: 'profile',
           path: '/profile',
@@ -68,9 +68,9 @@ final appRouter = GoRouter(
   ],
   redirect: (context, state) async {
     final isLoggedIn = context.read<AuthServiceProvider>().isLoggedIn;
-    final goingToLogin = state.matchedLocation == '/login';
-    final goingToHome = state.matchedLocation == '/';
-    final goingToMangeUsers = state.matchedLocation == '/manage-users';
+
+    // User is not logged in and not heading to login, redirects to login
+    if (!isLoggedIn) return '/login';
 
     //updating side menu state if user opens from url
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -79,32 +79,26 @@ final appRouter = GoRouter(
     });
 
     final myInfoProvider = Provider.of<MyinfoProvifer>(context, listen: false);
-    List<String> roles = await myInfoProvider.getRolesList();
+    List<String> myRoles = await myInfoProvider.getRolesList();
+    // List<String> myRoles = ["ROLE_MANAGERs"];
 
-    //checking if the user is admin or super admin
-    bool isAdmin = roles.contains("ROLE_SUPER") || roles.contains("ROLE_ADMIN");
+    String headingLocation = state.matchedLocation;
 
-    // print(isAdmin);
+    // checking if headingLocation exists as a key in pathAccessInfo
+    bool isHeadingLocationInMap = rolePathAccessInfo.containsKey(headingLocation);
 
-    // User is not logged in and not heading to login, redirects to login
-    if (!isLoggedIn && !goingToLogin) {
-      // print("redirecting to login");
-      return '/login';
-    }
+    // assuming headingLocation matches key in pathAccessInfo
+    List<dynamic> allowedRoles = isHeadingLocationInMap ? rolePathAccessInfo[headingLocation]! : [];
 
-    // User is logged in but heading to login, redirects to home
-    if (isLoggedIn && goingToLogin) {
-      return '/applications';
-    }
+    // checking if the path is available to everyone
+    bool isAccessibleToAll = allowedRoles.contains("ALL");
 
-    if (isLoggedIn && goingToHome) {
-      return '/applications';
-    }
+    // checking if the user has access to the specified headingLocation based on their roles
+    bool userHasAccess = isAccessibleToAll || myRoles.any((role) => allowedRoles.contains(role));
 
-    //if not admin and going to manage users
-    if (goingToMangeUsers && !isAdmin) {
-      return '/applications';
-    }
+    if (!userHasAccess) return "/profile";
+
+    // print(userHasAccess ? "user has access" : "user does not have access");
 
     // No need to redirect
     return null;

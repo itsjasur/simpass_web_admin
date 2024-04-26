@@ -7,8 +7,10 @@ import 'package:admin_simpass/presentation/components/custom_alert_dialog.dart';
 import 'package:admin_simpass/presentation/components/header.dart';
 import 'package:admin_simpass/presentation/components/update_add_user_content.dart';
 import 'package:admin_simpass/presentation/components/pagination.dart';
+import 'package:admin_simpass/providers/myinfo_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
 
 class ManageUsersPage extends StatefulWidget {
   const ManageUsersPage({super.key});
@@ -46,6 +48,10 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
 
   @override
   Widget build(BuildContext context) {
+    //checking user roles from myinfoprovider
+    final myInfoProvider = Provider.of<MyinfoProvifer>(context, listen: false);
+    List<String> myRoles = myInfoProvider.myRoles;
+
     return SelectionArea(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -65,24 +71,25 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Container(
-                            height: 47,
-                            margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-                            constraints: const BoxConstraints(minWidth: 100),
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(),
-                              onPressed: () {
-                                showCustomDialog(
-                                  content: UpdateAddUserContent(
-                                    isNew: true,
-                                    callback: _fetchUsers,
-                                  ),
-                                  context: context,
-                                );
-                              },
-                              child: const Text("신규등록 +"),
+                          if (myRoles.contains('ROLE_SUPER'))
+                            Container(
+                              height: 47,
+                              margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                              constraints: const BoxConstraints(minWidth: 100),
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(),
+                                onPressed: () {
+                                  showCustomDialog(
+                                    content: UpdateAddUserContent(
+                                      isNew: true,
+                                      callback: _fetchUsers,
+                                    ),
+                                    context: context,
+                                  );
+                                },
+                                child: const Text("신규등록 +"),
+                              ),
                             ),
-                          ),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
                             child: Pagination(
@@ -97,7 +104,6 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
                               },
                             ),
                           ),
-                          const Gap(20),
                           Scrollbar(
                             controller: _horizontalScrolCntr,
                             child: SingleChildScrollView(

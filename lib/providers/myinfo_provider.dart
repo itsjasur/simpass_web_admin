@@ -7,7 +7,6 @@ class MyinfoProvifer extends ChangeNotifier {
 
   Future<void> setRoles(List<String> roles) async {
     _myRoles = roles;
-
     notifyListeners();
   }
 
@@ -15,13 +14,13 @@ class MyinfoProvifer extends ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setStringList('myRolesList', roles);
     _myRoles = roles;
-
     notifyListeners();
   }
 
   Future<List<String>> getRolesList() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> roles = prefs.getStringList('myRolesList') ?? [];
+    _myRoles = roles;
     return roles;
   }
 }

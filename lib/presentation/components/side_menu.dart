@@ -1,3 +1,4 @@
+import 'package:admin_simpass/globals/constants.dart';
 import 'package:admin_simpass/presentation/components/clickable_logo.dart';
 import 'package:admin_simpass/providers/menu_navigation_provider.dart';
 import 'package:admin_simpass/providers/myinfo_provider.dart';
@@ -6,32 +7,15 @@ import 'package:admin_simpass/presentation/components/side_menu_tile.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-class SideMenu extends StatefulWidget {
+class SideMenu extends StatelessWidget {
   const SideMenu({super.key});
 
   @override
-  State<SideMenu> createState() => _SideMenuState();
-}
-
-class _SideMenuState extends State<SideMenu> {
-  bool isAdmin = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _checkUserRole();
-  }
-
-  Future<void> _checkUserRole() async {
-    final myInfoProvider = Provider.of<MyinfoProvifer>(context, listen: false);
-    List<String> roles = await myInfoProvider.getRolesList();
-    setState(() {
-      isAdmin = roles.contains("ROLE_SUPER") || roles.contains("ROLE_ADMIN");
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    //checking user roles from myinfoprovider
+    final myInfoProvider = Provider.of<MyinfoProvifer>(context, listen: false);
+    List<String> myRoles = myInfoProvider.myRoles;
+
     return Drawer(
       shadowColor: Colors.transparent,
       surfaceTintColor: Colors.transparent,
@@ -63,7 +47,7 @@ class _SideMenuState extends State<SideMenu> {
                 },
                 isSelected: value.openSideMenuIndex == 0,
               ),
-              if (isAdmin)
+              if (myRoles.any((role) => rolePathAccessInfo['/manage-users']!.contains(role)))
                 SideMenuWidget(
                   title: "사용자 관리",
                   iconSrc: "assets/icons/admin.svg",
@@ -72,30 +56,33 @@ class _SideMenuState extends State<SideMenu> {
                   },
                   isSelected: value.openSideMenuIndex == 1,
                 ),
-              SideMenuWidget(
-                title: "요금제 관리",
-                iconSrc: "assets/icons/plans.svg",
-                press: () {
-                  context.go('/manage-plans');
-                },
-                isSelected: value.openSideMenuIndex == 2,
-              ),
-              SideMenuWidget(
-                title: "신청서 접수현황",
-                iconSrc: "assets/icons/regis.svg",
-                press: () {
-                  context.go('/applications');
-                },
-                isSelected: value.openSideMenuIndex == 3,
-              ),
-              SideMenuWidget(
-                title: "판매점 계약현황",
-                iconSrc: "assets/icons/partner.svg",
-                press: () {
-                  context.go('/retailers');
-                },
-                isSelected: value.openSideMenuIndex == 4,
-              ),
+              if (myRoles.any((role) => rolePathAccessInfo['/manage-plans']!.contains(role)))
+                SideMenuWidget(
+                  title: "요금제 관리",
+                  iconSrc: "assets/icons/plans.svg",
+                  press: () {
+                    context.go('/manage-plans');
+                  },
+                  isSelected: value.openSideMenuIndex == 2,
+                ),
+              if (myRoles.any((role) => rolePathAccessInfo['/applications']!.contains(role)))
+                SideMenuWidget(
+                  title: "신청서 접수현황",
+                  iconSrc: "assets/icons/regis.svg",
+                  press: () {
+                    context.go('/applications');
+                  },
+                  isSelected: value.openSideMenuIndex == 3,
+                ),
+              if (myRoles.any((role) => rolePathAccessInfo['/retailers']!.contains(role)))
+                SideMenuWidget(
+                  title: "판매점 계약현황",
+                  iconSrc: "assets/icons/partner.svg",
+                  press: () {
+                    context.go('/retailers');
+                  },
+                  isSelected: value.openSideMenuIndex == 4,
+                ),
             ],
           );
         },
