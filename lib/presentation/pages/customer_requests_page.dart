@@ -1,8 +1,10 @@
 import 'package:admin_simpass/data/api/api_service.dart';
 import 'package:admin_simpass/data/models/customer_requests_model.dart';
 import 'package:admin_simpass/globals/constants.dart';
+import 'package:admin_simpass/presentation/components/custom_alert_dialog.dart';
 import 'package:admin_simpass/presentation/components/custom_drop_down_menu.dart';
 import 'package:admin_simpass/presentation/components/custom_text_input.dart';
+import 'package:admin_simpass/presentation/components/customer_request_status_update_content.dart';
 import 'package:admin_simpass/presentation/components/header.dart';
 import 'package:admin_simpass/presentation/components/pagination.dart';
 import 'package:flutter/material.dart';
@@ -343,7 +345,17 @@ class CustomerRequestsPageState extends State<CustomerRequestsPage> {
                                                     ],
                                                   ),
                                                 ),
-                                                onTap: () {},
+                                                onTap: () {
+                                                  showCustomDialog(
+                                                    barrierDismissible: false,
+                                                    context: context,
+                                                    content: CustomerRequestStatusUpdateContent(
+                                                      items: _statusesList.map((e) => DropdownMenuEntry(value: e.cd ?? "", label: e.value ?? "")).toList(),
+                                                      id: _customerRequestsList[rowIndex].id ?? 0,
+                                                      callBack: _fetchCustomerRequests,
+                                                    ),
+                                                  );
+                                                },
                                               );
                                             }
 
