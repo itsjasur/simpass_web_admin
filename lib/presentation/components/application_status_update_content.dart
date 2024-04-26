@@ -21,7 +21,6 @@ class ApplicationStatusUpdateContent extends StatefulWidget {
 }
 
 class _ApplicationStatusUpdateContentState extends State<ApplicationStatusUpdateContent> {
-  final TextEditingController _statusCnt = TextEditingController();
   final TextEditingController _phoneNumberCnt = TextEditingController(text: '010-');
 
   String _selectedStatusCode = "";
@@ -33,16 +32,10 @@ class _ApplicationStatusUpdateContentState extends State<ApplicationStatusUpdate
   @override
   void initState() {
     super.initState();
-
-    _statusCnt.addListener(() {
-      _selectedStatusCode = "";
-      setState(() {});
-    });
   }
 
   @override
   void dispose() {
-    _statusCnt.dispose();
     _phoneNumberCnt.dispose();
     super.dispose();
   }
@@ -67,11 +60,8 @@ class _ApplicationStatusUpdateContentState extends State<ApplicationStatusUpdate
             const Gap(20),
             LayoutBuilder(
               builder: (context, constraints) => CustomDropDownMenu(
-                controller: _statusCnt,
                 label: const Text("상태"),
                 items: widget.items,
-                enableSearch: true,
-                requestFocusOnTap: true,
                 width: constraints.maxWidth,
                 errorText: _statusErrorCode,
                 selectedItem: _selectedStatusCode,

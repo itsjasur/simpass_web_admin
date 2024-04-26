@@ -30,8 +30,6 @@ class _ProfilePageState extends State<ProfilePage> {
   final TextEditingController _passController = TextEditingController();
   final TextEditingController _passReentryController = TextEditingController();
 
-  final TextEditingController _selectedCountryController = TextEditingController();
-
   List<dynamic> _roles = [];
   int? _userId;
 
@@ -50,10 +48,6 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
     _fetchProfileData();
-
-    _selectedCountryController.addListener(() {
-      _selectedCountryCode = "";
-    });
   }
 
   @override
@@ -63,11 +57,8 @@ class _ProfilePageState extends State<ProfilePage> {
     _fullNameController.dispose();
     _emailController.dispose();
     _phoneNumberController.dispose();
-    _selectedCountryController.dispose();
-
     _startDateController.dispose();
     _expiryDateController.dispose();
-
     _oldPassController.dispose();
     _passReentryController.dispose();
 
@@ -167,10 +158,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                           return CustomDropDownMenu(
                                             label: const Text("국가"),
                                             errorText: _countryErrorText,
-                                            enableSearch: true,
-                                            enableFilter: true,
-                                            controller: _selectedCountryController,
-                                            requestFocusOnTap: true,
                                             onSelected: (selectedItem) {
                                               _selectedCountryCode = selectedItem;
                                               _countryErrorText = null;

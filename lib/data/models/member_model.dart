@@ -142,7 +142,7 @@ class MemberAddUpdateModel {
       'expire_date': expireDate,
       'phone_number': phoneNumber,
       'country': country,
-      'role': roles,
+      'strRoles': roles,
     };
   }
 }

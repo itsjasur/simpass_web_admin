@@ -17,7 +17,8 @@ class UpdateAddUserContent extends StatefulWidget {
   final String? userName;
   final int? userId;
   final bool isNew;
-  const UpdateAddUserContent({super.key, this.userName, this.userId, this.isNew = false});
+  final Function() callback;
+  const UpdateAddUserContent({super.key, this.userName, this.userId, this.isNew = false, required this.callback});
 
   @override
   State<UpdateAddUserContent> createState() => _UpdateAddUserContentState();
@@ -38,6 +39,7 @@ class _UpdateAddUserContentState extends State<UpdateAddUserContent> {
   final TextEditingController _expiryDateController = TextEditingController(text: CustomFormat().formatDateWithTime(DateTime.now().add(const Duration(days: 365)).toString()));
 
   String _selectedCountryCode = countryNameCodelist[0]['code'];
+
   String _selectedStatusCode = memberStatuses[0]['code'];
 
   final List<DropdownMenuEntry> _countries = countryNameCodelist.map((item) => DropdownMenuEntry(value: item['code'], label: item['label'])).toList();
@@ -56,11 +58,11 @@ class _UpdateAddUserContentState extends State<UpdateAddUserContent> {
   @override
   void initState() {
     super.initState();
+    _handleCheckboxes();
 
     if (!widget.isNew) {
       _fetchData();
     }
-    _checkSelfRole();
   }
 
   @override
@@ -73,7 +75,7 @@ class _UpdateAddUserContentState extends State<UpdateAddUserContent> {
     _phoneNumberController.dispose();
     _passController.dispose();
     _passReentryController.dispose();
-
+    _selectedRoles.clear();
     super.dispose();
   }
 
@@ -103,7 +105,7 @@ class _UpdateAddUserContentState extends State<UpdateAddUserContent> {
                 children: [
                   Expanded(
                     child: CustomTextInput(
-                      enabled: false,
+                      enabled: widget.isNew,
                       controller: _userNameController,
                       title: '아이디',
                       validator: InputValidator().validateId,
@@ -362,16 +364,6 @@ class _UpdateAddUserContentState extends State<UpdateAddUserContent> {
     );
   }
 
-  Future<void> _checkSelfRole() async {
-    List<String> myRolesList = await Provider.of<MyinfoProvifer>(context, listen: false).getRolesList();
-    if (!myRolesList.contains('ROLE_SUPER')) {
-      _userRolesList[0]['state'] = 'hidden';
-      _userRolesList[0]['checked'] = false;
-      _globalLowRoleCodes.add('ROLE_SUPER');
-    }
-    setState(() {});
-  }
-
   Future<void> _fetchData() async {
     final APIService apiService = APIService();
 
@@ -382,13 +374,16 @@ class _UpdateAddUserContentState extends State<UpdateAddUserContent> {
       _emailController.text = memberInfo.email ?? "";
       _phoneNumberController.text = memberInfo.phoneNumber ?? "";
       _selectedCountryCode = memberInfo.country ?? "";
+      _selectedStatusCode = memberInfo.status ?? memberStatuses[0]['code'];
+
       _fromDateController.text = CustomFormat().formatDateWithTime(memberInfo.fromDate) ?? "";
       _expiryDateController.text = CustomFormat().formatDateWithTime(memberInfo.expireDate) ?? "";
+
       List<dynamic> rolesList = memberInfo.strRoles ?? [];
       _selectedRoles.addAll(rolesList);
       _handleCheckboxes();
     } catch (e) {
-      if (mounted) if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
     }
 
     setState(() {});
@@ -421,6 +416,8 @@ class _UpdateAddUserContentState extends State<UpdateAddUserContent> {
           roles: _selectedRoles.toList(),
         ),
       );
+      widget.callback();
+      if (mounted) context.pop();
     }
 
     _dataUpdating = false;
@@ -454,13 +451,13 @@ class _UpdateAddUserContentState extends State<UpdateAddUserContent> {
           password: _passController.text,
         ),
       );
-
+      widget.callback();
       await Future.delayed(const Duration(seconds: 1));
-      if (mounted) context.canPop();
+      if (mounted) context.pop();
     }
 
     _dataUpdating = false;
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   void _handleCheckboxes() {
@@ -489,6 +486,16 @@ class _UpdateAddUserContentState extends State<UpdateAddUserContent> {
 
     _checkSelfRole();
 
+    setState(() {});
+  }
+
+  Future<void> _checkSelfRole() async {
+    List<String> myRolesList = await Provider.of<MyinfoProvifer>(context, listen: false).getRolesList();
+    if (!myRolesList.contains('ROLE_SUPER')) {
+      _userRolesList[0]['state'] = 'hidden';
+      _userRolesList[0]['checked'] = false;
+      _globalLowRoleCodes.add('ROLE_SUPER');
+    }
     setState(() {});
   }
 }

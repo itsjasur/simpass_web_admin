@@ -370,6 +370,7 @@ class _RetailersPageState extends State<RetailersPage> {
                               ),
                             ),
                           ),
+                          const Gap(100),
                         ],
                       ),
                     ),

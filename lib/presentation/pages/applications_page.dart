@@ -32,7 +32,6 @@ class RApplicationsPageState extends State<ApplicationsPage> {
   final TextEditingController _fromDateCntr = TextEditingController(text: CustomFormat().formatDate(DateTime.now().subtract(const Duration(days: 30)).toString()));
   final TextEditingController _toDateCntr = TextEditingController(text: CustomFormat().formatDate(DateTime.now().toString()));
 
-  final TextEditingController _statusCnt = TextEditingController();
   final ScrollController _horizontalScrolCntr = ScrollController();
 
   late List<DropdownMenuEntry> _statusesList;
@@ -55,18 +54,12 @@ class RApplicationsPageState extends State<ApplicationsPage> {
     super.initState();
 
     _fetchApplications();
-
-    _statusCnt.addListener(() {
-      _selectedStatusCode = "";
-      _fetchApplications();
-    });
   }
 
   @override
   void dispose() {
     _fromDateCntr.dispose();
     _toDateCntr.dispose();
-    _statusCnt.dispose();
     _horizontalScrolCntr.dispose();
 
     super.dispose();
@@ -161,12 +154,8 @@ class RApplicationsPageState extends State<ApplicationsPage> {
                                     ),
                                     child: LayoutBuilder(
                                       builder: (context, constraints) => CustomDropDownMenu(
-                                        controller: _statusCnt,
                                         label: const Text("상태"),
                                         items: _statusesList,
-                                        enableSearch: true,
-                                        // enableFilter: true,
-                                        requestFocusOnTap: true,
                                         width: constraints.maxWidth,
                                         selectedItem: _selectedStatusCode,
                                         onSelected: (selectedItem) {
@@ -469,6 +458,7 @@ class RApplicationsPageState extends State<ApplicationsPage> {
                               ),
                             ),
                           ),
+                          const Gap(100),
                         ],
                       ),
                     ),

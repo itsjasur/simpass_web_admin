@@ -181,7 +181,6 @@ class APIService {
       if (response.statusCode == 200) {
         await Future.delayed(const Duration(seconds: 1));
         messenger.showSnackBar(SnackBar(content: Text(decodedResponse['message'])));
-        if (context.mounted) context.pop();
       } else {
         throw decodedResponse['message'] ?? "Update data incorrect";
       }
@@ -454,6 +453,7 @@ class APIService {
       var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode == 200 && decodedResponse['result'] == 'SUCCESS') {
+        if (decodedResponse["data"]['image'] == null) throw "목록이 비어 있습니다.";
         return decodedResponse["data"]['image'];
       } else {
         throw decodedResponse['message'] ?? "Retailer image request data error";

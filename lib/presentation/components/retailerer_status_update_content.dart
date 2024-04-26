@@ -17,8 +17,6 @@ class RetailerStatusUpdateContent extends StatefulWidget {
 }
 
 class _RetailerStatusUpdateContentState extends State<RetailerStatusUpdateContent> {
-  final TextEditingController _statusCnt = TextEditingController();
-
   String _selectedStatusCode = "";
   final _formKey = GlobalKey<FormState>();
   bool _updating = false;
@@ -28,16 +26,10 @@ class _RetailerStatusUpdateContentState extends State<RetailerStatusUpdateConten
   @override
   void initState() {
     super.initState();
-
-    _statusCnt.addListener(() {
-      _selectedStatusCode = "";
-      setState(() {});
-    });
   }
 
   @override
   void dispose() {
-    _statusCnt.dispose();
     super.dispose();
   }
 
@@ -61,11 +53,8 @@ class _RetailerStatusUpdateContentState extends State<RetailerStatusUpdateConten
             const Gap(20),
             LayoutBuilder(
               builder: (context, constraints) => CustomDropDownMenu(
-                controller: _statusCnt,
                 label: const Text("상태"),
                 items: widget.items,
-                enableSearch: true,
-                requestFocusOnTap: true,
                 width: constraints.maxWidth,
                 errorText: _statusErrorCode,
                 selectedItem: _selectedStatusCode,

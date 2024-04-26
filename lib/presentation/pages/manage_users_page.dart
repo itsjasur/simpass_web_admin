@@ -73,8 +73,9 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
                               style: ElevatedButton.styleFrom(),
                               onPressed: () {
                                 showCustomDialog(
-                                  content: const UpdateAddUserContent(
+                                  content: UpdateAddUserContent(
                                     isNew: true,
+                                    callback: _fetchUsers,
                                   ),
                                   context: context,
                                 );
@@ -235,6 +236,7 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
                                                   content: UpdateAddUserContent(
                                                     userId: _usersList[rowIndex].id,
                                                     userName: _usersList[rowIndex].username,
+                                                    callback: _fetchUsers,
                                                   ),
                                                   context: context,
                                                 );
@@ -263,10 +265,6 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
   }
 
   Future<void> _fetchUsers() async {
-    // List<UserModel> newList = ROWS.map((json) => UserModel.fromJson(json)).toList();
-    // _usersList.addAll(newList);
-    // setState(() {});
-
     if (_currentPage == 1) _usersList.clear();
 
     try {
@@ -286,9 +284,7 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
       _dataLoading = false;
       setState(() {});
     } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
-      }
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
     }
   }
 }

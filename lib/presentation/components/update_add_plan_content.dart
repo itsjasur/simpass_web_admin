@@ -28,12 +28,7 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
   String _selectedSubscriberTargetCode = "";
   String _selectedStatusCode = "";
 
-  final TextEditingController _selectedCarrierCodeCntr = TextEditingController();
   final TextEditingController _selectedMvnoCodeCntr = TextEditingController();
-  final TextEditingController _selectedAgentCodeCntr = TextEditingController();
-  final TextEditingController _selectedPlanTypeCodeCntr = TextEditingController();
-  final TextEditingController _selectedSubscriberTargetCodeCntr = TextEditingController();
-  final TextEditingController _selectedStatusCodeCntr = TextEditingController();
 
   String? _selectedCarrierCodeErr;
   String? _selectedMvnoCodeErr;
@@ -110,12 +105,7 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
     _qosController.dispose();
     _priorityController.dispose();
 
-    _selectedCarrierCodeCntr.dispose();
     _selectedMvnoCodeCntr.dispose();
-    _selectedAgentCodeCntr.dispose();
-    _selectedPlanTypeCodeCntr.dispose();
-    _selectedSubscriberTargetCodeCntr.dispose();
-    _selectedStatusCodeCntr.dispose();
 
     super.dispose();
   }
@@ -155,10 +145,6 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
                     child: LayoutBuilder(
                       builder: (context, constraints) => CustomDropDownMenu(
                         label: const Text("통신사"),
-                        controller: _selectedCarrierCodeCntr,
-                        requestFocusOnTap: true,
-                        enableSearch: true,
-                        enableFilter: true,
                         enabled: widget.selectedPlan == null,
                         errorText: _selectedCarrierCodeErr,
                         items: _carriers,
@@ -179,12 +165,11 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
                     ),
                     child: LayoutBuilder(
                       builder: (context, constraints) => CustomDropDownMenu(
-                        requestFocusOnTap: true,
-                        enableSearch: true,
                         controller: _selectedMvnoCodeCntr,
-                        enableFilter: true,
                         enabled: widget.selectedPlan == null,
                         label: const Text("브랜드"),
+                        requestFocusOnTap: true,
+                        enableSearch: true,
                         errorText: _selectedMvnoCodeErr,
                         onSelected: (selectedItem) {
                           _selectedMvnoCodeErr = null;
@@ -204,10 +189,6 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
                     ),
                     child: LayoutBuilder(
                       builder: (context, constraints) => CustomDropDownMenu(
-                        requestFocusOnTap: true,
-                        enableSearch: true,
-                        controller: _selectedAgentCodeCntr,
-                        enableFilter: true,
                         errorText: _selectedAgentCodeErr,
                         label: const Text("대리점"),
                         onSelected: (selectedItem) {
@@ -227,12 +208,7 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
                     ),
                     child: LayoutBuilder(
                       builder: (context, constraints) => CustomDropDownMenu(
-                        requestFocusOnTap: true,
-                        enableSearch: true,
-                        controller: _selectedPlanTypeCodeCntr,
-
                         errorText: _selectedPlanTypeCodeErr,
-                        // enableFilter: true,
                         label: const Text("서비스 유형"),
                         onSelected: (selectedItem) {
                           _selectedPlanTypeCodeErr = null;
@@ -251,10 +227,6 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
                     ),
                     child: LayoutBuilder(
                       builder: (context, constraints) => CustomDropDownMenu(
-                        requestFocusOnTap: true,
-                        controller: _selectedSubscriberTargetCodeCntr,
-                        enableSearch: true,
-                        enableFilter: true,
                         label: const Text("요금제 가입구분"),
                         errorText: _selectedSubscriberTargetCodeErr,
                         onSelected: (selectedItem) {
@@ -285,12 +257,8 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
                     ),
                     child: LayoutBuilder(
                       builder: (context, constraints) => CustomDropDownMenu(
-                        requestFocusOnTap: true,
-                        enableSearch: true,
-                        enableFilter: true,
                         errorText: _selectedStatusCodeErr,
                         label: const Text("상태"),
-                        controller: _selectedStatusCodeCntr,
                         onSelected: (selectedItem) {
                           _selectedStatusCode = selectedItem;
                           _selectedStatusCodeErr = null;
@@ -449,12 +417,7 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
       return "";
     }
 
-    _selectedCarrierCode = checkTheOptions(_selectedCarrierCodeCntr, widget.info.carrierCd);
     _selectedMvnoCode = checkTheOptions(_selectedMvnoCodeCntr, widget.info.mvnoCd);
-    _selectedAgentCode = checkTheOptions(_selectedAgentCodeCntr, widget.info.agentCd);
-    _selectedPlanTypeCode = checkTheOptions(_selectedPlanTypeCodeCntr, widget.info.carrierType);
-    _selectedSubscriberTargetCode = checkTheOptions(_selectedSubscriberTargetCodeCntr, widget.info.carrierPlanType);
-    _selectedStatusCode = checkTheOptions(_selectedStatusCodeCntr, widget.info.statusCd);
 
     _selectedCarrierCodeErr = _selectedCarrierCode.isEmpty ? "통신사 선택하세요." : null;
     _selectedMvnoCodeErr = _selectedMvnoCode.isEmpty ? "브랜드 선택하세요." : null;

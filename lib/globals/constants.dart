@@ -29,7 +29,7 @@ const List applicationsSearchTypeList = [
   {"code": 'regisDate', "label": '개통일자'},
   {"code": 'status', "label": '상태'},
 ];
-final List<int> perPageCounts = [50, 10, 100, 250, 500];
+final List<int> perPageCounts = [50, 100, 250, 500];
 
 final List<Map<String, dynamic>> userRolesList = [
   {
