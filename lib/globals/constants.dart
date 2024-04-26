@@ -1,5 +1,14 @@
 double desktopBreakPoint = 700;
 
+Map<String, List> rolePathAccessInfo = {
+  "/profile": ["ALL"],
+  "/manage-users": ["ROLE_SUPER", "ROLE_ADMIN"],
+  "/manage-plans": ['ROLE_SUPER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_OPEN_ADMIN'],
+  "/applications": ['ROLE_SUPER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_OPEN_ADMIN', 'ROLE_OPEN_MANAGER'],
+  "/retailers": ['ROLE_SUPER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_OPEN_ADMIN'],
+  "/customer-requests": ['ALL'],
+};
+
 const List countryNameCodelist = [
   {"code": 'CN', "label": '중국'},
   {"code": 'VN', "label": '베트남'},
@@ -165,10 +174,4 @@ final List applicationsColumns = ['No.', '판매점영', '상태', '접수번호
 
 final List retailersColumns = ['No.', '상태', '만매점명', '대표자명', '연락처', '사업자번호', '접수일자', '계약일자', '상세정보'];
 
-Map<String, List> rolePathAccessInfo = {
-  "/profile": ["ALL"],
-  "/manage-users": ["ROLE_SUPER", "ROLE_ADMIN"],
-  "/manage-plans": ['ROLE_SUPER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_OPEN_ADMIN'],
-  "/applications": ['ROLE_SUPER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_OPEN_ADMIN', 'ROLE_OPEN_MANAGER'],
-  "/retailers": ['ROLE_SUPER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_OPEN_ADMIN'],
-};
+final List customerRequestsColumns = ['No.', '이름', '연락처', '국가', '요금제', '가입구분명', '상태명'];

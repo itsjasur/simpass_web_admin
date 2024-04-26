@@ -23,55 +23,22 @@ class _ManagePlansFilterContentState extends State<ManagePlansFilterContent> {
   String _selectedSubscriberTargetCode = "";
   String _selectedStatusCode = "";
 
-  final TextEditingController _selectedCarrierCodeCntr = TextEditingController();
-  final TextEditingController _selectedMvnoCodeCntr = TextEditingController();
-  final TextEditingController _selectedAgentCodeCntr = TextEditingController();
-  final TextEditingController _selectedPlanTypeCodeCntr = TextEditingController();
-  final TextEditingController _selectedSubscriberTargetCodeCntr = TextEditingController();
-  final TextEditingController _selectedStatusCodeCntr = TextEditingController();
-
-  late List<DropdownMenuEntry> _carriers;
-  late List<DropdownMenuEntry> _mvnos;
-  late List<DropdownMenuEntry> _agents;
-  late List<DropdownMenuEntry> _planTypes;
-  late List<DropdownMenuEntry> _subscriberTarget;
-  late List<DropdownMenuEntry> _statuses;
+  final List<CodeNamePair> _carriers = [CodeNamePair(cd: '', value: '전체')];
+  final List<CodeNamePair> _mvnos = [CodeNamePair(cd: '', value: '전체')];
+  final List<CodeNamePair> _agents = [CodeNamePair(cd: '', value: '전체')];
+  final List<CodeNamePair> _planTypes = [CodeNamePair(cd: '', value: '전체')];
+  final List<CodeNamePair> _subscriberTarget = [CodeNamePair(cd: '', value: '전체')];
+  final List<CodeNamePair> _statuses = [CodeNamePair(cd: '', value: '전체')];
 
   @override
   void initState() {
     super.initState();
-
-    _carriers = widget.info.carrierCd.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList();
-    _mvnos = widget.info.mvnoCd.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList();
-    _agents = widget.info.agentCd.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList();
-    _planTypes = widget.info.carrierType.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList();
-    _subscriberTarget = widget.info.carrierPlanType.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList();
-    _statuses = widget.info.statusCd.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList();
-
-    //listener should come before model parsing to local variables
-    _selectedCarrierCodeCntr.addListener(() {
-      if (_selectedCarrierCodeCntr.text.isEmpty) _selectedCarrierCode = "";
-    });
-
-    _selectedMvnoCodeCntr.addListener(() {
-      if (_selectedMvnoCodeCntr.text.isEmpty) _selectedMvnoCode = "";
-    });
-
-    _selectedAgentCodeCntr.addListener(() {
-      if (_selectedAgentCodeCntr.text.isEmpty) _selectedAgentCode = "";
-    });
-
-    _selectedPlanTypeCodeCntr.addListener(() {
-      if (_selectedPlanTypeCodeCntr.text.isEmpty) _selectedPlanTypeCode = "";
-    });
-
-    _selectedSubscriberTargetCodeCntr.addListener(() {
-      if (_selectedSubscriberTargetCodeCntr.text.isEmpty) _selectedSubscriberTargetCode = "";
-    });
-
-    _selectedStatusCodeCntr.addListener(() {
-      if (_selectedStatusCodeCntr.text.isEmpty) _selectedStatusCode = "";
-    });
+    _carriers.addAll(widget.info.carrierCd);
+    _mvnos.addAll(widget.info.mvnoCd);
+    _agents.addAll(widget.info.agentCd);
+    _planTypes.addAll(widget.info.carrierType);
+    _subscriberTarget.addAll(widget.info.carrierPlanType);
+    _statuses.addAll(widget.info.statusCd);
 
     if (widget.requestModel != null) {
       ManagePlanSearchModel model = widget.requestModel!;
@@ -86,12 +53,6 @@ class _ManagePlansFilterContentState extends State<ManagePlansFilterContent> {
 
   @override
   void dispose() {
-    _selectedCarrierCodeCntr.dispose();
-    _selectedMvnoCodeCntr.dispose();
-    _selectedAgentCodeCntr.dispose();
-    _selectedPlanTypeCodeCntr.dispose();
-    _selectedSubscriberTargetCodeCntr.dispose();
-    _selectedStatusCodeCntr.dispose();
     super.dispose();
   }
 
@@ -126,11 +87,7 @@ class _ManagePlansFilterContentState extends State<ManagePlansFilterContent> {
                   child: LayoutBuilder(
                     builder: (context, constraints) => CustomDropDownMenu(
                       label: const Text("통신사"),
-                      requestFocusOnTap: true,
-                      enableSearch: true,
-                      enableFilter: true,
-                      controller: _selectedCarrierCodeCntr,
-                      items: _carriers,
+                      items: _carriers.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
                       onSelected: (selectedItem) {
                         _selectedCarrierCode = selectedItem;
                       },
@@ -145,15 +102,11 @@ class _ManagePlansFilterContentState extends State<ManagePlansFilterContent> {
                   ),
                   child: LayoutBuilder(
                     builder: (context, constraints) => CustomDropDownMenu(
-                      requestFocusOnTap: true,
-                      enableSearch: true,
-                      enableFilter: true,
-                      controller: _selectedMvnoCodeCntr,
                       label: const Text("브랜드"),
                       onSelected: (selectedItem) {
                         _selectedMvnoCode = selectedItem;
                       },
-                      items: _mvnos,
+                      items: _mvnos.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
                       width: constraints.maxWidth,
                       selectedItem: _selectedMvnoCode,
                     ),
@@ -165,15 +118,11 @@ class _ManagePlansFilterContentState extends State<ManagePlansFilterContent> {
                   ),
                   child: LayoutBuilder(
                     builder: (context, constraints) => CustomDropDownMenu(
-                      requestFocusOnTap: true,
-                      enableSearch: true,
-                      controller: _selectedAgentCodeCntr,
-                      enableFilter: true,
                       label: const Text("대리점"),
                       onSelected: (selectedItem) {
                         _selectedAgentCode = selectedItem;
                       },
-                      items: _agents,
+                      items: _agents.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
                       width: constraints.maxWidth,
                       selectedItem: _selectedAgentCode,
                     ),
@@ -185,15 +134,11 @@ class _ManagePlansFilterContentState extends State<ManagePlansFilterContent> {
                   ),
                   child: LayoutBuilder(
                     builder: (context, constraints) => CustomDropDownMenu(
-                      requestFocusOnTap: true,
-                      enableSearch: true,
-                      controller: _selectedPlanTypeCodeCntr,
-                      // enableFilter: true,
                       label: const Text("서비스 유형"),
                       onSelected: (selectedItem) {
                         _selectedPlanTypeCode = selectedItem;
                       },
-                      items: _planTypes,
+                      items: _planTypes.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
                       width: constraints.maxWidth,
                       selectedItem: _selectedPlanTypeCode,
                     ),
@@ -205,15 +150,11 @@ class _ManagePlansFilterContentState extends State<ManagePlansFilterContent> {
                   ),
                   child: LayoutBuilder(
                     builder: (context, constraints) => CustomDropDownMenu(
-                      requestFocusOnTap: true,
-                      enableSearch: true,
-                      controller: _selectedSubscriberTargetCodeCntr,
-                      enableFilter: true,
                       label: const Text("가입대상"),
                       onSelected: (selectedItem) {
                         _selectedSubscriberTargetCode = selectedItem;
                       },
-                      items: _subscriberTarget,
+                      items: _subscriberTarget.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
                       width: constraints.maxWidth,
                       selectedItem: _selectedSubscriberTargetCode,
                     ),
@@ -225,15 +166,11 @@ class _ManagePlansFilterContentState extends State<ManagePlansFilterContent> {
                   ),
                   child: LayoutBuilder(
                     builder: (context, constraints) => CustomDropDownMenu(
-                      requestFocusOnTap: true,
-                      enableSearch: true,
-                      controller: _selectedStatusCodeCntr,
-                      enableFilter: true,
                       label: const Text("상태"),
                       onSelected: (selectedItem) {
                         _selectedStatusCode = selectedItem;
                       },
-                      items: _statuses,
+                      items: _statuses.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
                       width: constraints.maxWidth,
                       selectedItem: _selectedStatusCode,
                     ),
@@ -268,7 +205,6 @@ class _ManagePlansFilterContentState extends State<ManagePlansFilterContent> {
                       backgroundColor: Colors.blueGrey,
                     ),
                     onPressed: () {
-                      // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('pop up')));
                       if (widget.onApply != null) {
                         widget.onApply!(
                           ManagePlanSearchModel(
@@ -295,7 +231,6 @@ class _ManagePlansFilterContentState extends State<ManagePlansFilterContent> {
                   height: 47,
                   child: ElevatedButton(
                     onPressed: () {
-                      // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('pop up')));
                       if (widget.onApply != null) {
                         widget.onApply!(
                           ManagePlanSearchModel(

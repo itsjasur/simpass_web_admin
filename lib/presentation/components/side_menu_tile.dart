@@ -49,7 +49,7 @@ class _SideMenuWidgetState extends State<SideMenuWidget> {
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   SvgPicture.asset(

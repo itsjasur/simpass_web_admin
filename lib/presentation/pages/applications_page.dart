@@ -34,7 +34,7 @@ class RApplicationsPageState extends State<ApplicationsPage> {
 
   final ScrollController _horizontalScrolCntr = ScrollController();
 
-  late List<DropdownMenuEntry> _statusesList;
+  final List<CodeValue> _statusesList = [(CodeValue(cd: '', value: '전체'))];
   String _selectedStatusCode = "";
 
   final List _columns = applicationsColumns;
@@ -52,7 +52,6 @@ class RApplicationsPageState extends State<ApplicationsPage> {
   @override
   void initState() {
     super.initState();
-
     _fetchApplications();
   }
 
@@ -150,19 +149,19 @@ class RApplicationsPageState extends State<ApplicationsPage> {
                                 if (_selectedSearchType == 'status' && _statusesList.isNotEmpty)
                                   Container(
                                     constraints: const BoxConstraints(
-                                      maxWidth: 300,
+                                      maxWidth: 200,
                                     ),
-                                    child: LayoutBuilder(
-                                      builder: (context, constraints) => CustomDropDownMenu(
+                                    child: LayoutBuilder(builder: (context, constraints) {
+                                      return CustomDropDownMenu(
                                         label: const Text("상태"),
-                                        items: _statusesList,
+                                        items: _statusesList.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
                                         width: constraints.maxWidth,
                                         selectedItem: _selectedStatusCode,
                                         onSelected: (selectedItem) {
                                           _selectedStatusCode = selectedItem;
                                         },
-                                      ),
-                                    ),
+                                      );
+                                    }),
                                   ),
                                 Container(
                                   constraints: const BoxConstraints(minWidth: 120),
@@ -230,10 +229,6 @@ class RApplicationsPageState extends State<ApplicationsPage> {
                                     ),
                                     headingRowHeight: 50,
                                     columnSpacing: 40,
-
-                                    // dataRowMinHeight: 40,
-                                    // dataRowMaxHeight: 80,
-
                                     headingTextStyle: const TextStyle(
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -317,7 +312,7 @@ class RApplicationsPageState extends State<ApplicationsPage> {
                                               return DataCell(
                                                 Container(
                                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                                                  constraints: const BoxConstraints(minWidth: 80),
+                                                  constraints: const BoxConstraints(minWidth: 80, maxWidth: 120),
                                                   decoration: BoxDecoration(
                                                     color: containerColor,
                                                     borderRadius: BorderRadius.circular(30),
@@ -488,7 +483,7 @@ class RApplicationsPageState extends State<ApplicationsPage> {
       );
 
       _totalCount = result.totalNum;
-      _statusesList = result.usimActStatusCodes.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList();
+      _statusesList.addAll(result.usimActStatusCodes);
       _applicationsList = result.applicationsList;
     } catch (e) {
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));

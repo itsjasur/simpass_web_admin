@@ -19,7 +19,7 @@ class MenuShell extends StatelessWidget {
 
       // this should be called whenever screen size changes
       double width = 0;
-      if (controller.isDesktop && !controller.sideMenuManuallyClosed) {
+      if (controller.isDesktop && controller.isSideMenuOpen) {
         width = 300; // example open width, adjust as needed
       }
 
@@ -27,7 +27,7 @@ class MenuShell extends StatelessWidget {
         key: shellScaffoldKey,
         drawer: const SideMenu(),
         onDrawerChanged: (isOpen) {
-          controller.updateSideMenu(!isOpen);
+          controller.updateSideMenu(isOpen);
         },
         body: Row(
           mainAxisSize: MainAxisSize.max,

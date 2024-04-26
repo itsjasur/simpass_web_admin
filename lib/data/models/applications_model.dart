@@ -1,6 +1,6 @@
 class ApplicationsInfoModel {
   final List<ApplicationModel> applicationsList;
-  final List<ApplicationStatusesModel> usimActStatusCodes;
+  final List<CodeValue> usimActStatusCodes;
   final int lastPage;
   final int totalNum;
   final int rowLimit;
@@ -17,7 +17,7 @@ class ApplicationsInfoModel {
 
   factory ApplicationsInfoModel.fromJson(Map<String, dynamic> map) {
     List<ApplicationModel> applicationsList = (map['act_list'] as List).map((e) => ApplicationModel.fromMap(e)).toList();
-    List<ApplicationStatusesModel> usimActStatusCodes = (map['usim_act_status_code'] as List).map((e) => ApplicationStatusesModel.fromMap(e)).toList();
+    List<CodeValue> usimActStatusCodes = (map['usim_act_status_code'] as List).map((e) => CodeValue.fromMap(e)).toList();
 
     return ApplicationsInfoModel(
       applicationsList: applicationsList,
@@ -30,17 +30,17 @@ class ApplicationsInfoModel {
   }
 }
 
-class ApplicationStatusesModel {
+class CodeValue {
   final String cd;
   final String value;
 
-  ApplicationStatusesModel({
+  CodeValue({
     required this.cd,
     required this.value,
   });
 
-  factory ApplicationStatusesModel.fromMap(Map<String, dynamic> map) {
-    return ApplicationStatusesModel(
+  factory CodeValue.fromMap(Map<String, dynamic> map) {
+    return CodeValue(
       cd: map['cd'] ?? '',
       value: map['value'] ?? '',
     );

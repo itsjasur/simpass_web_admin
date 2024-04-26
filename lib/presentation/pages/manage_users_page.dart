@@ -214,7 +214,7 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
                                             return DataCell(
                                               Container(
                                                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                                                constraints: const BoxConstraints(minWidth: 80),
+                                                constraints: const BoxConstraints(minWidth: 80, maxWidth: 120),
                                                 decoration: BoxDecoration(
                                                   color: containerColor,
                                                   borderRadius: BorderRadius.circular(30),

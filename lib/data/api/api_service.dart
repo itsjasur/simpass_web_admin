@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:admin_simpass/data/api/request_helper.dart';
 import 'package:admin_simpass/data/models/applications_model.dart';
+import 'package:admin_simpass/data/models/customer_requests_model.dart';
 import 'package:admin_simpass/data/models/login_model.dart';
 import 'package:admin_simpass/data/models/member_model.dart';
 import 'package:admin_simpass/data/models/plans_model.dart';
@@ -456,6 +457,28 @@ class APIService {
         return decodedResponse["data"]['image'];
       } else {
         throw decodedResponse['message'] ?? "Retailer image request data error";
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<CustomerRequestsModel> fetchCustomerRequests({required BuildContext context, required Map requestModel}) async {
+    try {
+      String? accessToken = await getAccessToken();
+      headers['Authorization'] = 'Bearer $accessToken';
+
+      Uri url = _urlMaker('admin/selfInquiry');
+      var body = json.encode(requestModel);
+      var response = await http.post(url, headers: headers, body: body);
+
+      response = await RequestHelper().post(context.mounted ? context : null, response, url, headers, body);
+      var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
+
+      if (response.statusCode == 200 && decodedResponse['result'] == 'SUCCESS') {
+        return CustomerRequestsModel.fromJson(decodedResponse["data"]);
+      } else {
+        throw decodedResponse['message'] ?? "Applications request data error";
       }
     } catch (e) {
       rethrow;

@@ -26,6 +26,7 @@ class _RetailerStatusUpdateContentState extends State<RetailerStatusUpdateConten
   @override
   void initState() {
     super.initState();
+    widget.items.removeAt(0);
   }
 
   @override

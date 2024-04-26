@@ -2,7 +2,7 @@ class RetailersModel {
   int? lastPage;
   int? totalNum;
   List<PartnerModel> partnerList;
-  List<RetailerStatusModel> statusList;
+  List<CodeValue> statusList;
   int? rowLimit;
   int? currentPage;
 
@@ -20,7 +20,7 @@ class RetailersModel {
     List<PartnerModel> partners = partnerList.map((partner) => PartnerModel.fromJson(partner)).toList();
 
     var statusList = json['status_list'] as List;
-    List<RetailerStatusModel> statuses = statusList.map((status) => RetailerStatusModel.fromJson(status)).toList();
+    List<CodeValue> statuses = statusList.map((status) => CodeValue.fromJson(status)).toList();
 
     return RetailersModel(
       lastPage: json['lastPage'],
@@ -188,17 +188,17 @@ class PartnerModel {
   }
 }
 
-class RetailerStatusModel {
+class CodeValue {
   String cd;
   String value;
 
-  RetailerStatusModel({
+  CodeValue({
     required this.cd,
     required this.value,
   });
 
-  factory RetailerStatusModel.fromJson(Map<String, dynamic> json) {
-    return RetailerStatusModel(
+  factory CodeValue.fromJson(Map<String, dynamic> json) {
+    return CodeValue(
       cd: json['cd'],
       value: json['value'],
     );

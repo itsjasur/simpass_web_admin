@@ -28,8 +28,6 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
   String _selectedSubscriberTargetCode = "";
   String _selectedStatusCode = "";
 
-  final TextEditingController _selectedMvnoCodeCntr = TextEditingController();
-
   String? _selectedCarrierCodeErr;
   String? _selectedMvnoCodeErr;
   String? _selectedAgentCodeErr;
@@ -105,8 +103,6 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
     _qosController.dispose();
     _priorityController.dispose();
 
-    _selectedMvnoCodeCntr.dispose();
-
     super.dispose();
   }
 
@@ -165,11 +161,11 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
                     ),
                     child: LayoutBuilder(
                       builder: (context, constraints) => CustomDropDownMenu(
-                        controller: _selectedMvnoCodeCntr,
-                        enabled: widget.selectedPlan == null,
+                        // controller: _selectedMvnoCodeCntr,
+                        // enabled: widget.selectedPlan == null,
+                        // requestFocusOnTap: true,
+                        // enableSearch: true,
                         label: const Text("브랜드"),
-                        requestFocusOnTap: true,
-                        enableSearch: true,
                         errorText: _selectedMvnoCodeErr,
                         onSelected: (selectedItem) {
                           _selectedMvnoCodeErr = null;
@@ -408,16 +404,16 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
   }
 
   bool _checkDropDownValues() {
-    String checkTheOptions(TextEditingController cntr, List<CodeNamePair> items) {
-      for (var e in items) {
-        if (e.value == cntr.text) {
-          return e.cd;
-        }
-      }
-      return "";
-    }
+    // String checkTheOptions(TextEditingController cntr, List<CodeNamePair> items) {
+    //   for (var e in items) {
+    //     if (e.value == cntr.text) {
+    //       return e.cd;
+    //     }
+    //   }
+    //   return "";
+    // }
 
-    _selectedMvnoCode = checkTheOptions(_selectedMvnoCodeCntr, widget.info.mvnoCd);
+    // _selectedMvnoCode = checkTheOptions(_selectedMvnoCodeCntr, widget.info.mvnoCd);
 
     _selectedCarrierCodeErr = _selectedCarrierCode.isEmpty ? "통신사 선택하세요." : null;
     _selectedMvnoCodeErr = _selectedMvnoCode.isEmpty ? "브랜드 선택하세요." : null;

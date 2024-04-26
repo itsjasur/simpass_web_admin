@@ -83,6 +83,14 @@ class SideMenu extends StatelessWidget {
                   },
                   isSelected: value.openSideMenuIndex == 4,
                 ),
+              SideMenuWidget(
+                title: "상담사 개통 문의현황",
+                iconSrc: "assets/icons/call.svg",
+                press: () {
+                  context.go('/customer-requests');
+                },
+                isSelected: value.openSideMenuIndex == 5,
+              ),
             ],
           );
         },

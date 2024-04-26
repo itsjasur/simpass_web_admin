@@ -10,7 +10,7 @@ import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
 class ApplicationStatusUpdateContent extends StatefulWidget {
-  final List<DropdownMenuEntry> items;
+  final List items;
   final String applicationID;
   final Function? callBack;
 
@@ -32,6 +32,7 @@ class _ApplicationStatusUpdateContentState extends State<ApplicationStatusUpdate
   @override
   void initState() {
     super.initState();
+    widget.items.removeAt(0); //removing all type item
   }
 
   @override
@@ -61,7 +62,7 @@ class _ApplicationStatusUpdateContentState extends State<ApplicationStatusUpdate
             LayoutBuilder(
               builder: (context, constraints) => CustomDropDownMenu(
                 label: const Text("상태"),
-                items: widget.items,
+                items: widget.items.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
                 width: constraints.maxWidth,
                 errorText: _statusErrorCode,
                 selectedItem: _selectedStatusCode,

@@ -32,7 +32,7 @@ class Header extends StatelessWidget {
                         },
                         child: AnimatedRotation(
                           duration: const Duration(milliseconds: 500), // Duration of the animation
-                          turns: controller.isSideMenuOpen ? 0.5 : 0, // 0.5 turns for 180 degrees
+                          turns: controller.isSideMenuOpen ? 0 : 0.5, // 0.5 turns for 180 degrees
                           child: const Icon(
                             Icons.menu_open,
                             color: Colors.black87,

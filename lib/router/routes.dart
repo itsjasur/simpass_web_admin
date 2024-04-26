@@ -1,5 +1,6 @@
 import 'package:admin_simpass/globals/constants.dart';
 import 'package:admin_simpass/presentation/pages/applications_page.dart';
+import 'package:admin_simpass/presentation/pages/customer_requests_page.dart';
 import 'package:admin_simpass/presentation/pages/empty_page.dart';
 import 'package:admin_simpass/presentation/pages/manage_plans_page.dart';
 import 'package:admin_simpass/presentation/pages/manage_users_page.dart';
@@ -62,6 +63,11 @@ final appRouter = GoRouter(
           path: '/retailers',
           builder: (context, state) => const RetailersPage(),
         ),
+        GoRoute(
+          name: 'customer-requests',
+          path: '/customer-requests',
+          builder: (context, state) => const CustomerRequestsPage(),
+        ),
       ],
       builder: (context, state, child) => MenuShell(child: child),
     ),
@@ -91,7 +97,7 @@ final appRouter = GoRouter(
     List<dynamic> allowedRoles = isHeadingLocationInMap ? rolePathAccessInfo[headingLocation]! : [];
 
     // checking if the path is available to everyone
-    bool isAccessibleToAll = allowedRoles.contains("ALL");
+    bool isAccessibleToAll = allowedRoles.isEmpty || allowedRoles.contains("ALL");
 
     // checking if the user has access to the specified headingLocation based on their roles
     bool userHasAccess = isAccessibleToAll || myRoles.any((role) => allowedRoles.contains(role));

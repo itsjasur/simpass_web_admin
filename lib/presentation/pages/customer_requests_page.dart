@@ -1,46 +1,52 @@
 import 'package:admin_simpass/data/api/api_service.dart';
-import 'package:admin_simpass/data/models/retailers_model.dart';
+import 'package:admin_simpass/data/models/customer_requests_model.dart';
 import 'package:admin_simpass/globals/constants.dart';
-import 'package:admin_simpass/presentation/components/custom_alert_dialog.dart';
 import 'package:admin_simpass/presentation/components/custom_drop_down_menu.dart';
 import 'package:admin_simpass/presentation/components/custom_text_input.dart';
 import 'package:admin_simpass/presentation/components/header.dart';
 import 'package:admin_simpass/presentation/components/pagination.dart';
-import 'package:admin_simpass/presentation/components/retailer_details_content.dart';
-import 'package:admin_simpass/presentation/components/retailerer_status_update_content.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 
-class RetailersPage extends StatefulWidget {
-  const RetailersPage({super.key});
+class CustomerRequestsPage extends StatefulWidget {
+  const CustomerRequestsPage({super.key});
 
   @override
-  State<RetailersPage> createState() => _RetailersPageState();
+  State<CustomerRequestsPage> createState() => CustomerRequestsPageState();
 }
 
-class _RetailersPageState extends State<RetailersPage> {
-  bool _dataLoading = false;
-
-  final List _columns = retailersColumns;
+class CustomerRequestsPageState extends State<CustomerRequestsPage> {
+  bool _dataLoading = true;
+  final ScrollController _horizontalScrolCntr = ScrollController();
+  final List _columns = customerRequestsColumns;
+  List<CustomerRequestModel> _customerRequestsList = [];
 
   int _totalCount = 0;
   int _currentPage = 1;
   int _perPage = perPageCounts[0];
 
-  final TextEditingController _retailerNameContr = TextEditingController();
-  final ScrollController _horizontalScrolCntr = ScrollController();
+  final TextEditingController _nameController = TextEditingController();
 
   String _selectedStatusCode = "";
+  String _selectedCountrCode = "";
+
   int? _sortColumnIndex;
   bool _sortAscending = true;
 
-  List<PartnerModel> _retailersList = [];
   final List<CodeValue> _statusesList = [CodeValue(cd: '', value: '전체')];
+  final List<CodeValue> _countriesList = [CodeValue(cd: '', value: '전체')];
 
   @override
   void initState() {
     super.initState();
-    _fetchRetailers();
+    _fetchCustomerRequests();
+  }
+
+  @override
+  void dispose() {
+    _horizontalScrolCntr.dispose();
+    _nameController.dispose();
+    super.dispose();
   }
 
   @override
@@ -50,7 +56,7 @@ class _RetailersPageState extends State<RetailersPage> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Header(title: "판매점 계약현황"),
+          const Header(title: "상담사 개통 문의현황"),
           _dataLoading
               ? const Expanded(
                   child: Center(
@@ -77,22 +83,11 @@ class _RetailersPageState extends State<RetailersPage> {
                                     maxWidth: 200,
                                   ),
                                   child: LayoutBuilder(
-                                    builder: (context, constraints) => CustomTextInput(
-                                      title: "판매점명",
-                                      controller: _retailerNameContr,
-                                      maxlength: 10,
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  constraints: const BoxConstraints(
-                                    maxWidth: 200,
-                                  ),
-                                  child: LayoutBuilder(
                                     builder: (context, constraints) => CustomDropDownMenu(
                                       label: const Text("상태"),
-                                      items: _statusesList.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
+                                      items: _statusesList.map((e) => DropdownMenuEntry(value: e.cd ?? "", label: e.value ?? "")).toList(),
                                       width: constraints.maxWidth,
+                                      menuHeight: 500,
                                       selectedItem: _selectedStatusCode,
                                       onSelected: (selectedItem) {
                                         _selectedStatusCode = selectedItem;
@@ -102,11 +97,41 @@ class _RetailersPageState extends State<RetailersPage> {
                                   ),
                                 ),
                                 Container(
+                                  constraints: const BoxConstraints(
+                                    maxWidth: 200,
+                                  ),
+                                  child: LayoutBuilder(
+                                    builder: (context, constraints) => CustomDropDownMenu(
+                                      label: const Text("국가"),
+                                      menuHeight: 500,
+                                      items: _countriesList.map((e) => DropdownMenuEntry(value: e.cd ?? "", label: e.value ?? "")).toList(),
+                                      width: constraints.maxWidth,
+                                      selectedItem: _selectedCountrCode,
+                                      onSelected: (selectedItem) {
+                                        _selectedCountrCode = selectedItem;
+                                        setState(() {});
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  constraints: const BoxConstraints(
+                                    maxWidth: 300,
+                                  ),
+                                  child: LayoutBuilder(
+                                    builder: (context, constraints) => CustomTextInput(
+                                      title: "이름",
+                                      controller: _nameController,
+                                      maxlength: 10,
+                                    ),
+                                  ),
+                                ),
+                                Container(
                                   constraints: const BoxConstraints(minWidth: 120),
                                   height: 47,
                                   child: ElevatedButton(
                                     onPressed: () {
-                                      _fetchRetailers();
+                                      _fetchCustomerRequests();
                                     },
                                     child: const Row(
                                       mainAxisSize: MainAxisSize.min,
@@ -134,12 +159,11 @@ class _RetailersPageState extends State<RetailersPage> {
                                 if (currentPage != _currentPage || perPage != _perPage) {
                                   _currentPage = currentPage;
                                   _perPage = perPage;
-                                  _fetchRetailers();
+                                  _fetchCustomerRequests();
                                 }
                               },
                             ),
                           ),
-                          const Gap(20),
                           Scrollbar(
                             controller: _horizontalScrolCntr,
                             scrollbarOrientation: ScrollbarOrientation.top,
@@ -182,8 +206,8 @@ class _RetailersPageState extends State<RetailersPage> {
                                             _sortAscending = ascending;
                                             _sortColumnIndex = columnIndex;
 
-                                            void mysort<T>(Comparable<T> Function(PartnerModel model) getField) {
-                                              _retailersList.sort((a, b) {
+                                            void mysort<T>(Comparable<T> Function(CustomerRequestModel model) getField) {
+                                              _customerRequestsList.sort((a, b) {
                                                 final aValue = getField(a);
                                                 final bValue = getField(b);
 
@@ -193,13 +217,13 @@ class _RetailersPageState extends State<RetailersPage> {
 
                                             // sorting table on tap on header
                                             if (columnIndex == 0) mysort((model) => model.num ?? 0);
-                                            if (columnIndex == 1) mysort((model) => model.statusNm?.toLowerCase() ?? "");
-                                            if (columnIndex == 2) mysort((model) => model.partnerNm?.toLowerCase() ?? "");
-                                            if (columnIndex == 3) mysort((model) => model.contractor?.toLowerCase() ?? "");
-                                            if (columnIndex == 4) mysort((model) => model.phoneNumber?.toLowerCase() ?? "");
-                                            if (columnIndex == 5) mysort((model) => model.businessNum?.toLowerCase() ?? "");
-                                            if (columnIndex == 8) mysort((model) => model.applyDate ?? "");
-                                            if (columnIndex == 9) mysort((model) => model.contractDate ?? "");
+                                            if (columnIndex == 1) mysort((model) => model.name?.toLowerCase() ?? "");
+                                            if (columnIndex == 2) mysort((model) => model.contact?.toLowerCase() ?? "");
+                                            if (columnIndex == 3) mysort((model) => model.countryNm?.toLowerCase() ?? "");
+                                            if (columnIndex == 4) mysort((model) => model.planId?.toLowerCase() ?? "");
+                                            if (columnIndex == 5) mysort((model) => model.planNm?.toLowerCase() ?? "");
+                                            if (columnIndex == 6) mysort((model) => model.usimActNm?.toLowerCase() ?? "");
+                                            if (columnIndex == 7) mysort((model) => model.status?.toLowerCase() ?? "");
 
                                             setState(() {});
                                           },
@@ -208,7 +232,7 @@ class _RetailersPageState extends State<RetailersPage> {
                                       },
                                     ),
                                     rows: List.generate(
-                                      _retailersList.length,
+                                      _customerRequestsList.length,
                                       (rowIndex) => DataRow(
                                         // onSelectChanged: (value) {},
 
@@ -217,22 +241,79 @@ class _RetailersPageState extends State<RetailersPage> {
                                           (columnIndex) {
                                             if (columnIndex == 0) {
                                               return DataCell(
-                                                Text(_retailersList[rowIndex].num.toString()),
-                                                onTap: () async {},
+                                                Container(
+                                                  constraints: const BoxConstraints(maxWidth: 50),
+                                                  child: Text(_customerRequestsList[rowIndex].num.toString()),
+                                                ),
+                                                onTap: () {},
                                               );
                                             }
 
                                             if (columnIndex == 1) {
-                                              bool editable = false;
+                                              return DataCell(
+                                                placeholder: false,
+                                                Container(
+                                                  constraints: const BoxConstraints(maxWidth: 350),
+                                                  child: Text(
+                                                    _customerRequestsList[rowIndex].name ?? "",
+                                                    overflow: TextOverflow.ellipsis,
+                                                    maxLines: 2,
+                                                  ),
+                                                ),
+                                                onTap: () {},
+                                              );
+                                            }
 
+                                            if (columnIndex == 2) {
+                                              return DataCell(
+                                                placeholder: false,
+                                                Text(
+                                                  _customerRequestsList[rowIndex].contact ?? "",
+                                                ),
+                                                onTap: () {},
+                                              );
+                                            }
+
+                                            if (columnIndex == 3) {
+                                              return DataCell(
+                                                placeholder: false,
+                                                Text(
+                                                  _customerRequestsList[rowIndex].countryNm ?? "",
+                                                ),
+                                                onTap: () {},
+                                              );
+                                            }
+
+                                            if (columnIndex == 4) {
+                                              return DataCell(
+                                                placeholder: false,
+                                                Text(
+                                                  _customerRequestsList[rowIndex].planNm ?? "",
+                                                ),
+                                                onTap: () {},
+                                              );
+                                            }
+
+                                            if (columnIndex == 5) {
+                                              return DataCell(
+                                                placeholder: false,
+                                                Text(
+                                                  _customerRequestsList[rowIndex].usimActNm ?? "",
+                                                ),
+                                                onTap: () {},
+                                              );
+                                            }
+
+                                            if (columnIndex == 6) {
+                                              bool editable = true;
                                               Color containerColor = Colors.grey;
-                                              if (_retailersList[rowIndex].status == 'Y') containerColor = Colors.green;
-                                              if (_retailersList[rowIndex].status == 'N') containerColor = Colors.grey;
-
-                                              if (_retailersList[rowIndex].status == 'W') {
-                                                containerColor = Colors.orange;
-                                                editable = true;
-                                              }
+                                              if (_customerRequestsList[rowIndex].status == 'A') containerColor = Colors.blue;
+                                              if (_customerRequestsList[rowIndex].status == 'B') containerColor = Colors.purple;
+                                              if (_customerRequestsList[rowIndex].status == 'P') containerColor = Colors.green;
+                                              if (_customerRequestsList[rowIndex].status == 'Y') containerColor = Colors.grey;
+                                              if (_customerRequestsList[rowIndex].status == 'D') containerColor = Colors.red;
+                                              if (_customerRequestsList[rowIndex].status == 'W') containerColor = Colors.red;
+                                              if (_customerRequestsList[rowIndex].status == 'C') containerColor = Colors.red;
 
                                               return DataCell(
                                                 Container(
@@ -247,7 +328,7 @@ class _RetailersPageState extends State<RetailersPage> {
                                                     children: [
                                                       Text(
                                                         textAlign: TextAlign.center,
-                                                        _retailersList[rowIndex].statusNm ?? "",
+                                                        _customerRequestsList[rowIndex].statusNm ?? "",
                                                         style: const TextStyle(color: Colors.white),
                                                       ),
                                                       if (editable)
@@ -261,93 +342,6 @@ class _RetailersPageState extends State<RetailersPage> {
                                                         ),
                                                     ],
                                                   ),
-                                                ),
-                                                onTap: () {
-                                                  if (editable) {
-                                                    showCustomDialog(
-                                                      barrierDismissible: false,
-                                                      context: context,
-                                                      content: RetailerStatusUpdateContent(
-                                                        items: _statusesList.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
-                                                        reetailerCd: _retailersList[rowIndex].partnerCd ?? "",
-                                                        callBack: _fetchRetailers,
-                                                      ),
-                                                    );
-                                                  }
-                                                },
-                                              );
-                                            }
-
-                                            if (columnIndex == 2) {
-                                              return DataCell(
-                                                Container(
-                                                  constraints: const BoxConstraints(maxWidth: 150),
-                                                  child: Text(
-                                                    _retailersList[rowIndex].partnerNm ?? "",
-                                                    overflow: TextOverflow.ellipsis,
-                                                    maxLines: 2,
-                                                  ),
-                                                ),
-                                                onTap: () {},
-                                              );
-                                            }
-
-                                            if (columnIndex == 3) {
-                                              return DataCell(
-                                                Text(_retailersList[rowIndex].contractor ?? ""),
-                                                onTap: () {},
-                                              );
-                                            }
-                                            if (columnIndex == 4) {
-                                              return DataCell(
-                                                Container(
-                                                  constraints: const BoxConstraints(maxWidth: 250),
-                                                  child: Text(
-                                                    _retailersList[rowIndex].phoneNumber ?? "",
-                                                    overflow: TextOverflow.ellipsis,
-                                                    maxLines: 2,
-                                                  ),
-                                                ),
-                                                onTap: () {},
-                                              );
-                                            }
-                                            if (columnIndex == 5) {
-                                              return DataCell(
-                                                placeholder: false,
-                                                Text(_retailersList[rowIndex].businessNum ?? ""),
-                                                onTap: () {},
-                                              );
-                                            }
-
-                                            if (columnIndex == 6) {
-                                              return DataCell(
-                                                placeholder: false,
-                                                Text(_retailersList[rowIndex].applyDate ?? ""),
-                                                onTap: () {},
-                                              );
-                                            }
-
-                                            if (columnIndex == 7) {
-                                              return DataCell(
-                                                placeholder: false,
-                                                Text(_retailersList[rowIndex].contractDate ?? ""),
-                                                onTap: () {},
-                                              );
-                                            }
-
-                                            if (columnIndex == 8) {
-                                              return DataCell(
-                                                placeholder: false,
-                                                OutlinedButton(
-                                                  onPressed: () {
-                                                    showCustomDialog(
-                                                      context: context,
-                                                      content: RetailerDetailsContent(
-                                                        id: _retailersList[rowIndex].partnerCd ?? "",
-                                                      ),
-                                                    );
-                                                  },
-                                                  child: const Text('가입정보'),
                                                 ),
                                                 onTap: () {},
                                               );
@@ -374,23 +368,25 @@ class _RetailersPageState extends State<RetailersPage> {
     );
   }
 
-  Future<void> _fetchRetailers() async {
+  Future<void> _fetchCustomerRequests() async {
     try {
       final APIService apiService = APIService();
 
-      var result = await apiService.fetchRetailers(
+      var result = await apiService.fetchCustomerRequests(
         context: context,
         requestModel: {
-          "partner_nm": _retailerNameContr.text,
+          "country_cd": _selectedCountrCode,
+          "name": _nameController.text,
           "status": _selectedStatusCode,
-          "currentPage": _currentPage,
+          "page": _currentPage,
           "rowLimit": _perPage,
         },
       );
 
       _totalCount = result.totalNum ?? 0;
-      _statusesList.addAll(result.statusList);
-      _retailersList = result.partnerList;
+      _statusesList.addAll(result.statusList ?? []);
+      _countriesList.addAll(result.countryList ?? []);
+      _customerRequestsList = result.applyList ?? [];
     } catch (e) {
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
     }
