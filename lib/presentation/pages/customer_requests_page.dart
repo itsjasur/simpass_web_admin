@@ -1,4 +1,5 @@
 import 'package:admin_simpass/data/api/api_service.dart';
+import 'package:admin_simpass/data/models/code_value_model.dart';
 import 'package:admin_simpass/data/models/customer_requests_model.dart';
 import 'package:admin_simpass/globals/constants.dart';
 import 'package:admin_simpass/globals/formatters.dart';
@@ -22,7 +23,6 @@ class CustomerRequestsPage extends StatefulWidget {
 
 class CustomerRequestsPageState extends State<CustomerRequestsPage> {
   bool _dataLoading = true;
-  final ScrollController _horizontalScrolCntr = ScrollController();
   final List _columns = customerRequestsColumns;
   List<CustomerRequestModel> _customerRequestsList = [];
 
@@ -30,17 +30,17 @@ class CustomerRequestsPageState extends State<CustomerRequestsPage> {
   int _currentPage = 1;
   int _perPage = perPageCounts[0];
 
+  final ScrollController _horizontalScrolCntr = ScrollController();
   final TextEditingController _nameController = TextEditingController();
 
-  String _selectedStatusCodeForSearch = "";
-  // String _selectedStatusCode = "";
+  String _selectedStatusCode = "";
   String _selectedCountrCode = "";
 
   int? _sortColumnIndex;
   bool _sortAscending = true;
 
-  final List<CodeValue> _statusesList = [CodeValue(cd: '', value: '전체')];
-  final List<CodeValue> _countriesList = [CodeValue(cd: '', value: '전체')];
+  final List<CodeValue> _statusesList = [];
+  final List<CodeValue> _countriesList = [];
 
   @override
   void initState() {
@@ -94,10 +94,9 @@ class CustomerRequestsPageState extends State<CustomerRequestsPage> {
                                       items: _statusesList.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
                                       width: constraints.maxWidth,
                                       enableSearch: true,
-                                      menuHeight: 500,
-                                      selectedItem: _selectedStatusCodeForSearch,
+                                      selectedItem: _selectedStatusCode,
                                       onSelected: (selectedItem) {
-                                        _selectedStatusCodeForSearch = selectedItem;
+                                        _selectedStatusCode = selectedItem;
                                         setState(() {});
                                       },
                                     ),
@@ -110,7 +109,6 @@ class CustomerRequestsPageState extends State<CustomerRequestsPage> {
                                   child: LayoutBuilder(
                                     builder: (context, constraints) => CustomDropDownMenu(
                                       label: const Text("국가"),
-                                      menuHeight: 500,
                                       enableSearch: true,
                                       items: _countriesList.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
                                       width: constraints.maxWidth,
@@ -261,21 +259,21 @@ class CustomerRequestsPageState extends State<CustomerRequestsPage> {
 
                                               Color containerColor = Colors.grey;
                                               if (_customerRequestsList[rowIndex].status == 'A') {
-                                                containerColor = Colors.blue;
+                                                containerColor = Colors.blueAccent;
                                                 editable = true;
                                               }
 
-                                              if (_customerRequestsList[rowIndex].status == 'B') containerColor = Colors.purple;
+                                              if (_customerRequestsList[rowIndex].status == 'B') containerColor = Colors.green;
 
                                               if (_customerRequestsList[rowIndex].status == 'P') {
-                                                containerColor = Colors.green;
+                                                containerColor = Colors.purpleAccent;
                                                 editable = true;
                                               }
 
                                               if (_customerRequestsList[rowIndex].status == 'Y') containerColor = Colors.grey;
-                                              if (_customerRequestsList[rowIndex].status == 'D') containerColor = Colors.red;
-                                              if (_customerRequestsList[rowIndex].status == 'W') containerColor = Colors.red;
-                                              if (_customerRequestsList[rowIndex].status == 'C') containerColor = Colors.red;
+                                              if (_customerRequestsList[rowIndex].status == 'D') containerColor = Colors.redAccent;
+                                              if (_customerRequestsList[rowIndex].status == 'W') containerColor = Colors.redAccent;
+                                              if (_customerRequestsList[rowIndex].status == 'C') containerColor = Colors.redAccent;
 
                                               return DataCell(
                                                 Container(
@@ -372,7 +370,7 @@ class CustomerRequestsPageState extends State<CustomerRequestsPage> {
                                             }
                                             if (columnIndex == 7) {
                                               return DataCell(
-                                                Text(CustomFormat().formatDateToString(_customerRequestsList[rowIndex].regTime) ?? ""),
+                                                Text(CustomFormat().formatDateTime(_customerRequestsList[rowIndex].regTime) ?? ""),
                                                 onTap: () {},
                                               );
                                             }
@@ -382,6 +380,7 @@ class CustomerRequestsPageState extends State<CustomerRequestsPage> {
                                                 const Icon(
                                                   Icons.visibility_outlined,
                                                   color: MainUi.mainColor,
+                                                  size: 20,
                                                 ),
                                                 onTap: () {
                                                   showCustomDialog(
@@ -426,15 +425,22 @@ class CustomerRequestsPageState extends State<CustomerRequestsPage> {
         requestModel: {
           "country_cd": _selectedCountrCode,
           "name": _nameController.text,
-          "status": _selectedStatusCodeForSearch,
+          "status": _selectedStatusCode,
           "page": _currentPage,
           "rowLimit": _perPage,
         },
       );
 
       _totalCount = result.totalNum ?? 0;
+
+      _statusesList.clear();
+      _statusesList.add(CodeValue(cd: '', value: '전체'));
       _statusesList.addAll(result.statusList ?? []);
+
+      _countriesList.clear();
+      _countriesList.add(CodeValue(cd: '', value: '전체'));
       _countriesList.addAll(result.countryList ?? []);
+
       _customerRequestsList = result.applyList ?? [];
     } catch (e) {
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));

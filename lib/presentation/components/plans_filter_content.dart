@@ -1,3 +1,4 @@
+import 'package:admin_simpass/data/models/code_value_model.dart';
 import 'package:admin_simpass/data/models/plans_model.dart';
 import 'package:admin_simpass/presentation/components/custom_drop_down_menu.dart';
 import 'package:flutter/material.dart';
@@ -23,12 +24,12 @@ class _ManagePlansFilterContentState extends State<ManagePlansFilterContent> {
   String _selectedSubscriberTargetCode = "";
   String _selectedStatusCode = "";
 
-  final List<CodeNamePair> _carriers = [CodeNamePair(cd: '', value: '전체')];
-  final List<CodeNamePair> _mvnos = [CodeNamePair(cd: '', value: '전체')];
-  final List<CodeNamePair> _agents = [CodeNamePair(cd: '', value: '전체')];
-  final List<CodeNamePair> _planTypes = [CodeNamePair(cd: '', value: '전체')];
-  final List<CodeNamePair> _subscriberTarget = [CodeNamePair(cd: '', value: '전체')];
-  final List<CodeNamePair> _statuses = [CodeNamePair(cd: '', value: '전체')];
+  final List<CodeValue> _carriers = [CodeValue(cd: '', value: '전체')];
+  final List<CodeValue> _mvnos = [CodeValue(cd: '', value: '전체')];
+  final List<CodeValue> _agents = [CodeValue(cd: '', value: '전체')];
+  final List<CodeValue> _planTypes = [CodeValue(cd: '', value: '전체')];
+  final List<CodeValue> _subscriberTarget = [CodeValue(cd: '', value: '전체')];
+  final List<CodeValue> _statuses = [CodeValue(cd: '', value: '전체')];
 
   @override
   void initState() {

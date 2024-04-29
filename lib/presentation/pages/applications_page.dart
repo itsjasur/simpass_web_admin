@@ -1,5 +1,6 @@
 import 'package:admin_simpass/data/api/api_service.dart';
 import 'package:admin_simpass/data/models/applications_model.dart';
+import 'package:admin_simpass/data/models/code_value_model.dart';
 import 'package:admin_simpass/globals/constants.dart';
 import 'package:admin_simpass/globals/formatters.dart';
 import 'package:admin_simpass/globals/main_ui.dart';
@@ -34,7 +35,7 @@ class RApplicationsPageState extends State<ApplicationsPage> {
 
   final ScrollController _horizontalScrolCntr = ScrollController();
 
-  final List<CodeValue> _statusesList = [(CodeValue(cd: '', value: '전체'))];
+  final List<CodeValue> _statusesList = [];
   String _selectedStatusCode = "";
 
   final List _columns = applicationsColumns;
@@ -467,6 +468,8 @@ class RApplicationsPageState extends State<ApplicationsPage> {
   }
 
   Future<void> _fetchApplications() async {
+    _statusesList.clear();
+
     try {
       final APIService apiService = APIService();
 
@@ -485,7 +488,10 @@ class RApplicationsPageState extends State<ApplicationsPage> {
       );
 
       _totalCount = result.totalNum;
+
+      _statusesList.add(CodeValue(cd: '', value: '전체'));
       _statusesList.addAll(result.usimActStatusCodes);
+
       _applicationsList = result.applicationsList;
     } catch (e) {
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));

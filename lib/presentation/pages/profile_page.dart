@@ -395,8 +395,8 @@ class _ProfilePageState extends State<ProfilePage> {
       _phoneNumberController.text = result.phoneNumber ?? "";
       _selectedCountryCode = result.countryValue?["code"] ?? "";
       _selectedStatusCode = result.status ?? "";
-      _startDateController.text = CustomFormat().formatDateWithTime(result.fromDate ?? "") ?? "";
-      _expiryDateController.text = CustomFormat().formatDateWithTime(result.expireDate ?? "") ?? "";
+      _startDateController.text = CustomFormat().formatDateTime(result.fromDate ?? "") ?? "";
+      _expiryDateController.text = CustomFormat().formatDateTime(result.expireDate ?? "") ?? "";
       _userId = result.id;
     } catch (e) {
       if (mounted) {

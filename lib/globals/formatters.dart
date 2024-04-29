@@ -2,23 +2,6 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 class CustomFormat {
-  String? formatDateWithTime(String? dateTimeString) {
-    if (dateTimeString != null) {
-      // parsing the string into a DateTime object
-      DateTime dateTime = DateTime.parse(dateTimeString);
-
-      //  output format for a more readable date and time
-      DateFormat outputFormat = DateFormat("yyyy-MM-dd h:mm a");
-
-      //  the DateTime object using the output format
-      String formattedDateTime = outputFormat.format(dateTime);
-
-      return formattedDateTime;
-    }
-
-    return null;
-  }
-
   String? formatDate(String? dateTimeString) {
     if (dateTimeString != null) {
       // parsing the string into a DateTime object
@@ -34,7 +17,7 @@ class CustomFormat {
     return null;
   }
 
-  String? formatDateToString(String? dateTimeString) {
+  String? formatDateTime(String? dateTimeString) {
     if (dateTimeString != null) {
       //  Define the date format that matches the input string
       DateFormat format = DateFormat("yyyy-MM-dd h:mm");

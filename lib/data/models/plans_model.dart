@@ -1,12 +1,14 @@
+import 'package:admin_simpass/data/models/code_value_model.dart';
+
 class ManagePlansModel {
-  final List<CodeNamePair> carrierType;
-  final List<CodeNamePair> mvnoCd;
-  final List<CodeNamePair> carrierPlanType;
+  final List<CodeValue> carrierType;
+  final List<CodeValue> mvnoCd;
+  final List<CodeValue> carrierPlanType;
   final int lastPage;
-  final List<CodeNamePair> statusCd;
+  final List<CodeValue> statusCd;
   final int totalNum;
-  final List<CodeNamePair> agentCd;
-  final List<CodeNamePair> carrierCd;
+  final List<CodeValue> agentCd;
+  final List<CodeValue> carrierCd;
   final List<PlanModel> planList;
   final int rowLimit;
   final int currentPage;
@@ -27,45 +29,17 @@ class ManagePlansModel {
 
   factory ManagePlansModel.fromJson(Map<String, dynamic> json) {
     return ManagePlansModel(
-      carrierType: List<CodeNamePair>.from(json['carrier_type'].map((x) => CodeNamePair.fromJson(x))),
-      mvnoCd: List<CodeNamePair>.from(json['mvno_cd'].map((x) => CodeNamePair.fromJson(x))),
-      carrierPlanType: List<CodeNamePair>.from(json['carrier_plan_type'].map((x) => CodeNamePair.fromJson(x))),
+      carrierType: List<CodeValue>.from(json['carrier_type'].map((x) => CodeValue.fromJson(x))),
+      mvnoCd: List<CodeValue>.from(json['mvno_cd'].map((x) => CodeValue.fromJson(x))),
+      carrierPlanType: List<CodeValue>.from(json['carrier_plan_type'].map((x) => CodeValue.fromJson(x))),
       lastPage: json['lastPage'],
-      statusCd: List<CodeNamePair>.from(json['status_cd'].map((x) => CodeNamePair.fromJson(x))),
+      statusCd: List<CodeValue>.from(json['status_cd'].map((x) => CodeValue.fromJson(x))),
       totalNum: json['totalNum'],
-      agentCd: List<CodeNamePair>.from(json['agent_cd'].map((x) => CodeNamePair.fromJson(x))),
-      carrierCd: List<CodeNamePair>.from(json['carrier_cd'].map((x) => CodeNamePair.fromJson(x))),
+      agentCd: List<CodeValue>.from(json['agent_cd'].map((x) => CodeValue.fromJson(x))),
+      carrierCd: List<CodeValue>.from(json['carrier_cd'].map((x) => CodeValue.fromJson(x))),
       planList: List<PlanModel>.from(json['plan_list'].map((x) => PlanModel.fromJson(x))),
       rowLimit: json['rowLimit'],
       currentPage: json['currentPage'],
-    );
-  }
-}
-
-// class CarrierType {
-//   final String cd;
-//   final String value;
-
-//   CarrierType({required this.cd, required this.value});
-
-//   factory CarrierType.fromJson(Map<String, dynamic> json) {
-//     return CarrierType(
-//       cd: json['cd'],
-//       value: json['value'],
-//     );
-//   }
-// }
-
-class CodeNamePair {
-  final String cd;
-  final String value;
-
-  CodeNamePair({required this.cd, required this.value});
-
-  factory CodeNamePair.fromJson(Map<String, dynamic> json) {
-    return CodeNamePair(
-      cd: json['cd'],
-      value: json['value'],
     );
   }
 }

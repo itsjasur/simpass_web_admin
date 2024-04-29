@@ -35,8 +35,8 @@ class _UpdateAddUserContentState extends State<UpdateAddUserContent> {
 
   String? _countryErrorText;
 
-  final TextEditingController _fromDateController = TextEditingController(text: CustomFormat().formatDateWithTime(DateTime.now().toString()));
-  final TextEditingController _expiryDateController = TextEditingController(text: CustomFormat().formatDateWithTime(DateTime.now().add(const Duration(days: 365)).toString()));
+  final TextEditingController _fromDateController = TextEditingController(text: CustomFormat().formatDateTime(DateTime.now().toString()));
+  final TextEditingController _expiryDateController = TextEditingController(text: CustomFormat().formatDateTime(DateTime.now().add(const Duration(days: 365)).toString()));
 
   String _selectedCountryCode = countryNameCodelist[0]['code'];
 
@@ -278,7 +278,7 @@ class _UpdateAddUserContentState extends State<UpdateAddUserContent> {
                           title: '시작일자',
                           onTap: () async {
                             String? selectedDate = await showDateTimePicker(context);
-                            if (selectedDate != null) _fromDateController.text = CustomFormat().formatDateWithTime(selectedDate) ?? "";
+                            if (selectedDate != null) _fromDateController.text = CustomFormat().formatDateTime(selectedDate) ?? "";
                           },
                           readOnly: true,
                         ),
@@ -303,7 +303,7 @@ class _UpdateAddUserContentState extends State<UpdateAddUserContent> {
                           controller: _expiryDateController,
                           onTap: () async {
                             String? selectedDate = await showDateTimePicker(context);
-                            if (selectedDate != null) _expiryDateController.text = CustomFormat().formatDateWithTime(selectedDate) ?? "";
+                            if (selectedDate != null) _expiryDateController.text = CustomFormat().formatDateTime(selectedDate) ?? "";
                           },
                           readOnly: true,
                           title: '종료일자',
@@ -378,8 +378,8 @@ class _UpdateAddUserContentState extends State<UpdateAddUserContent> {
       _selectedCountryCode = memberInfo.country ?? "";
       _selectedStatusCode = memberInfo.status ?? memberStatuses[0]['code'];
 
-      _fromDateController.text = CustomFormat().formatDateWithTime(memberInfo.fromDate) ?? "";
-      _expiryDateController.text = CustomFormat().formatDateWithTime(memberInfo.expireDate) ?? "";
+      _fromDateController.text = CustomFormat().formatDateTime(memberInfo.fromDate) ?? "";
+      _expiryDateController.text = CustomFormat().formatDateTime(memberInfo.expireDate) ?? "";
 
       List<dynamic> rolesList = memberInfo.strRoles ?? [];
       _selectedRoles.addAll(rolesList);
@@ -411,8 +411,8 @@ class _UpdateAddUserContentState extends State<UpdateAddUserContent> {
           email: _emailController.text,
           name: _fullNameController.text,
           status: _selectedStatusCode,
-          fromDate: CustomFormat().formatDateToString(_fromDateController.text),
-          expireDate: CustomFormat().formatDateToString(_expiryDateController.text),
+          fromDate: CustomFormat().formatDateTime(_fromDateController.text),
+          expireDate: CustomFormat().formatDateTime(_expiryDateController.text),
           country: _selectedCountryCode,
           phoneNumber: _phoneNumberController.text,
           roles: _selectedRoles.toList(),
@@ -445,8 +445,8 @@ class _UpdateAddUserContentState extends State<UpdateAddUserContent> {
           email: _emailController.text,
           name: _fullNameController.text,
           status: _selectedStatusCode,
-          fromDate: CustomFormat().formatDateToString(_fromDateController.text),
-          expireDate: CustomFormat().formatDateToString(_expiryDateController.text),
+          fromDate: CustomFormat().formatDateTime(_fromDateController.text),
+          expireDate: CustomFormat().formatDateTime(_expiryDateController.text),
           country: _selectedCountryCode,
           phoneNumber: _phoneNumberController.text,
           roles: _selectedRoles.toList(),

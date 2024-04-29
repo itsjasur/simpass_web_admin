@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../data/models/code_value_model.dart';
+
 class ApplicationStatusUpdateContent extends StatefulWidget {
   final List<CodeValue> items;
   final String applicationID;

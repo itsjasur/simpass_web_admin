@@ -1,3 +1,5 @@
+import 'package:admin_simpass/data/models/code_value_model.dart';
+
 class RetailersModel {
   int? lastPage;
   int? totalNum;
@@ -184,23 +186,6 @@ class PartnerModel {
       priorConsentFormAttach: json['prior_consent_form_attach'],
       shopInfo1Attach: json['shop_info_1_attach'],
       shopInfo2Attach: json['shop_info_2_attach'],
-    );
-  }
-}
-
-class CodeValue {
-  String cd;
-  String value;
-
-  CodeValue({
-    required this.cd,
-    required this.value,
-  });
-
-  factory CodeValue.fromJson(Map<String, dynamic> json) {
-    return CodeValue(
-      cd: json['cd'],
-      value: json['value'],
     );
   }
 }

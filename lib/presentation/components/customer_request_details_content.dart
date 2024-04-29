@@ -1,4 +1,5 @@
 import 'package:admin_simpass/data/api/api_service.dart';
+import 'package:admin_simpass/data/models/code_value_model.dart';
 import 'package:admin_simpass/data/models/customer_requests_model.dart';
 import 'package:admin_simpass/globals/formatters.dart';
 import 'package:admin_simpass/presentation/components/button_circular_indicator.dart';
@@ -119,7 +120,7 @@ class _CustomerRequestDetailsContentState extends State<CustomerRequestDetailsCo
                               constraints: const BoxConstraints(maxWidth: 200),
                               child: CustomTextInput(
                                 title: '요청 날짜',
-                                initialValue: CustomFormat().formatDateToString(_details?.regTime) ?? "",
+                                initialValue: CustomFormat().formatDateTime(_details?.regTime) ?? "",
                                 readOnly: true,
                               ),
                             ),

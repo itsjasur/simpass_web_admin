@@ -1,4 +1,5 @@
 import 'package:admin_simpass/data/api/api_service.dart';
+import 'package:admin_simpass/data/models/code_value_model.dart';
 import 'package:admin_simpass/data/models/retailers_model.dart';
 import 'package:admin_simpass/globals/constants.dart';
 import 'package:admin_simpass/globals/formatters.dart';
@@ -20,7 +21,7 @@ class RetailersPage extends StatefulWidget {
 }
 
 class _RetailersPageState extends State<RetailersPage> {
-  bool _dataLoading = false;
+  bool _dataLoading = true;
 
   final List _columns = retailersColumns;
 
@@ -36,12 +37,19 @@ class _RetailersPageState extends State<RetailersPage> {
   bool _sortAscending = true;
 
   List<PartnerModel> _retailersList = [];
-  final List<CodeValue> _statusesList = [CodeValue(cd: '', value: '전체')];
+  final List<CodeValue> _statusesList = [];
 
   @override
   void initState() {
     super.initState();
     _fetchRetailers();
+  }
+
+  @override
+  void dispose() {
+    _retailerNameContr.dispose();
+    _horizontalScrolCntr.dispose();
+    super.dispose();
   }
 
   @override
@@ -93,8 +101,8 @@ class _RetailersPageState extends State<RetailersPage> {
                                     builder: (context, constraints) => CustomDropDownMenu(
                                       label: const Text("상태"),
                                       enableSearch: true,
-                                      items: _statusesList.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
                                       width: constraints.maxWidth,
+                                      items: _statusesList.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
                                       selectedItem: _selectedStatusCode,
                                       onSelected: (selectedItem) {
                                         _selectedStatusCode = selectedItem;
@@ -200,8 +208,8 @@ class _RetailersPageState extends State<RetailersPage> {
                                             if (columnIndex == 3) mysort((model) => model.contractor?.toLowerCase() ?? "");
                                             if (columnIndex == 4) mysort((model) => model.phoneNumber?.toLowerCase() ?? "");
                                             if (columnIndex == 5) mysort((model) => model.businessNum?.toLowerCase() ?? "");
-                                            if (columnIndex == 8) mysort((model) => model.applyDate ?? "");
-                                            if (columnIndex == 9) mysort((model) => model.contractDate ?? "");
+                                            if (columnIndex == 6) mysort((model) => model.applyDate ?? "");
+                                            if (columnIndex == 7) mysort((model) => model.contractDate ?? "");
 
                                             setState(() {});
                                           },
@@ -324,7 +332,7 @@ class _RetailersPageState extends State<RetailersPage> {
                                             if (columnIndex == 6) {
                                               return DataCell(
                                                 placeholder: false,
-                                                Text(CustomFormat().formatDateToString(_retailersList[rowIndex].applyDate) ?? ""),
+                                                Text(CustomFormat().formatDateTime(_retailersList[rowIndex].applyDate) ?? ""),
                                                 onTap: () {},
                                               );
                                             }
@@ -332,7 +340,7 @@ class _RetailersPageState extends State<RetailersPage> {
                                             if (columnIndex == 7) {
                                               return DataCell(
                                                 placeholder: false,
-                                                Text(CustomFormat().formatDateToString(_retailersList[rowIndex].contractDate) ?? ""),
+                                                Text(CustomFormat().formatDateTime(_retailersList[rowIndex].contractDate) ?? ""),
                                                 onTap: () {},
                                               );
                                             }
@@ -391,7 +399,11 @@ class _RetailersPageState extends State<RetailersPage> {
       );
 
       _totalCount = result.totalNum ?? 0;
+
+      _statusesList.clear();
+      _statusesList.add(CodeValue(cd: "", value: '전체'));
       _statusesList.addAll(result.statusList);
+
       _retailersList = result.partnerList;
     } catch (e) {
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));

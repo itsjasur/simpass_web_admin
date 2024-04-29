@@ -1,3 +1,5 @@
+import 'package:admin_simpass/data/models/code_value_model.dart';
+
 class CustomerRequestsModel {
   int? lastPage;
   int? totalNum;
@@ -26,23 +28,6 @@ class CustomerRequestsModel {
       countryList: (json['country_list'] as List).map((country) => CodeValue.fromJson(country)).toList(),
       currentPage: json['currentPage'],
       applyList: (json['apply_list'] as List).map((apply) => CustomerRequestModel.fromJson(apply)).toList(),
-    );
-  }
-}
-
-class CodeValue {
-  String cd;
-  String value;
-
-  CodeValue({
-    required this.cd,
-    required this.value,
-  });
-
-  factory CodeValue.fromJson(Map<String?, dynamic> json) {
-    return CodeValue(
-      cd: json['cd'] ?? "",
-      value: json['value'] ?? "",
     );
   }
 }

@@ -230,7 +230,7 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
                                           }
                                           if (columnIndex == 7) {
                                             return DataCell(
-                                              Text(CustomFormat().formatDateWithTime(_usersList[rowIndex].fromDate) ?? ""),
+                                              Text(CustomFormat().formatDateTime(_usersList[rowIndex].fromDate) ?? ""),
                                               onTap: () {},
                                             );
                                           }
