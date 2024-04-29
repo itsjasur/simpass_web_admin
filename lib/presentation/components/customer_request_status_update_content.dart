@@ -7,10 +7,12 @@ import 'package:go_router/go_router.dart';
 
 class CustomerRequestStatusUpdateContent extends StatefulWidget {
   final List<DropdownMenuEntry> items;
+
+  final String selectedStatusCode;
   final int id;
   final Function? callBack;
 
-  const CustomerRequestStatusUpdateContent({super.key, required this.items, required this.id, this.callBack});
+  const CustomerRequestStatusUpdateContent({super.key, required this.items, required this.id, this.callBack, required this.selectedStatusCode});
 
   @override
   State<CustomerRequestStatusUpdateContent> createState() => _CustomerRequestStatusUpdateContentState();
@@ -26,12 +28,7 @@ class _CustomerRequestStatusUpdateContentState extends State<CustomerRequestStat
   @override
   void initState() {
     super.initState();
-    widget.items.removeAt(0);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
+    _selectedStatusCode = widget.selectedStatusCode;
   }
 
   @override
@@ -55,6 +52,7 @@ class _CustomerRequestStatusUpdateContentState extends State<CustomerRequestStat
             LayoutBuilder(
               builder: (context, constraints) => CustomDropDownMenu(
                 label: const Text("상태"),
+                enableSearch: true,
                 items: widget.items,
                 width: constraints.maxWidth,
                 errorText: _statusErrorCode,
@@ -113,7 +111,7 @@ class _CustomerRequestStatusUpdateContentState extends State<CustomerRequestStat
 
     setState(() {});
 
-    if (_formKey.currentState!.validate() && _selectedStatusCode.isNotEmpty) {
+    if (_selectedStatusCode.isNotEmpty) {
       final APIService apiService = APIService();
       var result = await apiService.updateCustomerRequestStatus(
         context: context,

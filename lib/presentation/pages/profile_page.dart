@@ -158,6 +158,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                           return CustomDropDownMenu(
                                             label: const Text("국가"),
                                             errorText: _countryErrorText,
+                                            enableSearch: true,
                                             onSelected: (selectedItem) {
                                               _selectedCountryCode = selectedItem;
                                               _countryErrorText = null;
@@ -175,7 +176,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                       child: LayoutBuilder(
                                         builder: (BuildContext context, BoxConstraints constraints) {
                                           return CustomDropDownMenu(
-                                            enabled: false,
+                                            enabled: true,
+                                            enableSearch: true,
                                             label: const Text("상태"),
                                             // onSelected: (selectedItem) {},
                                             width: constraints.maxWidth,
@@ -220,7 +222,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                   children: [
                                     Expanded(
                                       child: CustomTextInput(
-                                        // enabled: false,
+                                        // readOnly: true,
                                         readOnly: true,
                                         controller: _startDateController,
                                         title: '시작일자',
@@ -229,7 +231,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     const Gap(20),
                                     Expanded(
                                       child: CustomTextInput(
-                                        // enabled: false,
+                                        // readOnly: true,
                                         readOnly: true,
                                         controller: _expiryDateController,
                                         title: '종료일자',

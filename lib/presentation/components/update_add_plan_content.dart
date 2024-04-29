@@ -141,6 +141,7 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
                     child: LayoutBuilder(
                       builder: (context, constraints) => CustomDropDownMenu(
                         label: const Text("통신사"),
+                        enableSearch: true,
                         enabled: widget.selectedPlan == null,
                         errorText: _selectedCarrierCodeErr,
                         items: _carriers,
@@ -161,10 +162,7 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
                     ),
                     child: LayoutBuilder(
                       builder: (context, constraints) => CustomDropDownMenu(
-                        // controller: _selectedMvnoCodeCntr,
-                        // enabled: widget.selectedPlan == null,
-                        // requestFocusOnTap: true,
-                        // enableSearch: true,
+                        enableSearch: true,
                         label: const Text("브랜드"),
                         errorText: _selectedMvnoCodeErr,
                         onSelected: (selectedItem) {
@@ -186,6 +184,7 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
                     child: LayoutBuilder(
                       builder: (context, constraints) => CustomDropDownMenu(
                         errorText: _selectedAgentCodeErr,
+                        enableSearch: true,
                         label: const Text("대리점"),
                         onSelected: (selectedItem) {
                           _selectedAgentCodeErr = null;
@@ -206,6 +205,7 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
                       builder: (context, constraints) => CustomDropDownMenu(
                         errorText: _selectedPlanTypeCodeErr,
                         label: const Text("서비스 유형"),
+                        enableSearch: true,
                         onSelected: (selectedItem) {
                           _selectedPlanTypeCodeErr = null;
                           _selectedPlanTypeCode = selectedItem;
@@ -224,6 +224,7 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
                     child: LayoutBuilder(
                       builder: (context, constraints) => CustomDropDownMenu(
                         label: const Text("요금제 가입구분"),
+                        enableSearch: true,
                         errorText: _selectedSubscriberTargetCodeErr,
                         onSelected: (selectedItem) {
                           _selectedSubscriberTargetCodeErr = null;
@@ -255,6 +256,7 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
                       builder: (context, constraints) => CustomDropDownMenu(
                         errorText: _selectedStatusCodeErr,
                         label: const Text("상태"),
+                        enableSearch: true,
                         onSelected: (selectedItem) {
                           _selectedStatusCode = selectedItem;
                           _selectedStatusCodeErr = null;

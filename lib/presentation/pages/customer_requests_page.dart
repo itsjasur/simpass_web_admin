@@ -1,9 +1,12 @@
 import 'package:admin_simpass/data/api/api_service.dart';
 import 'package:admin_simpass/data/models/customer_requests_model.dart';
 import 'package:admin_simpass/globals/constants.dart';
+import 'package:admin_simpass/globals/formatters.dart';
+import 'package:admin_simpass/globals/main_ui.dart';
 import 'package:admin_simpass/presentation/components/custom_alert_dialog.dart';
 import 'package:admin_simpass/presentation/components/custom_drop_down_menu.dart';
 import 'package:admin_simpass/presentation/components/custom_text_input.dart';
+import 'package:admin_simpass/presentation/components/customer_request_details_content.dart';
 import 'package:admin_simpass/presentation/components/customer_request_status_update_content.dart';
 import 'package:admin_simpass/presentation/components/header.dart';
 import 'package:admin_simpass/presentation/components/pagination.dart';
@@ -29,7 +32,8 @@ class CustomerRequestsPageState extends State<CustomerRequestsPage> {
 
   final TextEditingController _nameController = TextEditingController();
 
-  String _selectedStatusCode = "";
+  String _selectedStatusCodeForSearch = "";
+  // String _selectedStatusCode = "";
   String _selectedCountrCode = "";
 
   int? _sortColumnIndex;
@@ -87,12 +91,13 @@ class CustomerRequestsPageState extends State<CustomerRequestsPage> {
                                   child: LayoutBuilder(
                                     builder: (context, constraints) => CustomDropDownMenu(
                                       label: const Text("상태"),
-                                      items: _statusesList.map((e) => DropdownMenuEntry(value: e.cd ?? "", label: e.value ?? "")).toList(),
+                                      items: _statusesList.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
                                       width: constraints.maxWidth,
+                                      enableSearch: true,
                                       menuHeight: 500,
-                                      selectedItem: _selectedStatusCode,
+                                      selectedItem: _selectedStatusCodeForSearch,
                                       onSelected: (selectedItem) {
-                                        _selectedStatusCode = selectedItem;
+                                        _selectedStatusCodeForSearch = selectedItem;
                                         setState(() {});
                                       },
                                     ),
@@ -106,7 +111,8 @@ class CustomerRequestsPageState extends State<CustomerRequestsPage> {
                                     builder: (context, constraints) => CustomDropDownMenu(
                                       label: const Text("국가"),
                                       menuHeight: 500,
-                                      items: _countriesList.map((e) => DropdownMenuEntry(value: e.cd ?? "", label: e.value ?? "")).toList(),
+                                      enableSearch: true,
+                                      items: _countriesList.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
                                       width: constraints.maxWidth,
                                       selectedItem: _selectedCountrCode,
                                       onSelected: (selectedItem) {
@@ -166,6 +172,7 @@ class CustomerRequestsPageState extends State<CustomerRequestsPage> {
                               },
                             ),
                           ),
+                          const Gap(10),
                           Scrollbar(
                             controller: _horizontalScrolCntr,
                             scrollbarOrientation: ScrollbarOrientation.top,
@@ -219,13 +226,13 @@ class CustomerRequestsPageState extends State<CustomerRequestsPage> {
 
                                             // sorting table on tap on header
                                             if (columnIndex == 0) mysort((model) => model.num ?? 0);
-                                            if (columnIndex == 1) mysort((model) => model.name?.toLowerCase() ?? "");
-                                            if (columnIndex == 2) mysort((model) => model.contact?.toLowerCase() ?? "");
-                                            if (columnIndex == 3) mysort((model) => model.countryNm?.toLowerCase() ?? "");
-                                            if (columnIndex == 4) mysort((model) => model.planId?.toLowerCase() ?? "");
+                                            if (columnIndex == 1) mysort((model) => model.status?.toLowerCase() ?? "");
+                                            if (columnIndex == 2) mysort((model) => model.name?.toLowerCase() ?? "");
+                                            if (columnIndex == 3) mysort((model) => model.contact?.toLowerCase() ?? "");
+                                            if (columnIndex == 4) mysort((model) => model.countryNm?.toLowerCase() ?? "");
                                             if (columnIndex == 5) mysort((model) => model.planNm?.toLowerCase() ?? "");
                                             if (columnIndex == 6) mysort((model) => model.usimActNm?.toLowerCase() ?? "");
-                                            if (columnIndex == 7) mysort((model) => model.status?.toLowerCase() ?? "");
+                                            if (columnIndex == 7) mysort((model) => model.regTime ?? "");
 
                                             setState(() {});
                                           },
@@ -236,8 +243,6 @@ class CustomerRequestsPageState extends State<CustomerRequestsPage> {
                                     rows: List.generate(
                                       _customerRequestsList.length,
                                       (rowIndex) => DataRow(
-                                        // onSelectChanged: (value) {},
-
                                         cells: List.generate(
                                           _columns.length,
                                           (columnIndex) {
@@ -252,66 +257,21 @@ class CustomerRequestsPageState extends State<CustomerRequestsPage> {
                                             }
 
                                             if (columnIndex == 1) {
-                                              return DataCell(
-                                                placeholder: false,
-                                                Container(
-                                                  constraints: const BoxConstraints(maxWidth: 350),
-                                                  child: Text(
-                                                    _customerRequestsList[rowIndex].name ?? "",
-                                                    overflow: TextOverflow.ellipsis,
-                                                    maxLines: 2,
-                                                  ),
-                                                ),
-                                                onTap: () {},
-                                              );
-                                            }
+                                              bool editable = false;
 
-                                            if (columnIndex == 2) {
-                                              return DataCell(
-                                                placeholder: false,
-                                                Text(
-                                                  _customerRequestsList[rowIndex].contact ?? "",
-                                                ),
-                                                onTap: () {},
-                                              );
-                                            }
-
-                                            if (columnIndex == 3) {
-                                              return DataCell(
-                                                placeholder: false,
-                                                Text(
-                                                  _customerRequestsList[rowIndex].countryNm ?? "",
-                                                ),
-                                                onTap: () {},
-                                              );
-                                            }
-
-                                            if (columnIndex == 4) {
-                                              return DataCell(
-                                                placeholder: false,
-                                                Text(
-                                                  _customerRequestsList[rowIndex].planNm ?? "",
-                                                ),
-                                                onTap: () {},
-                                              );
-                                            }
-
-                                            if (columnIndex == 5) {
-                                              return DataCell(
-                                                placeholder: false,
-                                                Text(
-                                                  _customerRequestsList[rowIndex].usimActNm ?? "",
-                                                ),
-                                                onTap: () {},
-                                              );
-                                            }
-
-                                            if (columnIndex == 6) {
-                                              bool editable = true;
                                               Color containerColor = Colors.grey;
-                                              if (_customerRequestsList[rowIndex].status == 'A') containerColor = Colors.blue;
+                                              if (_customerRequestsList[rowIndex].status == 'A') {
+                                                containerColor = Colors.blue;
+                                                editable = true;
+                                              }
+
                                               if (_customerRequestsList[rowIndex].status == 'B') containerColor = Colors.purple;
-                                              if (_customerRequestsList[rowIndex].status == 'P') containerColor = Colors.green;
+
+                                              if (_customerRequestsList[rowIndex].status == 'P') {
+                                                containerColor = Colors.green;
+                                                editable = true;
+                                              }
+
                                               if (_customerRequestsList[rowIndex].status == 'Y') containerColor = Colors.grey;
                                               if (_customerRequestsList[rowIndex].status == 'D') containerColor = Colors.red;
                                               if (_customerRequestsList[rowIndex].status == 'W') containerColor = Colors.red;
@@ -346,12 +306,89 @@ class CustomerRequestsPageState extends State<CustomerRequestsPage> {
                                                   ),
                                                 ),
                                                 onTap: () {
+                                                  !editable
+                                                      ? null
+                                                      : showCustomDialog(
+                                                          context: context,
+                                                          content: CustomerRequestStatusUpdateContent(
+                                                            selectedStatusCode: _customerRequestsList[rowIndex].status ?? "",
+                                                            items: _statusesList.where((i) => i.cd.isNotEmpty).map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
+                                                            id: _customerRequestsList[rowIndex].id ?? 0,
+                                                            callBack: _fetchCustomerRequests,
+                                                          ),
+                                                        );
+                                                },
+                                              );
+                                            }
+
+                                            if (columnIndex == 2) {
+                                              return DataCell(
+                                                Container(
+                                                  constraints: const BoxConstraints(maxWidth: 350),
+                                                  child: Text(
+                                                    _customerRequestsList[rowIndex].name ?? "",
+                                                    overflow: TextOverflow.ellipsis,
+                                                    maxLines: 2,
+                                                  ),
+                                                ),
+                                                onTap: () {},
+                                              );
+                                            }
+
+                                            if (columnIndex == 3) {
+                                              return DataCell(
+                                                Text(
+                                                  _customerRequestsList[rowIndex].contact ?? "",
+                                                ),
+                                                onTap: () {},
+                                              );
+                                            }
+
+                                            if (columnIndex == 4) {
+                                              return DataCell(
+                                                Text(
+                                                  _customerRequestsList[rowIndex].countryNm ?? "",
+                                                ),
+                                                onTap: () {},
+                                              );
+                                            }
+
+                                            if (columnIndex == 5) {
+                                              return DataCell(
+                                                Text(
+                                                  _customerRequestsList[rowIndex].planNm ?? "",
+                                                ),
+                                                onTap: () {},
+                                              );
+                                            }
+
+                                            if (columnIndex == 6) {
+                                              return DataCell(
+                                                Text(
+                                                  _customerRequestsList[rowIndex].usimActNm ?? "",
+                                                ),
+                                                onTap: () {},
+                                              );
+                                            }
+                                            if (columnIndex == 7) {
+                                              return DataCell(
+                                                Text(CustomFormat().formatDateToString(_customerRequestsList[rowIndex].regTime) ?? ""),
+                                                onTap: () {},
+                                              );
+                                            }
+
+                                            if (columnIndex == 8) {
+                                              return DataCell(
+                                                const Icon(
+                                                  Icons.visibility_outlined,
+                                                  color: MainUi.mainColor,
+                                                ),
+                                                onTap: () {
                                                   showCustomDialog(
-                                                    barrierDismissible: false,
                                                     context: context,
-                                                    content: CustomerRequestStatusUpdateContent(
-                                                      items: _statusesList.map((e) => DropdownMenuEntry(value: e.cd ?? "", label: e.value ?? "")).toList(),
+                                                    content: CustomerRequestDetailsContent(
                                                       id: _customerRequestsList[rowIndex].id ?? 0,
+                                                      statuses: _statusesList,
                                                       callBack: _fetchCustomerRequests,
                                                     ),
                                                   );
@@ -389,7 +426,7 @@ class CustomerRequestsPageState extends State<CustomerRequestsPage> {
         requestModel: {
           "country_cd": _selectedCountrCode,
           "name": _nameController.text,
-          "status": _selectedStatusCode,
+          "status": _selectedStatusCodeForSearch,
           "page": _currentPage,
           "rowLimit": _perPage,
         },

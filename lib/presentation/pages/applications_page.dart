@@ -153,6 +153,7 @@ class RApplicationsPageState extends State<ApplicationsPage> {
                                     ),
                                     child: LayoutBuilder(builder: (context, constraints) {
                                       return CustomDropDownMenu(
+                                        enableSearch: true,
                                         label: const Text("상태"),
                                         items: _statusesList.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
                                         width: constraints.maxWidth,
@@ -340,9 +341,10 @@ class RApplicationsPageState extends State<ApplicationsPage> {
                                                 onTap: () {
                                                   if (editable) {
                                                     showCustomDialog(
-                                                      barrierDismissible: false,
+                                                      barrierDismissible: true,
                                                       context: context,
                                                       content: ApplicationStatusUpdateContent(
+                                                        selectedStatusCode: _applicationsList[rowIndex].usimActStatus ?? "",
                                                         items: _statusesList,
                                                         applicationID: _applicationsList[rowIndex].actNo ?? "",
                                                         callBack: _fetchApplications,

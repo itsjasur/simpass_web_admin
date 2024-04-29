@@ -1,6 +1,7 @@
 import 'package:admin_simpass/data/api/api_service.dart';
 import 'package:admin_simpass/data/models/retailers_model.dart';
 import 'package:admin_simpass/globals/constants.dart';
+import 'package:admin_simpass/globals/formatters.dart';
 import 'package:admin_simpass/presentation/components/custom_alert_dialog.dart';
 import 'package:admin_simpass/presentation/components/custom_drop_down_menu.dart';
 import 'package:admin_simpass/presentation/components/custom_text_input.dart';
@@ -91,6 +92,7 @@ class _RetailersPageState extends State<RetailersPage> {
                                   child: LayoutBuilder(
                                     builder: (context, constraints) => CustomDropDownMenu(
                                       label: const Text("상태"),
+                                      enableSearch: true,
                                       items: _statusesList.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
                                       width: constraints.maxWidth,
                                       selectedItem: _selectedStatusCode,
@@ -265,10 +267,10 @@ class _RetailersPageState extends State<RetailersPage> {
                                                 onTap: () {
                                                   if (editable) {
                                                     showCustomDialog(
-                                                      barrierDismissible: false,
                                                       context: context,
                                                       content: RetailerStatusUpdateContent(
-                                                        items: _statusesList.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
+                                                        selectedItem: _retailersList[rowIndex].status ?? "",
+                                                        items: _statusesList.where((i) => i.cd.isNotEmpty).map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
                                                         reetailerCd: _retailersList[rowIndex].partnerCd ?? "",
                                                         callBack: _fetchRetailers,
                                                       ),
@@ -322,7 +324,7 @@ class _RetailersPageState extends State<RetailersPage> {
                                             if (columnIndex == 6) {
                                               return DataCell(
                                                 placeholder: false,
-                                                Text(_retailersList[rowIndex].applyDate ?? ""),
+                                                Text(CustomFormat().formatDateToString(_retailersList[rowIndex].applyDate) ?? ""),
                                                 onTap: () {},
                                               );
                                             }
@@ -330,7 +332,7 @@ class _RetailersPageState extends State<RetailersPage> {
                                             if (columnIndex == 7) {
                                               return DataCell(
                                                 placeholder: false,
-                                                Text(_retailersList[rowIndex].contractDate ?? ""),
+                                                Text(CustomFormat().formatDateToString(_retailersList[rowIndex].contractDate) ?? ""),
                                                 onTap: () {},
                                               );
                                             }

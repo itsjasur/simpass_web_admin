@@ -92,7 +92,7 @@ class _ApplicationDetailsContentState extends State<ApplicationDetailsContent> {
                               child: CustomTextInput(
                                 title: '서비스유형',
                                 initialValue: _details!.carrierTypeNm,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -100,7 +100,7 @@ class _ApplicationDetailsContentState extends State<ApplicationDetailsContent> {
                               child: CustomTextInput(
                                 title: '통신사',
                                 initialValue: _details!.carrierNm,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -108,7 +108,7 @@ class _ApplicationDetailsContentState extends State<ApplicationDetailsContent> {
                               child: CustomTextInput(
                                 title: '고객정보',
                                 initialValue: _details!.custTypeNm,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -116,7 +116,7 @@ class _ApplicationDetailsContentState extends State<ApplicationDetailsContent> {
                               child: CustomTextInput(
                                 title: '고객정보',
                                 initialValue: _details!.custNm,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -124,7 +124,7 @@ class _ApplicationDetailsContentState extends State<ApplicationDetailsContent> {
                               child: CustomTextInput(
                                 title: '이름',
                                 initialValue: _details!.name,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -132,7 +132,7 @@ class _ApplicationDetailsContentState extends State<ApplicationDetailsContent> {
                               child: CustomTextInput(
                                 title: '연락처',
                                 initialValue: _details!.contact,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -140,7 +140,7 @@ class _ApplicationDetailsContentState extends State<ApplicationDetailsContent> {
                               child: CustomTextInput(
                                 title: '생년월일',
                                 initialValue: _details!.birthday,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -148,7 +148,7 @@ class _ApplicationDetailsContentState extends State<ApplicationDetailsContent> {
                               child: CustomTextInput(
                                 title: '신분증/여권번호',
                                 initialValue: _details!.idNo,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -156,7 +156,7 @@ class _ApplicationDetailsContentState extends State<ApplicationDetailsContent> {
                               child: CustomTextInput(
                                 title: '국적',
                                 initialValue: _details!.countryCd,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -164,7 +164,7 @@ class _ApplicationDetailsContentState extends State<ApplicationDetailsContent> {
                               child: CustomTextInput(
                                 title: '주소(주소+상세주소)',
                                 initialValue: _details!.address,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                           ],
@@ -186,7 +186,7 @@ class _ApplicationDetailsContentState extends State<ApplicationDetailsContent> {
                               child: CustomTextInput(
                                 title: '요금제 명',
                                 initialValue: _details!.usimPlanNm,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -194,7 +194,7 @@ class _ApplicationDetailsContentState extends State<ApplicationDetailsContent> {
                               child: CustomTextInput(
                                 title: '유심비용청구',
                                 initialValue: _details!.usimFeeNm,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -202,7 +202,7 @@ class _ApplicationDetailsContentState extends State<ApplicationDetailsContent> {
                               child: CustomTextInput(
                                 title: 'USIM 모델명',
                                 initialValue: _details!.usimModelNo,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -210,7 +210,7 @@ class _ApplicationDetailsContentState extends State<ApplicationDetailsContent> {
                               child: CustomTextInput(
                                 title: '일련번호',
                                 initialValue: _details!.usimNo,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -218,7 +218,7 @@ class _ApplicationDetailsContentState extends State<ApplicationDetailsContent> {
                               child: CustomTextInput(
                                 title: '개통구분',
                                 initialValue: _details!.usimActNm,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -226,7 +226,7 @@ class _ApplicationDetailsContentState extends State<ApplicationDetailsContent> {
                               child: CustomTextInput(
                                 title: '가입/이동 전화번호',
                                 initialValue: _details!.phoneNumber,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -234,7 +234,7 @@ class _ApplicationDetailsContentState extends State<ApplicationDetailsContent> {
                               child: CustomTextInput(
                                 title: '희망번호 1',
                                 initialValue: _details!.requestNo1,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -242,7 +242,7 @@ class _ApplicationDetailsContentState extends State<ApplicationDetailsContent> {
                               child: CustomTextInput(
                                 title: '희망번호 2',
                                 initialValue: _details!.requestNo2,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -250,7 +250,7 @@ class _ApplicationDetailsContentState extends State<ApplicationDetailsContent> {
                               child: CustomTextInput(
                                 title: '희망번호 3',
                                 initialValue: _details!.requestNo3,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                           ],
@@ -272,7 +272,7 @@ class _ApplicationDetailsContentState extends State<ApplicationDetailsContent> {
                               child: CustomTextInput(
                                 title: '결제구분',
                                 initialValue: _details!.paidTransferNm,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -280,7 +280,7 @@ class _ApplicationDetailsContentState extends State<ApplicationDetailsContent> {
                               child: CustomTextInput(
                                 title: '예금주명',
                                 initialValue: _details!.accountName,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -288,7 +288,7 @@ class _ApplicationDetailsContentState extends State<ApplicationDetailsContent> {
                               child: CustomTextInput(
                                 title: '예금주 생년월일',
                                 initialValue: _details!.accountBirthday,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -296,7 +296,7 @@ class _ApplicationDetailsContentState extends State<ApplicationDetailsContent> {
                               child: CustomTextInput(
                                 title: '은행(카드사)명',
                                 initialValue: _details!.accountAgency,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -304,7 +304,7 @@ class _ApplicationDetailsContentState extends State<ApplicationDetailsContent> {
                               child: CustomTextInput(
                                 title: '은행(카드사)명',
                                 initialValue: _details!.accountNumber,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                           ],

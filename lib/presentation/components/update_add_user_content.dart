@@ -182,6 +182,7 @@ class _UpdateAddUserContentState extends State<UpdateAddUserContent> {
                         return CustomDropDownMenu(
                           label: const Text("국가"),
                           errorText: _countryErrorText,
+                          enableSearch: true,
                           onSelected: (selectedItem) {
                             if (selectedItem != null) _selectedCountryCode = selectedItem;
                             _countryErrorText = null;
@@ -201,6 +202,7 @@ class _UpdateAddUserContentState extends State<UpdateAddUserContent> {
                         //  use constraints.maxWidth as the parent's width here.
                         return CustomDropDownMenu(
                           label: const Text("상태"),
+                          enableSearch: true,
                           onSelected: (selectedItem) {
                             if (selectedItem != null) _selectedStatusCode = selectedItem;
                           },

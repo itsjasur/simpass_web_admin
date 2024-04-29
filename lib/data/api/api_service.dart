@@ -510,4 +510,27 @@ class APIService {
     }
     return false;
   }
+
+  Future<CustomerRequestModel> fetchCustomerRequestDetails({required BuildContext context, required int id}) async {
+    try {
+      String? accessToken = await getAccessToken();
+      headers['Authorization'] = 'Bearer $accessToken';
+
+      Uri url = _urlMaker('admin/selfInquDtl');
+      var body = json.encode({"id": id});
+      var response = await http.post(url, headers: headers, body: body);
+
+      response = await RequestHelper().post(context.mounted ? context : null, response, url, headers, body);
+
+      var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
+
+      if (response.statusCode == 200 && decodedResponse['result'] == 'SUCCESS') {
+        return CustomerRequestModel.fromJson(decodedResponse["data"]['apply_detail_info']);
+      } else {
+        throw decodedResponse['message'] ?? "Retailer details request data error";
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
 }

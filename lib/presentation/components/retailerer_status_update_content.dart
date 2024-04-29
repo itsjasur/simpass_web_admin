@@ -9,8 +9,9 @@ class RetailerStatusUpdateContent extends StatefulWidget {
   final List<DropdownMenuEntry> items;
   final String reetailerCd;
   final Function? callBack;
+  final String selectedItem;
 
-  const RetailerStatusUpdateContent({super.key, required this.items, required this.reetailerCd, this.callBack});
+  const RetailerStatusUpdateContent({super.key, required this.items, required this.reetailerCd, this.callBack, required this.selectedItem});
 
   @override
   State<RetailerStatusUpdateContent> createState() => _RetailerStatusUpdateContentState();
@@ -26,7 +27,7 @@ class _RetailerStatusUpdateContentState extends State<RetailerStatusUpdateConten
   @override
   void initState() {
     super.initState();
-    widget.items.removeAt(0);
+    _selectedStatusCode = widget.selectedItem;
   }
 
   @override

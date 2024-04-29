@@ -57,7 +57,7 @@ class _SideMenuWidgetState extends State<SideMenuWidget> {
                     colorFilter: widget.isSelected || _hovering
                         ? const ColorFilter.mode(MainUi.mainColor, BlendMode.srcIn)
                         : const ColorFilter.mode(
-                            Colors.white,
+                            Colors.white70,
                             BlendMode.srcIn,
                           ),
                     height: 16,
@@ -65,7 +65,10 @@ class _SideMenuWidgetState extends State<SideMenuWidget> {
                   const SizedBox(width: 15),
                   Text(
                     widget.title,
-                    style: TextStyle(color: widget.isSelected || _hovering ? MainUi.mainColor : Colors.white, fontSize: 16),
+                    style: TextStyle(
+                      color: widget.isSelected || _hovering ? MainUi.mainColor : Colors.white70,
+                      fontSize: 16,
+                    ),
                   ),
                 ],
               ),

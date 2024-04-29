@@ -17,7 +17,6 @@ class RequestHelper {
   Future<String?> _accessTokenRefreshed() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? refreshToken = prefs.getString('refreshToken');
-
     if (refreshToken != null) {
       try {
         final response = await http.post(
@@ -30,8 +29,6 @@ class RequestHelper {
           var result = json.decode(utf8.decode(response.bodyBytes));
           await prefs.setString('accessToken', result['accessToken']);
           await prefs.setString('refreshToken', result['refreshToken']);
-          await prefs.setStringList('myRolesList', result['roles']);
-
           return result['accessToken'];
         }
       } catch (e) {

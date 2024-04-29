@@ -31,8 +31,8 @@ class CustomerRequestsModel {
 }
 
 class CodeValue {
-  String? cd;
-  String? value;
+  String cd;
+  String value;
 
   CodeValue({
     required this.cd,
@@ -41,8 +41,8 @@ class CodeValue {
 
   factory CodeValue.fromJson(Map<String?, dynamic> json) {
     return CodeValue(
-      cd: json['cd'],
-      value: json['value'],
+      cd: json['cd'] ?? "",
+      value: json['value'] ?? "",
     );
   }
 }

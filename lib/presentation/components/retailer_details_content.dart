@@ -55,7 +55,7 @@ class _RetailerDetailsContentState extends State<RetailerDetailsContent> {
                               child: CustomTextInput(
                                 title: '판매점코드',
                                 initialValue: _details?.partnerCd,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -63,7 +63,7 @@ class _RetailerDetailsContentState extends State<RetailerDetailsContent> {
                               child: CustomTextInput(
                                 title: '대표자명',
                                 initialValue: _details?.contractor,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -71,7 +71,7 @@ class _RetailerDetailsContentState extends State<RetailerDetailsContent> {
                               child: CustomTextInput(
                                 title: '대표자 생년월일',
                                 initialValue: _details?.birthday,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -79,7 +79,7 @@ class _RetailerDetailsContentState extends State<RetailerDetailsContent> {
                               child: CustomTextInput(
                                 title: '판매점명',
                                 initialValue: _details?.partnerNm,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -87,7 +87,7 @@ class _RetailerDetailsContentState extends State<RetailerDetailsContent> {
                               child: CustomTextInput(
                                 title: '연락처',
                                 initialValue: _details?.phoneNumber,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -95,7 +95,7 @@ class _RetailerDetailsContentState extends State<RetailerDetailsContent> {
                               child: CustomTextInput(
                                 title: '사업자번호',
                                 initialValue: _details?.businessNum,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -103,7 +103,7 @@ class _RetailerDetailsContentState extends State<RetailerDetailsContent> {
                               child: CustomTextInput(
                                 title: '주민등록 번호',
                                 initialValue: _details?.idNo,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -111,7 +111,7 @@ class _RetailerDetailsContentState extends State<RetailerDetailsContent> {
                               child: CustomTextInput(
                                 title: '매장번호',
                                 initialValue: _details?.storeContact,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -119,7 +119,7 @@ class _RetailerDetailsContentState extends State<RetailerDetailsContent> {
                               child: CustomTextInput(
                                 title: '팩스번호',
                                 initialValue: _details?.storeFax,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -127,7 +127,7 @@ class _RetailerDetailsContentState extends State<RetailerDetailsContent> {
                               child: CustomTextInput(
                                 title: '매장주소',
                                 initialValue: _details?.address,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -135,7 +135,7 @@ class _RetailerDetailsContentState extends State<RetailerDetailsContent> {
                               child: CustomTextInput(
                                 title: '매장 상세주소',
                                 initialValue: _details?.dtlAddress,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -143,7 +143,7 @@ class _RetailerDetailsContentState extends State<RetailerDetailsContent> {
                               child: CustomTextInput(
                                 title: '이메일',
                                 initialValue: _details?.email,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -151,7 +151,7 @@ class _RetailerDetailsContentState extends State<RetailerDetailsContent> {
                               child: CustomTextInput(
                                 title: '접수일자',
                                 initialValue: _details?.applyDate,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -159,7 +159,7 @@ class _RetailerDetailsContentState extends State<RetailerDetailsContent> {
                               child: CustomTextInput(
                                 title: '계약일자',
                                 initialValue: _details?.contractDate,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -167,7 +167,7 @@ class _RetailerDetailsContentState extends State<RetailerDetailsContent> {
                               child: CustomTextInput(
                                 title: '은행명',
                                 initialValue: _details?.bankNm,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -175,7 +175,7 @@ class _RetailerDetailsContentState extends State<RetailerDetailsContent> {
                               child: CustomTextInput(
                                 title: '계좌번호',
                                 initialValue: _details?.bankNum,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                             Container(
@@ -183,7 +183,7 @@ class _RetailerDetailsContentState extends State<RetailerDetailsContent> {
                               child: CustomTextInput(
                                 title: '상태코드명',
                                 initialValue: _details?.statusNm,
-                                enabled: false,
+                                readOnly: true,
                               ),
                             ),
                           ],

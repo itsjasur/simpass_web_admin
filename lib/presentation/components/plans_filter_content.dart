@@ -87,6 +87,7 @@ class _ManagePlansFilterContentState extends State<ManagePlansFilterContent> {
                   child: LayoutBuilder(
                     builder: (context, constraints) => CustomDropDownMenu(
                       label: const Text("통신사"),
+                      enableSearch: true,
                       items: _carriers.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
                       onSelected: (selectedItem) {
                         _selectedCarrierCode = selectedItem;
@@ -103,6 +104,7 @@ class _ManagePlansFilterContentState extends State<ManagePlansFilterContent> {
                   child: LayoutBuilder(
                     builder: (context, constraints) => CustomDropDownMenu(
                       label: const Text("브랜드"),
+                      enableSearch: true,
                       onSelected: (selectedItem) {
                         _selectedMvnoCode = selectedItem;
                       },
@@ -119,6 +121,7 @@ class _ManagePlansFilterContentState extends State<ManagePlansFilterContent> {
                   child: LayoutBuilder(
                     builder: (context, constraints) => CustomDropDownMenu(
                       label: const Text("대리점"),
+                      enableSearch: true,
                       onSelected: (selectedItem) {
                         _selectedAgentCode = selectedItem;
                       },
@@ -135,6 +138,7 @@ class _ManagePlansFilterContentState extends State<ManagePlansFilterContent> {
                   child: LayoutBuilder(
                     builder: (context, constraints) => CustomDropDownMenu(
                       label: const Text("서비스 유형"),
+                      enableSearch: true,
                       onSelected: (selectedItem) {
                         _selectedPlanTypeCode = selectedItem;
                       },
@@ -151,6 +155,7 @@ class _ManagePlansFilterContentState extends State<ManagePlansFilterContent> {
                   child: LayoutBuilder(
                     builder: (context, constraints) => CustomDropDownMenu(
                       label: const Text("가입대상"),
+                      enableSearch: true,
                       onSelected: (selectedItem) {
                         _selectedSubscriberTargetCode = selectedItem;
                       },
@@ -167,6 +172,7 @@ class _ManagePlansFilterContentState extends State<ManagePlansFilterContent> {
                   child: LayoutBuilder(
                     builder: (context, constraints) => CustomDropDownMenu(
                       label: const Text("상태"),
+                      enableSearch: true,
                       onSelected: (selectedItem) {
                         _selectedStatusCode = selectedItem;
                       },
