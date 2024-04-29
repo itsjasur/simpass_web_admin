@@ -21,14 +21,14 @@ class SideMenu extends StatelessWidget {
       surfaceTintColor: Colors.transparent,
       backgroundColor: Colors.black,
       // width: 500,
-      // shape: const BeveledRectangleBorder(borderRadius: BorderRadius.zero),
+      shape: const BeveledRectangleBorder(borderRadius: BorderRadius.zero),
       child: Consumer<MenuIndexProvider>(
         builder: (context, value, child) {
           return ListView(
             children: [
               InkWell(
                 onTap: () {
-                  context.go('/');
+                  context.go('/profile');
                 },
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),

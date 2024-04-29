@@ -70,7 +70,7 @@ class _PaginationState extends State<Pagination> {
             _updateCallBack();
           },
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+            padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 10),
             child: Text((index + 1).toString()),
           ),
         );

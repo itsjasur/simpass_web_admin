@@ -402,11 +402,10 @@ class _UpdateAddUserContentState extends State<UpdateAddUserContent> {
 
     if (_formKey.currentState!.validate() && _selectedCountryCode.isNotEmpty) {
       final APIService apiService = APIService();
-      await apiService.memberAddOrUpdate(
-        isNew: false,
+      await apiService.memberUpdate(
         context: context,
-        requestModel: MemberAddUpdateModel(
-          id: widget.userId!,
+        requestModel: MemberUpdate(
+          id: widget.userId,
           username: widget.userName!,
           email: _emailController.text,
           name: _fullNameController.text,
@@ -437,10 +436,9 @@ class _UpdateAddUserContentState extends State<UpdateAddUserContent> {
 
     if (_formKey.currentState!.validate() && _selectedCountryCode.isNotEmpty) {
       final APIService apiService = APIService();
-      await apiService.memberAddOrUpdate(
+      await apiService.memberRegister(
         context: context,
-        isNew: true,
-        requestModel: MemberAddUpdateModel(
+        requestModel: MemberRegister(
           username: _userNameController.text,
           email: _emailController.text,
           name: _fullNameController.text,

@@ -164,14 +164,14 @@ class APIService {
     }
   }
 
-  Future<void> memberAddOrUpdate({required BuildContext context, required MemberAddUpdateModel requestModel, required bool isNew}) async {
+  Future<void> memberUpdate({required BuildContext context, required MemberUpdate requestModel}) async {
     var messenger = ScaffoldMessenger.of(context);
 
     try {
       String? accessToken = await getAccessToken();
       headers['Authorization'] = 'Bearer $accessToken';
 
-      Uri url = isNew ? _urlMaker('admin/register') : _urlMaker('admin/memberUpdate');
+      Uri url = _urlMaker('admin/memberUpdate');
       var body = json.encode(requestModel.toJson());
       var response = await http.post(url, headers: headers, body: body);
 
@@ -179,7 +179,30 @@ class APIService {
       var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode == 200) {
-        await Future.delayed(const Duration(seconds: 1));
+        messenger.showSnackBar(SnackBar(content: Text(decodedResponse['message'])));
+      } else {
+        throw decodedResponse['message'] ?? "Update data incorrect";
+      }
+    } catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+  }
+
+  Future<void> memberRegister({required BuildContext context, required MemberRegister requestModel}) async {
+    var messenger = ScaffoldMessenger.of(context);
+
+    try {
+      String? accessToken = await getAccessToken();
+      headers['Authorization'] = 'Bearer $accessToken';
+
+      Uri url = _urlMaker('admin/register');
+      var body = json.encode(requestModel.toJson());
+      var response = await http.post(url, headers: headers, body: body);
+
+      response = await RequestHelper().post(context.mounted ? context : null, response, url, headers, body);
+      var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
+
+      if (response.statusCode == 200) {
         messenger.showSnackBar(SnackBar(content: Text(decodedResponse['message'])));
       } else {
         throw decodedResponse['message'] ?? "Update data incorrect";
