@@ -128,7 +128,6 @@ class CustomerRequestsPageState extends State<CustomerRequestsPage> {
                                     builder: (context, constraints) => CustomTextInput(
                                       title: "이름",
                                       controller: _nameController,
-                                      maxlength: 10,
                                     ),
                                   ),
                                 ),

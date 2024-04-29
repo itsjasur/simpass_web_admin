@@ -43,7 +43,10 @@ class APIService {
         throw 'Incorrect credentials';
       }
     } catch (e) {
-      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      }
     }
   }
 
@@ -55,15 +58,17 @@ class APIService {
         var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
 
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(decodedResponse['message'])),
-          );
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(decodedResponse['message'])));
         }
       } else {
         throw Exception('Sign up data error');
       }
     } catch (e) {
-      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      }
     }
   }
 
@@ -105,15 +110,17 @@ class APIService {
       if (response.statusCode == 200) {
         var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(decodedResponse['message'])),
-          );
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(decodedResponse['message'])));
         }
       } else {
         throw "Update data incorrect";
       }
     } catch (e) {
-      if (context.mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      }
     }
   }
 
@@ -179,11 +186,13 @@ class APIService {
       var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode == 200) {
+        messenger.clearSnackBars();
         messenger.showSnackBar(SnackBar(content: Text(decodedResponse['message'])));
       } else {
         throw decodedResponse['message'] ?? "Update data incorrect";
       }
     } catch (e) {
+      messenger.clearSnackBars();
       messenger.showSnackBar(SnackBar(content: Text(e.toString())));
     }
   }
@@ -203,11 +212,13 @@ class APIService {
       var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode == 200) {
+        messenger.clearSnackBars();
         messenger.showSnackBar(SnackBar(content: Text(decodedResponse['message'])));
       } else {
         throw decodedResponse['message'] ?? "Update data incorrect";
       }
     } catch (e) {
+      messenger.clearSnackBars();
       messenger.showSnackBar(SnackBar(content: Text(e.toString())));
     }
   }
@@ -251,12 +262,14 @@ class APIService {
       var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode == 200) {
+        messenger.clearSnackBars();
         messenger.showSnackBar(SnackBar(content: Text(decodedResponse['message'])));
         return true;
       } else {
         throw decodedResponse['message'] ?? "Data error";
       }
     } catch (e) {
+      messenger.clearSnackBars();
       messenger.showSnackBar(SnackBar(content: Text(e.toString())));
     }
     return false;
@@ -302,12 +315,14 @@ class APIService {
       // print(jsonEncode(decodedResponse));
 
       if (response.statusCode == 200 && decodedResponse['result'] == 'SUCCESS') {
+        messenger.clearSnackBars();
         messenger.showSnackBar(SnackBar(content: Text(decodedResponse['message'])));
         return true;
       } else {
         throw decodedResponse['message'] ?? "Applications request data error";
       }
     } catch (e) {
+      messenger.clearSnackBars();
       messenger.showSnackBar(SnackBar(content: Text(e.toString())));
     }
 
@@ -350,9 +365,11 @@ class APIService {
       var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode == 200 && decodedResponse['result'] == 'SUCCESS') {
-        if (decodedResponse["data"]['apply_forms_list'] == null || decodedResponse["data"]['apply_attach_list'].isEmpty) throw "목록이 비어 있습니다.";
-
-        return decodedResponse["data"]['apply_attach_list'];
+        if (decodedResponse["data"]['apply_attach_list'] == null || decodedResponse["data"]['apply_attach_list'].isEmpty) {
+          throw "목록이 비어 있습니다.";
+        } else {
+          return decodedResponse["data"]['apply_attach_list'];
+        }
       } else {
         throw decodedResponse['message'] ?? "Application details images request data error";
       }
@@ -374,11 +391,13 @@ class APIService {
       var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode == 200 && decodedResponse['result'] == 'SUCCESS') {
-        if (decodedResponse["data"]['apply_forms_list'] == null || decodedResponse["data"]['apply_forms_list'].isEmpty) throw "목록이 비어 있습니다.";
-
-        List<dynamic> applyFormsList = decodedResponse["data"]['apply_forms_list'];
-        List<String> stringFormsList = applyFormsList.map((e) => e.toString()).toList();
-        return stringFormsList;
+        if (decodedResponse["data"]['apply_forms_list'] == null || decodedResponse["data"]['apply_forms_list'].isEmpty) {
+          throw "목록이 비어 있습니다.";
+        } else {
+          List<dynamic> applyFormsList = decodedResponse["data"]['apply_forms_list'];
+          List<String> stringFormsList = applyFormsList.map((e) => e.toString()).toList();
+          return stringFormsList;
+        }
       } else {
         throw decodedResponse['message'] ?? "Application details images request data error";
       }
@@ -425,12 +444,14 @@ class APIService {
       var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode == 200 && decodedResponse['result'] == 'SUCCESS') {
+        messenger.clearSnackBars();
         messenger.showSnackBar(SnackBar(content: Text(decodedResponse['message'])));
         return true;
       } else {
         throw decodedResponse['message'] ?? "Retailer request data error";
       }
     } catch (e) {
+      messenger.clearSnackBars();
       messenger.showSnackBar(SnackBar(content: Text(e.toString())));
     }
     return false;
@@ -447,8 +468,6 @@ class APIService {
 
       response = await RequestHelper().post(context.mounted ? context : null, response, url, headers, body);
       var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
-      // print(jsonEncode(decodedResponse));
-
       if (response.statusCode == 200 && decodedResponse['result'] == 'SUCCESS') {
         return PartnerModel.fromJson(decodedResponse["data"]['partner_info']);
       } else {
@@ -523,12 +542,14 @@ class APIService {
       var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode == 200 && decodedResponse['result'] == 'SUCCESS') {
+        messenger.clearSnackBars();
         messenger.showSnackBar(SnackBar(content: Text(decodedResponse['message'])));
         return true;
       } else {
         throw decodedResponse['message'] ?? "Retailer request data error";
       }
     } catch (e) {
+      messenger.clearSnackBars();
       messenger.showSnackBar(SnackBar(content: Text(e.toString())));
     }
     return false;

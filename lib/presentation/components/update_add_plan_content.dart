@@ -406,17 +406,6 @@ class _AddOrUpdatePlanContentState extends State<AddOrUpdatePlanContent> {
   }
 
   bool _checkDropDownValues() {
-    // String checkTheOptions(TextEditingController cntr, List<CodeNamePair> items) {
-    //   for (var e in items) {
-    //     if (e.value == cntr.text) {
-    //       return e.cd;
-    //     }
-    //   }
-    //   return "";
-    // }
-
-    // _selectedMvnoCode = checkTheOptions(_selectedMvnoCodeCntr, widget.info.mvnoCd);
-
     _selectedCarrierCodeErr = _selectedCarrierCode.isEmpty ? "통신사 선택하세요." : null;
     _selectedMvnoCodeErr = _selectedMvnoCode.isEmpty ? "브랜드 선택하세요." : null;
     _selectedAgentCodeErr = _selectedAgentCode.isEmpty ? "대리점 선택하세요." : null;

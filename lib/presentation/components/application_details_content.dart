@@ -343,7 +343,10 @@ class _ApplicationDetailsContentState extends State<ApplicationDetailsContent> {
       );
       _details = result;
     } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      if (mounted) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      }
     }
 
     _loading = false;
@@ -359,7 +362,10 @@ class _ApplicationDetailsContentState extends State<ApplicationDetailsContent> {
       );
       _base64ImagesList = result;
     } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      if (mounted) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      }
     }
   }
 }

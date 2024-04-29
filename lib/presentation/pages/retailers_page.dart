@@ -89,7 +89,6 @@ class _RetailersPageState extends State<RetailersPage> {
                                     builder: (context, constraints) => CustomTextInput(
                                       title: "판매점명",
                                       controller: _retailerNameContr,
-                                      maxlength: 10,
                                     ),
                                   ),
                                 ),

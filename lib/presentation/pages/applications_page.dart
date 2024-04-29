@@ -13,6 +13,7 @@ import 'package:admin_simpass/presentation/components/custom_text_input.dart';
 import 'package:admin_simpass/presentation/components/header.dart';
 import 'package:admin_simpass/presentation/components/registration_image_viewer_content.dart';
 import 'package:admin_simpass/presentation/components/pagination.dart';
+import 'package:admin_simpass/presentation/components/scroll_image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
@@ -415,7 +416,7 @@ class RApplicationsPageState extends State<ApplicationsPage> {
                                                     showDialog(
                                                       barrierColor: Colors.black,
                                                       context: context,
-                                                      builder: (context) => RegistrationImageViewerContent(binaryImageList: _base64ImagesList),
+                                                      builder: (context) => ScrollFormImageViewer(binaryImageList: _base64ImagesList),
                                                     );
                                                   }
                                                 },
@@ -494,7 +495,10 @@ class RApplicationsPageState extends State<ApplicationsPage> {
 
       _applicationsList = result.applicationsList;
     } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      if (mounted) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      }
     }
 
     _dataLoading = false;
@@ -502,6 +506,8 @@ class RApplicationsPageState extends State<ApplicationsPage> {
   }
 
   Future<void> _fetchApplicationImages(String applicationId) async {
+    _base64ImagesList.clear();
+
     try {
       final APIService apiService = APIService();
       var result = await apiService.fetchApplicationForms(
@@ -510,7 +516,10 @@ class RApplicationsPageState extends State<ApplicationsPage> {
       );
       _base64ImagesList = result;
     } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      if (mounted) {
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
+      }
     }
   }
 }
