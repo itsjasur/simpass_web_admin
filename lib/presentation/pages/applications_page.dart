@@ -195,7 +195,7 @@ class RApplicationsPageState extends State<ApplicationsPage> {
                     },
                   ),
                 ),
-                const Gap(10),
+                const Gap(5),
                 Expanded(
                   child: LayoutBuilder(
                     builder: (context, constraints) => Scrollbar(

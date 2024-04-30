@@ -1,6 +1,5 @@
 import 'package:admin_simpass/globals/constants.dart';
-import 'package:admin_simpass/presentation/components/scroll_image_viewer.dart';
-import 'package:admin_simpass/presentation/components/test.dart';
+
 import 'package:admin_simpass/presentation/pages/applications_page.dart';
 import 'package:admin_simpass/presentation/pages/customer_requests_page.dart';
 import 'package:admin_simpass/presentation/pages/empty_page.dart';
@@ -82,8 +81,8 @@ final appRouter = GoRouter(
   redirect: (context, state) async {
     final isLoggedIn = context.read<AuthServiceProvider>().isLoggedIn;
 
-    // User is not logged in and not heading to login, redirects to login
-    if (!isLoggedIn) return '/login';
+    // User is not logged in and not heading to login and not going to signup, redirects to login
+    if (!isLoggedIn && state.matchedLocation != '/signup') return '/login';
 
     //updating side menu state if user opens from url
     WidgetsBinding.instance.addPostFrameCallback((_) {

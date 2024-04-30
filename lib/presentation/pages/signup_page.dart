@@ -25,8 +25,6 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
 
-  final TextEditingController _countryController = TextEditingController();
-
   final TextEditingController _passController = TextEditingController();
   final TextEditingController _passReentryController = TextEditingController();
 
@@ -34,12 +32,11 @@ class _SignupPageState extends State<SignupPage> {
 
   final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
-  List<DropdownMenuEntry> _countries = [];
+
+  String _selectedCountryCode = "";
 
   @override
   void initState() {
-    _countries = countryNameCodelist.map((item) => DropdownMenuEntry(value: item['code'], label: item['label'])).toList();
-
     super.initState();
   }
 
@@ -48,7 +45,7 @@ class _SignupPageState extends State<SignupPage> {
     _userNameController.dispose();
     _fullNameController.dispose();
     _emailController.dispose();
-    _countryController.dispose();
+
     _phoneNumberController.dispose();
     _passController.dispose();
     _passReentryController.dispose();
@@ -148,17 +145,16 @@ class _SignupPageState extends State<SignupPage> {
                         builder: (BuildContext context, BoxConstraints constraints) {
                           // You can use constraints.maxWidth as the parent's width here.
                           return CustomDropDownMenu(
-                            controller: _countryController,
                             label: const Text("국가"),
+                            enableSearch: true,
                             errorText: _countryErrorText,
                             onSelected: (selectedItem) {
-                              _countryController.text = countryNameCodelist.firstWhere((e) => e['code'] == selectedItem)['label'];
-
                               _countryErrorText = null;
+                              _selectedCountryCode = selectedItem;
                               setState(() {});
                             },
                             width: constraints.maxWidth + 7,
-                            items: _countries,
+                            items: countryNameCodelist.map((item) => DropdownMenuEntry(value: item['code'], label: item['label'])).toList(),
                             selectedItem: 34,
                           );
                         },
@@ -234,12 +230,12 @@ class _SignupPageState extends State<SignupPage> {
   }
 
   Future<void> _signup() async {
-    if (_countryController.text.isEmpty) {
+    if (_selectedCountryCode.isEmpty) {
       _countryErrorText = "국가를 선택하세요.";
       setState(() {});
     }
 
-    if (_formKey.currentState!.validate() && _countryController.text.isNotEmpty) {
+    if (_formKey.currentState!.validate() && _selectedCountryCode.isNotEmpty) {
       try {
         final APIService apiService = APIService();
 
@@ -250,7 +246,7 @@ class _SignupPageState extends State<SignupPage> {
             password: _passController.text,
             email: _emailController.text,
             fullName: _fullNameController.text,
-            country: _countryController.text,
+            country: _selectedCountryCode,
             phoneNumber: _phoneNumberController.text,
           ),
         );
