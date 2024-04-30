@@ -18,7 +18,8 @@ Future<void> showCustomDialog({
       return Stack(
         children: [
           AlertDialog(
-            insetPadding: const EdgeInsets.symmetric(horizontal: 10),
+            insetPadding: EdgeInsets.zero,
+            contentPadding: EdgeInsets.zero,
             surfaceTintColor: Colors.white,
             backgroundColor: Colors.white,
             // contentPadding: EdgeInsets.all(0),

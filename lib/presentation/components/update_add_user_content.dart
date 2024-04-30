@@ -86,280 +86,283 @@ class _UpdateAddUserContentState extends State<UpdateAddUserContent> {
       child: SingleChildScrollView(
         child: Form(
           key: _formKey,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Gap(20),
-              Text(
-                widget.isNew ? "신규 사용자 등록" : "사용자 수정",
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Gap(20),
+                Text(
+                  widget.isNew ? "신규 사용자 등록" : "사용자 수정",
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
                 ),
-              ),
-              const Gap(30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: CustomTextInput(
-                      enabled: widget.isNew,
-                      controller: _userNameController,
-                      title: '아이디',
-                      validator: InputValidator().validateId,
-                    ),
-                  ),
-                  const Gap(20),
-                  Expanded(
-                    child: CustomTextInput(
-                      controller: _fullNameController,
-                      title: '이름',
-                      validator: InputValidator().validateName,
-                    ),
-                  ),
-                ],
-              ),
-              const Gap(30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: CustomTextInput(
-                      controller: _emailController,
-                      title: '이메일',
-                      validator: InputValidator().validateEmail,
-                    ),
-                  ),
-                  const Gap(20),
-                  Expanded(
-                    child: CustomTextInput(
-                      controller: _phoneNumberController,
-                      inputFormatters: [PhoneNumberFormatter()],
-                      maxlength: 13,
-                      title: '휴대전화',
-                      validator: InputValidator().validatePhoneNumber,
-                    ),
-                  ),
-                ],
-              ),
-              if (widget.isNew) const Gap(30),
-              if (widget.isNew)
+                const Gap(30),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
                       child: CustomTextInput(
-                        controller: _passController,
-                        title: '비밀번호',
-                        validator: InputValidator().validatePass,
-                        hidden: true,
+                        enabled: widget.isNew,
+                        controller: _userNameController,
+                        title: '아이디',
+                        validator: InputValidator().validateId,
                       ),
                     ),
                     const Gap(20),
                     Expanded(
                       child: CustomTextInput(
-                        controller: _passReentryController,
-                        title: '비밀번호 확인',
-                        validator: (p0) => InputValidator().validateRentryPass(_passController.text, p0),
-                        hidden: true,
+                        controller: _fullNameController,
+                        title: '이름',
+                        validator: InputValidator().validateName,
                       ),
                     ),
                   ],
                 ),
-              const Gap(30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: LayoutBuilder(
-                      builder: (BuildContext context, BoxConstraints constraints) {
-                        //  use constraints.maxWidth as the parent's width here.
-                        return CustomDropDownMenu(
-                          label: const Text("국가"),
-                          errorText: _countryErrorText,
-                          enableSearch: true,
-                          onSelected: (selectedItem) {
-                            if (selectedItem != null) _selectedCountryCode = selectedItem;
-                            _countryErrorText = null;
-                            setState(() {});
-                          },
-                          width: constraints.maxWidth,
-                          items: _countries,
-                          selectedItem: _selectedCountryCode,
-                        );
-                      },
-                    ),
-                  ),
-                  const Gap(20),
-                  Expanded(
-                    child: LayoutBuilder(
-                      builder: (BuildContext context, BoxConstraints constraints) {
-                        //  use constraints.maxWidth as the parent's width here.
-                        return CustomDropDownMenu(
-                          label: const Text("상태"),
-                          enableSearch: true,
-                          onSelected: (selectedItem) {
-                            if (selectedItem != null) _selectedStatusCode = selectedItem;
-                          },
-                          width: constraints.maxWidth,
-                          items: _statuses,
-                          selectedItem: _selectedStatusCode,
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              const Gap(30),
-              Wrap(
-                spacing: 10,
-                runSpacing: 10,
-                children: List.generate(
-                  _userRolesList.length,
-                  (index) {
-                    return InkWell(
-                      borderRadius: BorderRadius.circular(5),
-                      onTap: _userRolesList[index]['state'] == "hidden"
-                          ? null
-                          : () {
-                              ScaffoldMessenger.of(context).removeCurrentSnackBar();
-
-                              if (_globalHighRoleCodes.contains(_userRolesList[index]["code"])) {
-                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("이미 선택권한의 하위권한이 선택 또는 존재합니다.")));
-                              } else {
-                                //if checked : unchecked
-                                _userRolesList[index]['checked'] ? _selectedRoles.remove(_userRolesList[index]['code']) : _selectedRoles.add(_userRolesList[index]['code']);
-                                _handleCheckboxes();
-                              }
-                            },
-                      onHover: (value) {},
-                      child: IgnorePointer(
-                        ignoring: true,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Checkbox(
-                                visualDensity: VisualDensity.compact,
-                                value: _userRolesList[index]['checked'],
-                                onChanged: (newValue) {},
-                              ),
-                              const Gap(5),
-                              Flexible(
-                                  child: Text(
-                                _userRolesList[index]['label'],
-                                style: TextStyle(color: _userRolesList[index]['state'] == 'hidden' ? Colors.black38 : Colors.black),
-                              )),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              const Gap(30),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Stack(
-                      alignment: Alignment.centerRight,
-                      children: [
-                        CustomTextInput(
-                          controller: _fromDateController,
-                          title: '시작일자',
-                          onTap: () async {
-                            String? selectedDate = await showDateTimePicker(context);
-                            if (selectedDate != null) _fromDateController.text = CustomFormat().formatDateTime(selectedDate) ?? "";
-                          },
-                          readOnly: true,
-                        ),
-                        const Positioned(
-                          right: 10,
-                          child: IgnorePointer(
-                            child: Icon(
-                              Icons.calendar_month,
-                              color: Colors.black26,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Gap(20),
-                  Expanded(
-                    child: Stack(
-                      alignment: Alignment.centerRight,
-                      children: [
-                        CustomTextInput(
-                          controller: _expiryDateController,
-                          onTap: () async {
-                            String? selectedDate = await showDateTimePicker(context);
-                            if (selectedDate != null) _expiryDateController.text = CustomFormat().formatDateTime(selectedDate) ?? "";
-                          },
-                          readOnly: true,
-                          title: '종료일자',
-                        ),
-                        const Positioned(
-                          right: 10,
-                          child: IgnorePointer(
-                            child: Icon(
-                              Icons.calendar_month,
-                              color: Colors.black26,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-              const Gap(40),
-              Align(
-                alignment: Alignment.topRight,
-                child: Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.end,
-                  runSpacing: 20,
-                  spacing: 20,
+                const Gap(30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      height: 47,
-                      constraints: const BoxConstraints(minWidth: 100),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey,
-                        ),
-                        onPressed: () {
-                          context.pop();
-                        },
-                        child: const Text("취소"),
+                    Expanded(
+                      child: CustomTextInput(
+                        controller: _emailController,
+                        title: '이메일',
+                        validator: InputValidator().validateEmail,
                       ),
                     ),
-                    Container(
-                      height: 47,
-                      constraints: const BoxConstraints(minWidth: 100),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(),
-                        onPressed: _dataUpdating
+                    const Gap(20),
+                    Expanded(
+                      child: CustomTextInput(
+                        controller: _phoneNumberController,
+                        inputFormatters: [PhoneNumberFormatter()],
+                        maxlength: 13,
+                        title: '휴대전화',
+                        validator: InputValidator().validatePhoneNumber,
+                      ),
+                    ),
+                  ],
+                ),
+                if (widget.isNew) const Gap(30),
+                if (widget.isNew)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: CustomTextInput(
+                          controller: _passController,
+                          title: '비밀번호',
+                          validator: InputValidator().validatePass,
+                          hidden: true,
+                        ),
+                      ),
+                      const Gap(20),
+                      Expanded(
+                        child: CustomTextInput(
+                          controller: _passReentryController,
+                          title: '비밀번호 확인',
+                          validator: (p0) => InputValidator().validateRentryPass(_passController.text, p0),
+                          hidden: true,
+                        ),
+                      ),
+                    ],
+                  ),
+                const Gap(30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: LayoutBuilder(
+                        builder: (BuildContext context, BoxConstraints constraints) {
+                          //  use constraints.maxWidth as the parent's width here.
+                          return CustomDropDownMenu(
+                            label: const Text("국가"),
+                            errorText: _countryErrorText,
+                            enableSearch: true,
+                            onSelected: (selectedItem) {
+                              if (selectedItem != null) _selectedCountryCode = selectedItem;
+                              _countryErrorText = null;
+                              setState(() {});
+                            },
+                            width: constraints.maxWidth,
+                            items: _countries,
+                            selectedItem: _selectedCountryCode,
+                          );
+                        },
+                      ),
+                    ),
+                    const Gap(20),
+                    Expanded(
+                      child: LayoutBuilder(
+                        builder: (BuildContext context, BoxConstraints constraints) {
+                          //  use constraints.maxWidth as the parent's width here.
+                          return CustomDropDownMenu(
+                            label: const Text("상태"),
+                            enableSearch: true,
+                            onSelected: (selectedItem) {
+                              if (selectedItem != null) _selectedStatusCode = selectedItem;
+                            },
+                            width: constraints.maxWidth,
+                            items: _statuses,
+                            selectedItem: _selectedStatusCode,
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                const Gap(30),
+                Wrap(
+                  spacing: 10,
+                  runSpacing: 10,
+                  children: List.generate(
+                    _userRolesList.length,
+                    (index) {
+                      return InkWell(
+                        borderRadius: BorderRadius.circular(5),
+                        onTap: _userRolesList[index]['state'] == "hidden"
                             ? null
                             : () {
-                                widget.isNew ? _addNewMember() : _updateMemberData();
+                                ScaffoldMessenger.of(context).removeCurrentSnackBar();
+
+                                if (_globalHighRoleCodes.contains(_userRolesList[index]["code"])) {
+                                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("이미 선택권한의 하위권한이 선택 또는 존재합니다.")));
+                                } else {
+                                  //if checked : unchecked
+                                  _userRolesList[index]['checked'] ? _selectedRoles.remove(_userRolesList[index]['code']) : _selectedRoles.add(_userRolesList[index]['code']);
+                                  _handleCheckboxes();
+                                }
                               },
-                        child: _dataUpdating ? const ButtonCircularProgressIndicator() : const Text("저장"),
+                        onHover: (value) {},
+                        child: IgnorePointer(
+                          ignoring: true,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Checkbox(
+                                  visualDensity: VisualDensity.compact,
+                                  value: _userRolesList[index]['checked'],
+                                  onChanged: (newValue) {},
+                                ),
+                                const Gap(5),
+                                Flexible(
+                                    child: Text(
+                                  _userRolesList[index]['label'],
+                                  style: TextStyle(color: _userRolesList[index]['state'] == 'hidden' ? Colors.black38 : Colors.black),
+                                )),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const Gap(30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Stack(
+                        alignment: Alignment.centerRight,
+                        children: [
+                          CustomTextInput(
+                            controller: _fromDateController,
+                            title: '시작일자',
+                            onTap: () async {
+                              String? selectedDate = await showDateTimePicker(context);
+                              if (selectedDate != null) _fromDateController.text = CustomFormat().formatDateTime(selectedDate) ?? "";
+                            },
+                            readOnly: true,
+                          ),
+                          const Positioned(
+                            right: 10,
+                            child: IgnorePointer(
+                              child: Icon(
+                                Icons.calendar_month,
+                                color: Colors.black26,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Gap(20),
+                    Expanded(
+                      child: Stack(
+                        alignment: Alignment.centerRight,
+                        children: [
+                          CustomTextInput(
+                            controller: _expiryDateController,
+                            onTap: () async {
+                              String? selectedDate = await showDateTimePicker(context);
+                              if (selectedDate != null) _expiryDateController.text = CustomFormat().formatDateTime(selectedDate) ?? "";
+                            },
+                            readOnly: true,
+                            title: '종료일자',
+                          ),
+                          const Positioned(
+                            right: 10,
+                            child: IgnorePointer(
+                              child: Icon(
+                                Icons.calendar_month,
+                                color: Colors.black26,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
-              ),
-            ],
+                const Gap(40),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.end,
+                    runSpacing: 20,
+                    spacing: 20,
+                    children: [
+                      Container(
+                        height: 47,
+                        constraints: const BoxConstraints(minWidth: 100),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey,
+                          ),
+                          onPressed: () {
+                            context.pop();
+                          },
+                          child: const Text("취소"),
+                        ),
+                      ),
+                      Container(
+                        height: 47,
+                        constraints: const BoxConstraints(minWidth: 100),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(),
+                          onPressed: _dataUpdating
+                              ? null
+                              : () {
+                                  widget.isNew ? _addNewMember() : _updateMemberData();
+                                },
+                          child: _dataUpdating ? const ButtonCircularProgressIndicator() : const Text("저장"),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

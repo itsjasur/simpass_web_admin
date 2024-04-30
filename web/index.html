@@ -45,8 +45,6 @@
 
   <script>
     async function createPdfFromImages(base64Images) {
-
-
       const { PDFDocument } = PDFLib;
       const pdfDoc = await PDFDocument.create();
 
@@ -65,7 +63,6 @@
       const pdfBytes = await pdfDoc.save();
       return pdfBytes; // Ensure it returns raw binary data
     }
-
 
   </script>
 

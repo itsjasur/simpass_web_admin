@@ -1,13 +1,11 @@
-import 'dart:convert'; // For base64Decod
+import 'dart:convert'; // For base64Decode
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:pdf/pdf.dart';
+import 'package:js/js.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
-import 'package:js/js.dart';
-import 'package:flutter/foundation.dart';
-
-// ignore: avoid_web_libraries_in_flutter
+import 'package:pdf/pdf.dart';
 import 'dart:js_util';
 
 class ScrollFormImageViewer extends StatefulWidget {
@@ -96,6 +94,7 @@ class _ScrollFormImageViewerState extends State<ScrollFormImageViewer> {
                     await Future.delayed(const Duration(milliseconds: 500));
 
                     _printPdf();
+
                     setState(() {
                       _sendingToPrint = false;
                     });

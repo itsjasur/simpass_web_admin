@@ -30,6 +30,7 @@ class APIService {
   var headers = {'Content-Type': 'application/json; charset=utf-8'};
 
   Future<void> login(BuildContext context, LoginRequestModel requestModel) async {
+    ScaffoldMessenger.of(context).clearSnackBars();
     try {
       final response = await http.post(_urlMaker('auth/signin'), headers: headers, body: json.encode(requestModel.toJson()));
       if (response.statusCode == 200) {
@@ -44,13 +45,13 @@ class APIService {
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
       }
     }
   }
 
   Future<void> signup(BuildContext context, SignupRequestModel requestModel) async {
+    ScaffoldMessenger.of(context).clearSnackBars();
     try {
       final response = await http.post(_urlMaker('auth/signup'), headers: headers, body: json.encode(requestModel.toJson()));
 
@@ -58,7 +59,6 @@ class APIService {
         var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
 
         if (context.mounted) {
-          ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(decodedResponse['message'])));
         }
       } else {
@@ -66,7 +66,6 @@ class APIService {
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
       }
     }
@@ -96,6 +95,8 @@ class APIService {
   }
 
   Future<void> profileInfoUpdate(BuildContext context, ProfileUpdateRequestModel requestModel) async {
+    ScaffoldMessenger.of(context).clearSnackBars();
+
     try {
       String? accessToken = await getAccessToken();
 
@@ -110,7 +111,6 @@ class APIService {
       if (response.statusCode == 200) {
         var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
         if (context.mounted) {
-          ScaffoldMessenger.of(context).clearSnackBars();
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(decodedResponse['message'])));
         }
       } else {
@@ -118,7 +118,6 @@ class APIService {
       }
     } catch (e) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
       }
     }
@@ -173,6 +172,7 @@ class APIService {
 
   Future<void> memberUpdate({required BuildContext context, required MemberUpdate requestModel}) async {
     var messenger = ScaffoldMessenger.of(context);
+    messenger.clearSnackBars();
 
     try {
       String? accessToken = await getAccessToken();
@@ -186,19 +186,18 @@ class APIService {
       var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode == 200) {
-        messenger.clearSnackBars();
         messenger.showSnackBar(SnackBar(content: Text(decodedResponse['message'])));
       } else {
         throw decodedResponse['message'] ?? "Update data incorrect";
       }
     } catch (e) {
-      messenger.clearSnackBars();
       messenger.showSnackBar(SnackBar(content: Text(e.toString())));
     }
   }
 
   Future<void> memberRegister({required BuildContext context, required MemberRegister requestModel}) async {
     var messenger = ScaffoldMessenger.of(context);
+    messenger.clearSnackBars();
 
     try {
       String? accessToken = await getAccessToken();
@@ -212,13 +211,11 @@ class APIService {
       var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode == 200) {
-        messenger.clearSnackBars();
         messenger.showSnackBar(SnackBar(content: Text(decodedResponse['message'])));
       } else {
         throw decodedResponse['message'] ?? "Update data incorrect";
       }
     } catch (e) {
-      messenger.clearSnackBars();
       messenger.showSnackBar(SnackBar(content: Text(e.toString())));
     }
   }
@@ -248,6 +245,7 @@ class APIService {
 
   Future<bool> updateOrAddPlan({required BuildContext context, required PlanAddUpdateModel requestModel}) async {
     var messenger = ScaffoldMessenger.of(context);
+    messenger.clearSnackBars();
 
     try {
       String? accessToken = await getAccessToken();
@@ -262,14 +260,12 @@ class APIService {
       var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode == 200) {
-        messenger.clearSnackBars();
         messenger.showSnackBar(SnackBar(content: Text(decodedResponse['message'])));
         return true;
       } else {
         throw decodedResponse['message'] ?? "Data error";
       }
     } catch (e) {
-      messenger.clearSnackBars();
       messenger.showSnackBar(SnackBar(content: Text(e.toString())));
     }
     return false;
@@ -300,6 +296,7 @@ class APIService {
 
   Future<bool> updateApplicationStatus({required BuildContext context, required ApplicationStatusUpdatemodel requestModel}) async {
     var messenger = ScaffoldMessenger.of(context);
+    messenger.clearSnackBars();
 
     try {
       String? accessToken = await getAccessToken();
@@ -315,14 +312,12 @@ class APIService {
       // print(jsonEncode(decodedResponse));
 
       if (response.statusCode == 200 && decodedResponse['result'] == 'SUCCESS') {
-        messenger.clearSnackBars();
         messenger.showSnackBar(SnackBar(content: Text(decodedResponse['message'])));
         return true;
       } else {
         throw decodedResponse['message'] ?? "Applications request data error";
       }
     } catch (e) {
-      messenger.clearSnackBars();
       messenger.showSnackBar(SnackBar(content: Text(e.toString())));
     }
 
@@ -379,6 +374,8 @@ class APIService {
   }
 
   Future<List<String>> fetchApplicationForms({required BuildContext context, required String applicationId}) async {
+    ScaffoldMessenger.of(context).clearSnackBars();
+
     try {
       String? accessToken = await getAccessToken();
       headers['Authorization'] = 'Bearer $accessToken';
@@ -431,6 +428,7 @@ class APIService {
 
   Future<bool> updateRetailerStatus({required BuildContext context, required Map requestModel}) async {
     var messenger = ScaffoldMessenger.of(context);
+    messenger.clearSnackBars();
 
     try {
       String? accessToken = await getAccessToken();
@@ -444,14 +442,12 @@ class APIService {
       var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode == 200 && decodedResponse['result'] == 'SUCCESS') {
-        messenger.clearSnackBars();
         messenger.showSnackBar(SnackBar(content: Text(decodedResponse['message'])));
         return true;
       } else {
         throw decodedResponse['message'] ?? "Retailer request data error";
       }
     } catch (e) {
-      messenger.clearSnackBars();
       messenger.showSnackBar(SnackBar(content: Text(e.toString())));
     }
     return false;
@@ -529,6 +525,7 @@ class APIService {
 
   Future<bool> updateCustomerRequestStatus({required BuildContext context, required Map requestModel}) async {
     var messenger = ScaffoldMessenger.of(context);
+    messenger.clearSnackBars();
 
     try {
       String? accessToken = await getAccessToken();
@@ -542,14 +539,12 @@ class APIService {
       var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
 
       if (response.statusCode == 200 && decodedResponse['result'] == 'SUCCESS') {
-        messenger.clearSnackBars();
         messenger.showSnackBar(SnackBar(content: Text(decodedResponse['message'])));
         return true;
       } else {
         throw decodedResponse['message'] ?? "Retailer request data error";
       }
     } catch (e) {
-      messenger.clearSnackBars();
       messenger.showSnackBar(SnackBar(content: Text(e.toString())));
     }
     return false;

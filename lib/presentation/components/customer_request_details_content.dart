@@ -52,134 +52,137 @@ class _CustomerRequestDetailsContentState extends State<CustomerRequestDetailsCo
                   ? const Center(
                       child: Text('Data fetching error'),
                     )
-                  : Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          '요청 세부정보',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 18,
+                  : Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            '요청 세부정보',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 18,
+                            ),
                           ),
-                        ),
-                        const Gap(20),
-                        Wrap(
-                          spacing: 20,
-                          runSpacing: 20,
-                          children: [
-                            Container(
-                              constraints: const BoxConstraints(maxWidth: 500),
-                              child: CustomTextInput(
-                                title: '이름',
-                                initialValue: _details?.name ?? "",
-                                readOnly: true,
-                              ),
-                            ),
-                            Container(
-                              constraints: const BoxConstraints(maxWidth: 200),
-                              child: CustomTextInput(
-                                title: '연락처',
-                                initialValue: _details?.contact ?? "",
-                                readOnly: true,
-                              ),
-                            ),
-                            Container(
-                              constraints: const BoxConstraints(maxWidth: 200),
-                              child: CustomTextInput(
-                                title: '국가',
-                                initialValue: _details?.countryNm ?? "",
-                                readOnly: true,
-                              ),
-                            ),
-                            Container(
-                              constraints: const BoxConstraints(maxWidth: 300),
-                              child: CustomTextInput(
-                                title: '요금제',
-                                initialValue: _details?.planNm ?? "",
-                                readOnly: true,
-                              ),
-                            ),
-                            Container(
-                              constraints: const BoxConstraints(maxWidth: 200),
-                              child: CustomTextInput(
-                                title: '요금제코드',
-                                initialValue: _details?.planId ?? "",
-                                readOnly: true,
-                              ),
-                            ),
-                            Container(
-                              constraints: const BoxConstraints(maxWidth: 200),
-                              child: CustomTextInput(
-                                title: '가입구분명',
-                                initialValue: _details?.usimActNm,
-                                readOnly: true,
-                              ),
-                            ),
-                            Container(
-                              constraints: const BoxConstraints(maxWidth: 200),
-                              child: CustomTextInput(
-                                title: '요청 날짜',
-                                initialValue: CustomFormat().formatDateTime(_details?.regTime) ?? "",
-                                readOnly: true,
-                              ),
-                            ),
-                            Container(
-                              constraints: const BoxConstraints(maxWidth: 200),
-                              child: LayoutBuilder(
-                                builder: (context, constraints) => CustomDropDownMenu(
-                                  label: const Text("상태"),
-                                  enableSearch: true,
-                                  items: widget.statuses.where((i) => i.cd.isNotEmpty).map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
-                                  width: constraints.maxWidth,
-                                  enabled: _statusEditable,
-                                  errorText: _statusErrorCode,
-                                  selectedItem: _selectedStatusCode,
-                                  onSelected: (selectedItem) {
-                                    _selectedStatusCode = selectedItem;
-                                    setState(() {});
-                                  },
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const Gap(40),
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: Wrap(
-                            crossAxisAlignment: WrapCrossAlignment.end,
-                            runSpacing: 20,
+                          const Gap(20),
+                          Wrap(
                             spacing: 20,
+                            runSpacing: 20,
                             children: [
                               Container(
-                                height: 47,
-                                constraints: const BoxConstraints(minWidth: 100),
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor: Colors.grey,
-                                  ),
-                                  onPressed: () {
-                                    context.pop();
-                                  },
-                                  child: const Text("취소"),
+                                constraints: const BoxConstraints(maxWidth: 500),
+                                child: CustomTextInput(
+                                  title: '이름',
+                                  initialValue: _details?.name ?? "",
+                                  readOnly: true,
                                 ),
                               ),
                               Container(
-                                height: 47,
-                                constraints: const BoxConstraints(minWidth: 100),
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(),
-                                  onPressed: () {
-                                    _updateCustomerRequestStatus();
-                                  },
-                                  child: _updating ? const ButtonCircularProgressIndicator() : const Text("저장"),
+                                constraints: const BoxConstraints(maxWidth: 200),
+                                child: CustomTextInput(
+                                  title: '연락처',
+                                  initialValue: _details?.contact ?? "",
+                                  readOnly: true,
+                                ),
+                              ),
+                              Container(
+                                constraints: const BoxConstraints(maxWidth: 200),
+                                child: CustomTextInput(
+                                  title: '국가',
+                                  initialValue: _details?.countryNm ?? "",
+                                  readOnly: true,
+                                ),
+                              ),
+                              Container(
+                                constraints: const BoxConstraints(maxWidth: 300),
+                                child: CustomTextInput(
+                                  title: '요금제',
+                                  initialValue: _details?.planNm ?? "",
+                                  readOnly: true,
+                                ),
+                              ),
+                              Container(
+                                constraints: const BoxConstraints(maxWidth: 200),
+                                child: CustomTextInput(
+                                  title: '요금제코드',
+                                  initialValue: _details?.planId ?? "",
+                                  readOnly: true,
+                                ),
+                              ),
+                              Container(
+                                constraints: const BoxConstraints(maxWidth: 200),
+                                child: CustomTextInput(
+                                  title: '가입구분명',
+                                  initialValue: _details?.usimActNm,
+                                  readOnly: true,
+                                ),
+                              ),
+                              Container(
+                                constraints: const BoxConstraints(maxWidth: 200),
+                                child: CustomTextInput(
+                                  title: '요청 날짜',
+                                  initialValue: CustomFormat().formatDateTime(_details?.regTime) ?? "",
+                                  readOnly: true,
+                                ),
+                              ),
+                              Container(
+                                constraints: const BoxConstraints(maxWidth: 200),
+                                child: LayoutBuilder(
+                                  builder: (context, constraints) => CustomDropDownMenu(
+                                    label: const Text("상태"),
+                                    enableSearch: true,
+                                    items: widget.statuses.where((i) => i.cd.isNotEmpty).map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
+                                    width: constraints.maxWidth,
+                                    enabled: _statusEditable,
+                                    errorText: _statusErrorCode,
+                                    selectedItem: _selectedStatusCode,
+                                    onSelected: (selectedItem) {
+                                      _selectedStatusCode = selectedItem;
+                                      setState(() {});
+                                    },
+                                  ),
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                      ],
+                          const Gap(40),
+                          Align(
+                            alignment: Alignment.topLeft,
+                            child: Wrap(
+                              crossAxisAlignment: WrapCrossAlignment.end,
+                              runSpacing: 20,
+                              spacing: 20,
+                              children: [
+                                Container(
+                                  height: 47,
+                                  constraints: const BoxConstraints(minWidth: 100),
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.grey,
+                                    ),
+                                    onPressed: () {
+                                      context.pop();
+                                    },
+                                    child: const Text("취소"),
+                                  ),
+                                ),
+                                Container(
+                                  height: 47,
+                                  constraints: const BoxConstraints(minWidth: 100),
+                                  child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(),
+                                    onPressed: () {
+                                      _updateCustomerRequestStatus();
+                                    },
+                                    child: _updating ? const ButtonCircularProgressIndicator() : const Text("저장"),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
             ),
     );

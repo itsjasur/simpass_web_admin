@@ -1,5 +1,4 @@
 import 'package:admin_simpass/globals/constants.dart';
-
 import 'package:admin_simpass/presentation/pages/applications_page.dart';
 import 'package:admin_simpass/presentation/pages/customer_requests_page.dart';
 import 'package:admin_simpass/presentation/pages/empty_page.dart';
@@ -19,13 +18,13 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 final appRouter = GoRouter(
-  initialLocation: '/profile',
+  initialLocation: '/customer-requests',
   errorBuilder: (context, state) => const NotFoundPage(),
   routes: [
     // GoRoute(
     //   name: 'test',
     //   path: '/',
-    //   builder: (context, state) => const ScrollImageViewer(binaryImageList: applyformlists),
+    //   builder: (context, state) => const ScrollFormImageViewer(binaryImageList: applyformlists),
     // ),
     GoRoute(
       name: 'login',

@@ -62,206 +62,209 @@ class _ManagePlansFilterContentState extends State<ManagePlansFilterContent> {
     return SizedBox(
       width: 500,
       child: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "데이터 필터링",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "데이터 필터링",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-            ),
-            const Gap(20),
-            Wrap(
-              alignment: WrapAlignment.start,
-              direction: Axis.horizontal,
-              crossAxisAlignment: WrapCrossAlignment.start,
-              spacing: 15,
-              runSpacing: 15,
-              children: [
-                Container(
-                  constraints: const BoxConstraints(
-                    maxWidth: 150,
+              const Gap(20),
+              Wrap(
+                alignment: WrapAlignment.start,
+                direction: Axis.horizontal,
+                crossAxisAlignment: WrapCrossAlignment.start,
+                spacing: 15,
+                runSpacing: 15,
+                children: [
+                  Container(
+                    constraints: const BoxConstraints(
+                      maxWidth: 150,
+                    ),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) => CustomDropDownMenu(
+                        label: const Text("통신사"),
+                        enableSearch: true,
+                        items: _carriers.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
+                        onSelected: (selectedItem) {
+                          _selectedCarrierCode = selectedItem;
+                        },
+                        width: constraints.maxWidth,
+                        selectedItem: _selectedCarrierCode,
+                      ),
+                    ),
                   ),
-                  child: LayoutBuilder(
-                    builder: (context, constraints) => CustomDropDownMenu(
-                      label: const Text("통신사"),
-                      enableSearch: true,
-                      items: _carriers.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
-                      onSelected: (selectedItem) {
-                        _selectedCarrierCode = selectedItem;
+                  Container(
+                    constraints: const BoxConstraints(
+                      maxWidth: 200,
+                    ),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) => CustomDropDownMenu(
+                        label: const Text("브랜드"),
+                        enableSearch: true,
+                        onSelected: (selectedItem) {
+                          _selectedMvnoCode = selectedItem;
+                        },
+                        items: _mvnos.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
+                        width: constraints.maxWidth,
+                        selectedItem: _selectedMvnoCode,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    constraints: const BoxConstraints(
+                      maxWidth: 250,
+                    ),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) => CustomDropDownMenu(
+                        label: const Text("대리점"),
+                        enableSearch: true,
+                        onSelected: (selectedItem) {
+                          _selectedAgentCode = selectedItem;
+                        },
+                        items: _agents.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
+                        width: constraints.maxWidth,
+                        selectedItem: _selectedAgentCode,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    constraints: const BoxConstraints(
+                      maxWidth: 200,
+                    ),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) => CustomDropDownMenu(
+                        label: const Text("서비스 유형"),
+                        enableSearch: true,
+                        onSelected: (selectedItem) {
+                          _selectedPlanTypeCode = selectedItem;
+                        },
+                        items: _planTypes.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
+                        width: constraints.maxWidth,
+                        selectedItem: _selectedPlanTypeCode,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    constraints: const BoxConstraints(
+                      maxWidth: 200,
+                    ),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) => CustomDropDownMenu(
+                        label: const Text("가입대상"),
+                        enableSearch: true,
+                        onSelected: (selectedItem) {
+                          _selectedSubscriberTargetCode = selectedItem;
+                        },
+                        items: _subscriberTarget.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
+                        width: constraints.maxWidth,
+                        selectedItem: _selectedSubscriberTargetCode,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    constraints: const BoxConstraints(
+                      maxWidth: 150,
+                    ),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) => CustomDropDownMenu(
+                        label: const Text("상태"),
+                        enableSearch: true,
+                        onSelected: (selectedItem) {
+                          _selectedStatusCode = selectedItem;
+                        },
+                        items: _statuses.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
+                        width: constraints.maxWidth,
+                        selectedItem: _selectedStatusCode,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const Gap(30),
+              Wrap(
+                alignment: WrapAlignment.start,
+                spacing: 15,
+                runSpacing: 15,
+                children: [
+                  Container(
+                    constraints: const BoxConstraints(minWidth: 100),
+                    height: 47,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey,
+                      ),
+                      onPressed: () {
+                        context.pop();
                       },
-                      width: constraints.maxWidth,
-                      selectedItem: _selectedCarrierCode,
+                      child: const Text("취소"),
                     ),
                   ),
-                ),
-                Container(
-                  constraints: const BoxConstraints(
-                    maxWidth: 200,
-                  ),
-                  child: LayoutBuilder(
-                    builder: (context, constraints) => CustomDropDownMenu(
-                      label: const Text("브랜드"),
-                      enableSearch: true,
-                      onSelected: (selectedItem) {
-                        _selectedMvnoCode = selectedItem;
-                      },
-                      items: _mvnos.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
-                      width: constraints.maxWidth,
-                      selectedItem: _selectedMvnoCode,
-                    ),
-                  ),
-                ),
-                Container(
-                  constraints: const BoxConstraints(
-                    maxWidth: 250,
-                  ),
-                  child: LayoutBuilder(
-                    builder: (context, constraints) => CustomDropDownMenu(
-                      label: const Text("대리점"),
-                      enableSearch: true,
-                      onSelected: (selectedItem) {
-                        _selectedAgentCode = selectedItem;
-                      },
-                      items: _agents.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
-                      width: constraints.maxWidth,
-                      selectedItem: _selectedAgentCode,
-                    ),
-                  ),
-                ),
-                Container(
-                  constraints: const BoxConstraints(
-                    maxWidth: 200,
-                  ),
-                  child: LayoutBuilder(
-                    builder: (context, constraints) => CustomDropDownMenu(
-                      label: const Text("서비스 유형"),
-                      enableSearch: true,
-                      onSelected: (selectedItem) {
-                        _selectedPlanTypeCode = selectedItem;
-                      },
-                      items: _planTypes.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
-                      width: constraints.maxWidth,
-                      selectedItem: _selectedPlanTypeCode,
-                    ),
-                  ),
-                ),
-                Container(
-                  constraints: const BoxConstraints(
-                    maxWidth: 200,
-                  ),
-                  child: LayoutBuilder(
-                    builder: (context, constraints) => CustomDropDownMenu(
-                      label: const Text("가입대상"),
-                      enableSearch: true,
-                      onSelected: (selectedItem) {
-                        _selectedSubscriberTargetCode = selectedItem;
-                      },
-                      items: _subscriberTarget.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
-                      width: constraints.maxWidth,
-                      selectedItem: _selectedSubscriberTargetCode,
-                    ),
-                  ),
-                ),
-                Container(
-                  constraints: const BoxConstraints(
-                    maxWidth: 150,
-                  ),
-                  child: LayoutBuilder(
-                    builder: (context, constraints) => CustomDropDownMenu(
-                      label: const Text("상태"),
-                      enableSearch: true,
-                      onSelected: (selectedItem) {
-                        _selectedStatusCode = selectedItem;
-                      },
-                      items: _statuses.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
-                      width: constraints.maxWidth,
-                      selectedItem: _selectedStatusCode,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const Gap(30),
-            Wrap(
-              alignment: WrapAlignment.start,
-              spacing: 15,
-              runSpacing: 15,
-              children: [
-                Container(
-                  constraints: const BoxConstraints(minWidth: 100),
-                  height: 47,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey,
-                    ),
-                    onPressed: () {
-                      context.pop();
-                    },
-                    child: const Text("취소"),
-                  ),
-                ),
-                Container(
-                  constraints: const BoxConstraints(minWidth: 100),
-                  height: 47,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueGrey,
-                    ),
-                    onPressed: () {
-                      if (widget.onApply != null) {
-                        widget.onApply!(
-                          ManagePlanSearchModel(
-                            usimPlanNm: '',
-                            carrierCd: "",
-                            mvnoCd: "",
-                            agentCd: "",
-                            carrierPlanType: "",
-                            carrierType: "",
-                            status: "",
-                            page: 1,
-                            rowLimit: 10,
-                          ),
-                        );
-                      }
+                  Container(
+                    constraints: const BoxConstraints(minWidth: 100),
+                    height: 47,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blueGrey,
+                      ),
+                      onPressed: () {
+                        if (widget.onApply != null) {
+                          widget.onApply!(
+                            ManagePlanSearchModel(
+                              usimPlanNm: '',
+                              carrierCd: "",
+                              mvnoCd: "",
+                              agentCd: "",
+                              carrierPlanType: "",
+                              carrierType: "",
+                              status: "",
+                              page: 1,
+                              rowLimit: 10,
+                            ),
+                          );
+                        }
 
-                      context.pop();
-                    },
-                    child: const Text("초기화"),
+                        context.pop();
+                      },
+                      child: const Text("초기화"),
+                    ),
                   ),
-                ),
-                Container(
-                  constraints: const BoxConstraints(minWidth: 100),
-                  height: 47,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (widget.onApply != null) {
-                        widget.onApply!(
-                          ManagePlanSearchModel(
-                            usimPlanNm: '',
-                            carrierCd: _selectedCarrierCode,
-                            mvnoCd: _selectedMvnoCode,
-                            agentCd: _selectedAgentCode,
-                            carrierPlanType: _selectedSubscriberTargetCode,
-                            carrierType: _selectedPlanTypeCode,
-                            status: _selectedStatusCode,
-                            page: 1,
-                            rowLimit: 10,
-                          ),
-                        );
-                      }
+                  Container(
+                    constraints: const BoxConstraints(minWidth: 100),
+                    height: 47,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (widget.onApply != null) {
+                          widget.onApply!(
+                            ManagePlanSearchModel(
+                              usimPlanNm: '',
+                              carrierCd: _selectedCarrierCode,
+                              mvnoCd: _selectedMvnoCode,
+                              agentCd: _selectedAgentCode,
+                              carrierPlanType: _selectedSubscriberTargetCode,
+                              carrierType: _selectedPlanTypeCode,
+                              status: _selectedStatusCode,
+                              page: 1,
+                              rowLimit: 10,
+                            ),
+                          );
+                        }
 
-                      context.pop();
-                    },
-                    child: const Text("검색"),
+                        context.pop();
+                      },
+                      child: const Text("검색"),
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

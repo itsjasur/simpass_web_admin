@@ -11,7 +11,6 @@ import 'package:admin_simpass/presentation/components/custom_alert_dialog.dart';
 import 'package:admin_simpass/presentation/components/custom_drop_down_menu.dart';
 import 'package:admin_simpass/presentation/components/custom_text_input.dart';
 import 'package:admin_simpass/presentation/components/header.dart';
-import 'package:admin_simpass/presentation/components/registration_image_viewer_content.dart';
 import 'package:admin_simpass/presentation/components/pagination.dart';
 import 'package:admin_simpass/presentation/components/scroll_image_viewer.dart';
 import 'package:flutter/material.dart';
@@ -50,6 +49,10 @@ class RApplicationsPageState extends State<ApplicationsPage> {
 
   int? _sortColumnIndex;
   bool _sortAscending = true;
+
+  bool _printLoading = false;
+
+  List<bool> _printsLoading = [];
 
   @override
   void initState() {
@@ -262,8 +265,6 @@ class RApplicationsPageState extends State<ApplicationsPage> {
                               rows: List.generate(
                                 _applicationsList.length,
                                 (rowIndex) => DataRow(
-                                  // onSelectChanged: (value) {},
-
                                   cells: List.generate(
                                     _columns.length,
                                     (columnIndex) {
@@ -396,21 +397,33 @@ class RApplicationsPageState extends State<ApplicationsPage> {
                                       if (columnIndex == 7) {
                                         return DataCell(
                                           placeholder: false,
-                                          const Icon(
-                                            Icons.file_present_outlined,
-                                            color: MainUi.mainColor,
-                                          ),
-                                          onTap: () async {
-                                            await _fetchApplicationImages(_applicationsList[rowIndex].actNo ?? "");
+                                          _printsLoading[rowIndex]
+                                              ? const SizedBox(
+                                                  height: 20,
+                                                  width: 20,
+                                                  child: CircularProgressIndicator(strokeWidth: 3),
+                                                )
+                                              : const Icon(
+                                                  Icons.file_present_outlined,
+                                                  color: MainUi.mainColor,
+                                                ),
+                                          onTap: _printLoading
+                                              ? null
+                                              : () async {
+                                                  _printsLoading[rowIndex] = true;
+                                                  setState(() {});
+                                                  await _fetchApplicationImages(_applicationsList[rowIndex].actNo ?? "");
+                                                  _printsLoading[rowIndex] = false;
+                                                  setState(() {});
 
-                                            if (_base64ImagesList.isNotEmpty && context.mounted) {
-                                              showDialog(
-                                                barrierColor: Colors.black,
-                                                context: context,
-                                                builder: (context) => ScrollFormImageViewer(binaryImageList: _base64ImagesList),
-                                              );
-                                            }
-                                          },
+                                                  if (_base64ImagesList.isNotEmpty && context.mounted) {
+                                                    showDialog(
+                                                      barrierColor: Colors.black,
+                                                      context: context,
+                                                      builder: (context) => ScrollFormImageViewer(binaryImageList: _base64ImagesList),
+                                                    );
+                                                  }
+                                                },
                                         );
                                       }
 
@@ -481,6 +494,8 @@ class RApplicationsPageState extends State<ApplicationsPage> {
       _statusesList.addAll(result.usimActStatusCodes);
 
       _applicationsList = result.applicationsList;
+
+      _printsLoading = List.generate(_applicationsList.length, (index) => false);
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).clearSnackBars();
@@ -493,6 +508,9 @@ class RApplicationsPageState extends State<ApplicationsPage> {
   }
 
   Future<void> _fetchApplicationImages(String applicationId) async {
+    _printLoading = true;
+    setState(() {});
+
     _base64ImagesList.clear();
 
     try {
@@ -504,9 +522,11 @@ class RApplicationsPageState extends State<ApplicationsPage> {
       _base64ImagesList = result;
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
       }
     }
+
+    _printLoading = false;
+    setState(() {});
   }
 }
