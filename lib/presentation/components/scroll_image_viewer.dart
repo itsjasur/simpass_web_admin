@@ -6,7 +6,10 @@ import 'package:js/js.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:pdf/pdf.dart';
+// ignore: avoid_web_libraries_in_flutter
 import 'dart:js_util';
+
+// if (dart.library.html) 'package:eam_flutter/form/webui.dart'
 
 class ScrollFormImageViewer extends StatefulWidget {
   final List<String> binaryImageList;

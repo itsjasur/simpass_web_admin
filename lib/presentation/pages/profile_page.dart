@@ -7,8 +7,11 @@ import 'package:admin_simpass/presentation/components/button_circular_indicator.
 import 'package:admin_simpass/presentation/components/custom_drop_down_menu.dart';
 import 'package:admin_simpass/presentation/components/custom_text_input.dart';
 import 'package:admin_simpass/presentation/components/header.dart';
+import 'package:admin_simpass/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -34,9 +37,11 @@ class _ProfilePageState extends State<ProfilePage> {
   int? _userId;
 
   final _formKey = GlobalKey<FormState>();
+  final _formKeyPassWordUpdate = GlobalKey<FormState>();
 
   bool _isPageLoading = true;
   bool _isDataUpdating = false;
+  bool _isPasswordUpdating = false;
 
   String _selectedCountryCode = "";
   String? _countryErrorText;
@@ -261,117 +266,120 @@ class _ProfilePageState extends State<ProfilePage> {
                         height: 80,
                         thickness: 5,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Container(
-                          constraints: const BoxConstraints(
-                            maxWidth: 900,
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                '비밀번호 변경',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              const Gap(30),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: CustomTextInput(
-                                      controller: _oldPassController,
-                                      title: '현재 비밀번호',
-                                      validator: InputValidator().validatePass,
-                                      hidden: true,
-                                    ),
+                      Form(
+                        key: _formKeyPassWordUpdate,
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Container(
+                            constraints: const BoxConstraints(
+                              maxWidth: 900,
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  '비밀번호 변경',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
                                   ),
-                                  Expanded(child: Container()),
-                                ],
-                              ),
-                              const Gap(30),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: CustomTextInput(
-                                      controller: _passController,
-                                      title: '새 비밀번호',
-                                      validator: InputValidator().validatePass,
-                                      hidden: true,
-                                    ),
-                                  ),
-                                  Expanded(child: Container()),
-                                ],
-                              ),
-                              const Gap(30),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: CustomTextInput(
-                                      controller: _passReentryController,
-                                      title: '새 비밀번호 확인',
-                                      validator: (p) {
-                                        return InputValidator().validateRentryPass(_passController.text, p);
-                                      },
-                                      hidden: true,
-                                    ),
-                                  ),
-                                  Expanded(child: Container()),
-                                ],
-                              ),
-                              const Gap(30),
-                              Container(
-                                height: 50,
-                                constraints: const BoxConstraints(minWidth: 150),
-                                child: ElevatedButton(
-                                  onPressed: _isDataUpdating ? null : _updateProfileData,
-                                  child: _isDataUpdating ? const ButtonCircularProgressIndicator() : const Text('비밀번호 업데이트'),
                                 ),
-                              ),
-                              const Gap(30),
-                              const Text(
-                                '강력한 비밀번호를 얻으려면 이 가이드를 따르세요.',
-                                style: TextStyle(
-                                  fontSize: 16.0,
+                                const Gap(30),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: CustomTextInput(
+                                        controller: _oldPassController,
+                                        title: '현재 비밀번호',
+                                        validator: InputValidator().validatePass,
+                                        hidden: true,
+                                      ),
+                                    ),
+                                    Expanded(child: Container()),
+                                  ],
                                 ),
-                              ),
-                              const Gap(15),
-                              const Row(
-                                children: [
-                                  Icon(Icons.circle, color: Colors.black45, size: 13),
-                                  SizedBox(width: 10),
-                                  Text('특수 문자 1개'),
-                                ],
-                              ),
-                              const Gap(10),
-                              const Row(
-                                children: [
-                                  Icon(Icons.circle, color: Colors.black45, size: 13),
-                                  SizedBox(width: 10),
-                                  Text('최소 8 글자'),
-                                ],
-                              ),
-                              const Gap(10),
-                              const Row(
-                                children: [
-                                  Icon(Icons.circle, color: Colors.black45, size: 13),
-                                  SizedBox(width: 10),
-                                  Text('숫자 1개(2개 권장'),
-                                ],
-                              ),
-                              const Gap(10),
-                              const Row(
-                                children: [
-                                  Icon(Icons.circle, color: Colors.black45, size: 13),
-                                  SizedBox(width: 10),
-                                  Text('자주 바꾸세요'),
-                                ],
-                              ),
-                              const Gap(100),
-                            ],
+                                const Gap(30),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: CustomTextInput(
+                                        controller: _passController,
+                                        title: '새 비밀번호',
+                                        validator: InputValidator().validatePass,
+                                        hidden: true,
+                                      ),
+                                    ),
+                                    Expanded(child: Container()),
+                                  ],
+                                ),
+                                const Gap(30),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: CustomTextInput(
+                                        controller: _passReentryController,
+                                        title: '새 비밀번호 확인',
+                                        validator: (p) {
+                                          return InputValidator().validateRentryPass(_passController.text, p);
+                                        },
+                                        hidden: true,
+                                      ),
+                                    ),
+                                    Expanded(child: Container()),
+                                  ],
+                                ),
+                                const Gap(30),
+                                Container(
+                                  height: 50,
+                                  constraints: const BoxConstraints(minWidth: 150),
+                                  child: ElevatedButton(
+                                    onPressed: _isPasswordUpdating ? null : _changeMyPassword,
+                                    child: _isPasswordUpdating ? const ButtonCircularProgressIndicator() : const Text('비밀번호 업데이트'),
+                                  ),
+                                ),
+                                const Gap(30),
+                                const Text(
+                                  '강력한 비밀번호를 얻으려면 이 가이드를 따르세요.',
+                                  style: TextStyle(
+                                    fontSize: 16.0,
+                                  ),
+                                ),
+                                const Gap(15),
+                                const Row(
+                                  children: [
+                                    Icon(Icons.circle, color: Colors.black45, size: 13),
+                                    SizedBox(width: 10),
+                                    Text('특수 문자 1개'),
+                                  ],
+                                ),
+                                const Gap(10),
+                                const Row(
+                                  children: [
+                                    Icon(Icons.circle, color: Colors.black45, size: 13),
+                                    SizedBox(width: 10),
+                                    Text('최소 8 글자'),
+                                  ],
+                                ),
+                                const Gap(10),
+                                const Row(
+                                  children: [
+                                    Icon(Icons.circle, color: Colors.black45, size: 13),
+                                    SizedBox(width: 10),
+                                    Text('숫자 1개(2개 권장'),
+                                  ],
+                                ),
+                                const Gap(10),
+                                const Row(
+                                  children: [
+                                    Icon(Icons.circle, color: Colors.black45, size: 13),
+                                    SizedBox(width: 10),
+                                    Text('자주 바꾸세요'),
+                                  ],
+                                ),
+                                const Gap(100),
+                              ],
+                            ),
                           ),
                         ),
                       )
@@ -444,5 +452,34 @@ class _ProfilePageState extends State<ProfilePage> {
     setState(() {
       _isDataUpdating = false;
     });
+  }
+
+  Future<void> _changeMyPassword() async {
+    if (_formKeyPassWordUpdate.currentState!.validate()) {
+      _isPasswordUpdating = true;
+      setState(() {});
+
+      final APIService apiService = APIService();
+      var result = await apiService.changeMyPassword(
+        context: context,
+        requestModel: {
+          "id": _userId,
+          "username": _userNameController.text,
+          "password": _oldPassController.text,
+          "new_password": _passController.text,
+        },
+      );
+
+      if (result && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text(" 정상적으로 패스워드가 변경되었습니다. 다시 재로그인 해주십시요.")),
+        );
+
+        Provider.of<AuthServiceProvider>(context, listen: false).loggedOut(context);
+      }
+    }
+
+    _isPasswordUpdating = false;
+    setState(() {});
   }
 }

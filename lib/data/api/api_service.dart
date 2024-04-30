@@ -572,4 +572,30 @@ class APIService {
       rethrow;
     }
   }
+
+  Future<bool> changeMyPassword({required BuildContext context, required Map requestModel}) async {
+    var messenger = ScaffoldMessenger.of(context);
+    messenger.clearSnackBars();
+
+    try {
+      String? accessToken = await getAccessToken();
+      headers['Authorization'] = 'Bearer $accessToken';
+
+      Uri url = _urlMaker('admin/myPassword');
+      var body = json.encode(requestModel);
+      var response = await http.post(url, headers: headers, body: body);
+
+      response = await RequestHelper().post(context.mounted ? context : null, response, url, headers, body);
+      var decodedResponse = json.decode(utf8.decode(response.bodyBytes));
+
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        throw decodedResponse['message'] ?? "Password change data error";
+      }
+    } catch (e) {
+      messenger.showSnackBar(SnackBar(content: Text(e.toString())));
+    }
+    return false;
+  }
 }
