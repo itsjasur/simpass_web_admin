@@ -68,404 +68,391 @@ class RApplicationsPageState extends State<ApplicationsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return SelectionArea(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Header(title: "신청서 접수현황"),
-          _dataLoading
-              ? const Expanded(
-                  child: Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                )
-              : Expanded(
-                  child: LayoutBuilder(
-                    builder: (context, constraints) => SingleChildScrollView(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Gap(20),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Wrap(
-                              direction: Axis.horizontal,
-                              spacing: 20,
-                              runSpacing: 10,
-                              children: [
-                                Container(
-                                  constraints: const BoxConstraints(
-                                    maxWidth: 200,
-                                  ),
-                                  child: LayoutBuilder(
-                                    builder: (context, constraints) => CustomDropDownMenu(
-                                      label: const Text("검색 선택"),
-                                      items: _searchTypes,
-                                      width: constraints.maxWidth,
-                                      selectedItem: _selectedSearchType,
-                                      onSelected: (selectedItem) {
-                                        _selectedSearchType = selectedItem;
-                                        setState(() {});
-                                      },
-                                    ),
-                                  ),
-                                ),
-                                if (_selectedSearchType == 'applyDate' || _selectedSearchType == 'regisDate')
-                                  Container(
-                                    constraints: const BoxConstraints(
-                                      maxWidth: 200,
-                                    ),
-                                    child: LayoutBuilder(
-                                      builder: (context, constraints) => CustomTextInput(
-                                        title: _selectedSearchType == 'applyDate' ? '접수일자 (From)' : "개통일자 (From)",
-                                        controller: _fromDateCntr,
-                                        maxlength: 10,
-                                        inputFormatters: [
-                                          FilteringTextInputFormatter.allow(RegExp(r'[0-9\-]')),
-                                          DateFormatter(),
-                                        ],
-                                        validator: InputValidator().validateDate,
-                                      ),
-                                    ),
-                                  ),
-                                if (_selectedSearchType == 'applyDate' || _selectedSearchType == 'regisDate')
-                                  Container(
-                                    constraints: const BoxConstraints(
-                                      maxWidth: 200,
-                                    ),
-                                    child: LayoutBuilder(
-                                      builder: (context, constraints) => CustomTextInput(
-                                        title: _selectedSearchType == 'applyDate' ? '접수일자 (To)' : "개통일자 (To)",
-                                        controller: _toDateCntr,
-                                        maxlength: 10,
-                                        inputFormatters: [
-                                          FilteringTextInputFormatter.allow(RegExp(r'[0-9\-]')),
-                                          DateFormatter(),
-                                        ],
-                                        validator: InputValidator().validateDate,
-                                      ),
-                                    ),
-                                  ),
-                                if (_selectedSearchType == 'status' && _statusesList.isNotEmpty)
-                                  Container(
-                                    constraints: const BoxConstraints(
-                                      maxWidth: 200,
-                                    ),
-                                    child: LayoutBuilder(builder: (context, constraints) {
-                                      return CustomDropDownMenu(
-                                        enableSearch: true,
-                                        label: const Text("상태"),
-                                        items: _statusesList.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
-                                        width: constraints.maxWidth,
-                                        selectedItem: _selectedStatusCode,
-                                        onSelected: (selectedItem) {
-                                          _selectedStatusCode = selectedItem;
-                                        },
-                                      );
-                                    }),
-                                  ),
-                                Container(
-                                  constraints: const BoxConstraints(minWidth: 120),
-                                  height: 47,
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      _fetchApplications();
-                                    },
-                                    child: const Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Icon(
-                                          Icons.search_outlined,
-                                          color: Colors.white,
-                                          size: 17,
-                                        ),
-                                        SizedBox(width: 5),
-                                        Text("검색"),
-                                      ],
-                                    ),
-                                  ),
-                                ),
+    return _dataLoading
+        ? const Center(
+            child: CircularProgressIndicator(),
+          )
+        : SelectionArea(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Header(title: "신청서 접수현황"),
+                const Gap(10),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Wrap(
+                    direction: Axis.horizontal,
+                    spacing: 20,
+                    runSpacing: 10,
+                    children: [
+                      Container(
+                        constraints: const BoxConstraints(
+                          maxWidth: 200,
+                        ),
+                        child: LayoutBuilder(
+                          builder: (context, constraints) => CustomDropDownMenu(
+                            label: const Text("검색 선택"),
+                            items: _searchTypes,
+                            width: constraints.maxWidth,
+                            selectedItem: _selectedSearchType,
+                            onSelected: (selectedItem) {
+                              _selectedSearchType = selectedItem;
+                              setState(() {});
+                            },
+                          ),
+                        ),
+                      ),
+                      if (_selectedSearchType == 'applyDate' || _selectedSearchType == 'regisDate')
+                        Container(
+                          constraints: const BoxConstraints(
+                            maxWidth: 200,
+                          ),
+                          child: LayoutBuilder(
+                            builder: (context, constraints) => CustomTextInput(
+                              title: _selectedSearchType == 'applyDate' ? '접수일자 (From)' : "개통일자 (From)",
+                              controller: _fromDateCntr,
+                              maxlength: 10,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(RegExp(r'[0-9\-]')),
+                                DateFormatter(),
                               ],
+                              validator: InputValidator().validateDate,
                             ),
                           ),
-                          const Gap(30),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Pagination(
-                              totalCount: _totalCount,
-                              onUpdated: (currentPage, perPage) async {
-                                if (currentPage != _currentPage || perPage != _perPage) {
-                                  _currentPage = currentPage;
-                                  _perPage = perPage;
-                                  await _fetchApplications();
-                                }
+                        ),
+                      if (_selectedSearchType == 'applyDate' || _selectedSearchType == 'regisDate')
+                        Container(
+                          constraints: const BoxConstraints(
+                            maxWidth: 200,
+                          ),
+                          child: LayoutBuilder(
+                            builder: (context, constraints) => CustomTextInput(
+                              title: _selectedSearchType == 'applyDate' ? '접수일자 (To)' : "개통일자 (To)",
+                              controller: _toDateCntr,
+                              maxlength: 10,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(RegExp(r'[0-9\-]')),
+                                DateFormatter(),
+                              ],
+                              validator: InputValidator().validateDate,
+                            ),
+                          ),
+                        ),
+                      if (_selectedSearchType == 'status' && _statusesList.isNotEmpty)
+                        Container(
+                          constraints: const BoxConstraints(
+                            maxWidth: 200,
+                          ),
+                          child: LayoutBuilder(builder: (context, constraints) {
+                            return CustomDropDownMenu(
+                              enableSearch: true,
+                              label: const Text("상태"),
+                              items: _statusesList.map((e) => DropdownMenuEntry(value: e.cd, label: e.value)).toList(),
+                              width: constraints.maxWidth,
+                              selectedItem: _selectedStatusCode,
+                              onSelected: (selectedItem) {
+                                _selectedStatusCode = selectedItem;
                               },
-                            ),
+                            );
+                          }),
+                        ),
+                      Container(
+                        constraints: const BoxConstraints(minWidth: 120),
+                        height: 47,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            _fetchApplications();
+                          },
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.search_outlined,
+                                color: Colors.white,
+                                size: 17,
+                              ),
+                              SizedBox(width: 5),
+                              Text("검색"),
+                            ],
                           ),
-                          const Gap(20),
-                          Scrollbar(
-                            controller: _horizontalScrolCntr,
-                            scrollbarOrientation: ScrollbarOrientation.top,
-                            child: Scrollbar(
-                              controller: _horizontalScrolCntr,
-                              scrollbarOrientation: ScrollbarOrientation.bottom,
-                              child: SingleChildScrollView(
-                                controller: _horizontalScrolCntr,
-                                scrollDirection: Axis.horizontal,
-                                child: Container(
-                                  margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-                                  constraints: BoxConstraints(
-                                    minWidth: constraints.maxWidth - 10,
-                                  ),
-                                  child: DataTable(
-                                    sortColumnIndex: _sortColumnIndex,
-                                    sortAscending: _sortAscending,
-                                    showCheckboxColumn: false,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.grey.shade200),
-                                    ),
-                                    border: TableBorder.all(
-                                      color: Colors.transparent, // Make border color transparent
-                                      width: 0,
-                                    ),
-                                    headingRowHeight: 50,
-                                    columnSpacing: 40,
-                                    headingTextStyle: const TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                    columns: List.generate(
-                                      _columns.length,
-                                      (index) {
-                                        return DataColumn(
-                                          onSort: (columnIndex, ascending) {
-                                            _sortAscending = ascending;
-                                            _sortColumnIndex = columnIndex;
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const Gap(20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Pagination(
+                    totalCount: _totalCount,
+                    onUpdated: (currentPage, perPage) async {
+                      if (currentPage != _currentPage || perPage != _perPage) {
+                        _currentPage = currentPage;
+                        _perPage = perPage;
+                        await _fetchApplications();
+                      }
+                    },
+                  ),
+                ),
+                const Gap(10),
+                Expanded(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) => Scrollbar(
+                      controller: _horizontalScrolCntr,
+                      scrollbarOrientation: ScrollbarOrientation.top,
+                      child: SingleChildScrollView(
+                        controller: _horizontalScrolCntr,
+                        scrollDirection: Axis.horizontal,
+                        child: SingleChildScrollView(
+                          child: Container(
+                            margin: const EdgeInsets.only(top: 15, bottom: 50, left: 20, right: 20),
+                            constraints: BoxConstraints(
+                              minWidth: constraints.maxWidth - 10,
+                            ),
+                            child: DataTable(
+                              sortColumnIndex: _sortColumnIndex,
+                              sortAscending: _sortAscending,
+                              showCheckboxColumn: false,
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey.shade200),
+                              ),
+                              border: TableBorder.all(
+                                color: Colors.transparent, // Make border color transparent
+                                width: 0,
+                              ),
+                              headingRowHeight: 50,
+                              columnSpacing: 40,
+                              headingTextStyle: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                              ),
+                              columns: List.generate(
+                                _columns.length,
+                                (index) {
+                                  return DataColumn(
+                                    onSort: (columnIndex, ascending) {
+                                      _sortAscending = ascending;
+                                      _sortColumnIndex = columnIndex;
 
-                                            void mysort<T>(Comparable<T> Function(ApplicationModel model) getField) {
-                                              _applicationsList.sort((a, b) {
-                                                final aValue = getField(a);
-                                                final bValue = getField(b);
+                                      void mysort<T>(Comparable<T> Function(ApplicationModel model) getField) {
+                                        _applicationsList.sort((a, b) {
+                                          final aValue = getField(a);
+                                          final bValue = getField(b);
 
-                                                return ascending ? Comparable.compare(aValue, bValue) : Comparable.compare(bValue, aValue);
-                                              });
-                                            }
+                                          return ascending ? Comparable.compare(aValue, bValue) : Comparable.compare(bValue, aValue);
+                                        });
+                                      }
 
-                                            // sorting table on tap on header
-                                            if (columnIndex == 0) mysort((model) => model.num);
-                                            if (columnIndex == 1) mysort((model) => model.partnerNm?.toLowerCase() ?? "");
-                                            if (columnIndex == 2) mysort((model) => model.usimActStatus?.toLowerCase() ?? "");
-                                            if (columnIndex == 3) mysort((model) => model.actNo?.toLowerCase() ?? "");
-                                            if (columnIndex == 4) mysort((model) => model.name?.toLowerCase() ?? "");
-                                            if (columnIndex == 5) mysort((model) => model.phoneNumber?.toLowerCase() ?? "");
-                                            if (columnIndex == 8) mysort((model) => model.applyDate ?? "");
-                                            if (columnIndex == 9) mysort((model) => model.actDate ?? "");
+                                      // sorting table on tap on header
+                                      if (columnIndex == 0) mysort((model) => model.num);
+                                      if (columnIndex == 1) mysort((model) => model.partnerNm?.toLowerCase() ?? "");
+                                      if (columnIndex == 2) mysort((model) => model.usimActStatus?.toLowerCase() ?? "");
+                                      if (columnIndex == 3) mysort((model) => model.actNo?.toLowerCase() ?? "");
+                                      if (columnIndex == 4) mysort((model) => model.name?.toLowerCase() ?? "");
+                                      if (columnIndex == 5) mysort((model) => model.phoneNumber?.toLowerCase() ?? "");
+                                      if (columnIndex == 8) mysort((model) => model.applyDate ?? "");
+                                      if (columnIndex == 9) mysort((model) => model.actDate ?? "");
 
-                                            setState(() {});
-                                          },
-                                          label: Text(_columns[index]),
+                                      setState(() {});
+                                    },
+                                    label: Text(_columns[index]),
+                                  );
+                                },
+                              ),
+                              rows: List.generate(
+                                _applicationsList.length,
+                                (rowIndex) => DataRow(
+                                  // onSelectChanged: (value) {},
+
+                                  cells: List.generate(
+                                    _columns.length,
+                                    (columnIndex) {
+                                      if (columnIndex == 0) {
+                                        return DataCell(
+                                          Text(_applicationsList[rowIndex].num.toString()),
+                                          onTap: () async {},
                                         );
-                                      },
-                                    ),
-                                    rows: List.generate(
-                                      _applicationsList.length,
-                                      (rowIndex) => DataRow(
-                                        // onSelectChanged: (value) {},
+                                      }
 
-                                        cells: List.generate(
-                                          _columns.length,
-                                          (columnIndex) {
-                                            if (columnIndex == 0) {
-                                              return DataCell(
-                                                Text(_applicationsList[rowIndex].num.toString()),
-                                                onTap: () async {},
-                                              );
-                                            }
+                                      if (columnIndex == 1) {
+                                        return DataCell(
+                                          Container(
+                                            constraints: const BoxConstraints(maxWidth: 150),
+                                            child: Text(
+                                              _applicationsList[rowIndex].partnerNm ?? "",
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 2,
+                                            ),
+                                          ),
+                                          onTap: () {},
+                                        );
+                                      }
 
-                                            if (columnIndex == 1) {
-                                              return DataCell(
-                                                Container(
-                                                  constraints: const BoxConstraints(maxWidth: 150),
-                                                  child: Text(
-                                                    _applicationsList[rowIndex].partnerNm ?? "",
-                                                    overflow: TextOverflow.ellipsis,
-                                                    maxLines: 2,
+                                      if (columnIndex == 2) {
+                                        bool editable = true;
+                                        Color containerColor = Colors.grey;
+                                        if (_applicationsList[rowIndex].usimActStatus == 'A') containerColor = Colors.blue;
+                                        if (_applicationsList[rowIndex].usimActStatus == 'B') containerColor = Colors.green;
+                                        if (_applicationsList[rowIndex].usimActStatus == 'P') containerColor = Colors.green;
+                                        if (_applicationsList[rowIndex].usimActStatus == 'D') containerColor = Colors.red;
+                                        if (_applicationsList[rowIndex].usimActStatus == 'W') containerColor = Colors.orange;
+                                        if (_applicationsList[rowIndex].usimActStatus == 'C') containerColor = Colors.red;
+
+                                        if (_applicationsList[rowIndex].usimActStatus == 'Y') {
+                                          containerColor = Colors.grey;
+                                          editable = false;
+                                        }
+
+                                        return DataCell(
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+                                            constraints: const BoxConstraints(minWidth: 80, maxWidth: 120),
+                                            decoration: BoxDecoration(
+                                              color: containerColor,
+                                              borderRadius: BorderRadius.circular(30),
+                                            ),
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Text(
+                                                  textAlign: TextAlign.center,
+                                                  _applicationsList[rowIndex].usimActStatusNm ?? "",
+                                                  style: const TextStyle(color: Colors.white),
+                                                ),
+                                                if (editable)
+                                                  const Padding(
+                                                    padding: EdgeInsets.only(left: 3),
+                                                    child: Icon(
+                                                      Icons.edit_outlined,
+                                                      color: Colors.white,
+                                                      size: 15,
+                                                    ),
                                                   ),
+                                              ],
+                                            ),
+                                          ),
+                                          onTap: () {
+                                            if (editable) {
+                                              showCustomDialog(
+                                                barrierDismissible: true,
+                                                context: context,
+                                                content: ApplicationStatusUpdateContent(
+                                                  selectedStatusCode: _applicationsList[rowIndex].usimActStatus ?? "",
+                                                  items: _statusesList,
+                                                  applicationID: _applicationsList[rowIndex].actNo ?? "",
+                                                  callBack: _fetchApplications,
                                                 ),
-                                                onTap: () {},
                                               );
                                             }
-
-                                            if (columnIndex == 2) {
-                                              bool editable = true;
-                                              Color containerColor = Colors.grey;
-                                              if (_applicationsList[rowIndex].usimActStatus == 'A') containerColor = Colors.blue;
-                                              if (_applicationsList[rowIndex].usimActStatus == 'B') containerColor = Colors.green;
-                                              if (_applicationsList[rowIndex].usimActStatus == 'P') containerColor = Colors.green;
-                                              if (_applicationsList[rowIndex].usimActStatus == 'D') containerColor = Colors.red;
-                                              if (_applicationsList[rowIndex].usimActStatus == 'W') containerColor = Colors.orange;
-                                              if (_applicationsList[rowIndex].usimActStatus == 'C') containerColor = Colors.red;
-
-                                              if (_applicationsList[rowIndex].usimActStatus == 'Y') {
-                                                containerColor = Colors.grey;
-                                                editable = false;
-                                              }
-
-                                              return DataCell(
-                                                Container(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                                                  constraints: const BoxConstraints(minWidth: 80, maxWidth: 120),
-                                                  decoration: BoxDecoration(
-                                                    color: containerColor,
-                                                    borderRadius: BorderRadius.circular(30),
-                                                  ),
-                                                  child: Row(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                    children: [
-                                                      Text(
-                                                        textAlign: TextAlign.center,
-                                                        _applicationsList[rowIndex].usimActStatusNm ?? "",
-                                                        style: const TextStyle(color: Colors.white),
-                                                      ),
-                                                      if (editable)
-                                                        const Padding(
-                                                          padding: EdgeInsets.only(left: 3),
-                                                          child: Icon(
-                                                            Icons.edit_outlined,
-                                                            color: Colors.white,
-                                                            size: 15,
-                                                          ),
-                                                        ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                onTap: () {
-                                                  if (editable) {
-                                                    showCustomDialog(
-                                                      barrierDismissible: true,
-                                                      context: context,
-                                                      content: ApplicationStatusUpdateContent(
-                                                        selectedStatusCode: _applicationsList[rowIndex].usimActStatus ?? "",
-                                                        items: _statusesList,
-                                                        applicationID: _applicationsList[rowIndex].actNo ?? "",
-                                                        callBack: _fetchApplications,
-                                                      ),
-                                                    );
-                                                  }
-                                                },
-                                              );
-                                            }
-
-                                            if (columnIndex == 3) {
-                                              return DataCell(
-                                                Text(_applicationsList[rowIndex].actNo ?? ""),
-                                                onTap: () {},
-                                              );
-                                            }
-                                            if (columnIndex == 4) {
-                                              return DataCell(
-                                                Container(
-                                                  constraints: const BoxConstraints(maxWidth: 250),
-                                                  child: Text(
-                                                    _applicationsList[rowIndex].name ?? "",
-                                                    overflow: TextOverflow.ellipsis,
-                                                    maxLines: 2,
-                                                  ),
-                                                ),
-                                                onTap: () {},
-                                              );
-                                            }
-                                            if (columnIndex == 5) {
-                                              return DataCell(
-                                                placeholder: false,
-                                                Text(_applicationsList[rowIndex].phoneNumber ?? ""),
-                                                onTap: () {},
-                                              );
-                                            }
-
-                                            if (columnIndex == 6) {
-                                              return DataCell(
-                                                placeholder: false,
-                                                OutlinedButton(
-                                                  onPressed: () {
-                                                    showCustomDialog(
-                                                      context: context,
-                                                      content: ApplicationDetailsContent(
-                                                        applicationId: _applicationsList[rowIndex].actNo ?? "",
-                                                      ),
-                                                    );
-                                                  },
-                                                  child: const Text('가입정보'),
-                                                ),
-                                                // onTap: () {},
-                                              );
-                                            }
-
-                                            if (columnIndex == 7) {
-                                              return DataCell(
-                                                placeholder: false,
-                                                const Icon(
-                                                  Icons.file_present_outlined,
-                                                  color: MainUi.mainColor,
-                                                ),
-                                                onTap: () async {
-                                                  await _fetchApplicationImages(_applicationsList[rowIndex].actNo ?? "");
-
-                                                  if (_base64ImagesList.isNotEmpty && context.mounted) {
-                                                    showDialog(
-                                                      barrierColor: Colors.black,
-                                                      context: context,
-                                                      builder: (context) => ScrollFormImageViewer(binaryImageList: _base64ImagesList),
-                                                    );
-                                                  }
-                                                },
-                                              );
-                                            }
-
-                                            if (columnIndex == 8) {
-                                              return DataCell(
-                                                placeholder: false,
-                                                Text(_applicationsList[rowIndex].applyDate ?? ""),
-                                                onTap: () {},
-                                              );
-                                            }
-
-                                            if (columnIndex == 9) {
-                                              return DataCell(
-                                                placeholder: false,
-                                                Text(_applicationsList[rowIndex].actDate ?? ""),
-                                                onTap: () {},
-                                              );
-                                            }
-
-                                            if (columnIndex == 10) {
-                                              return DataCell(
-                                                placeholder: false,
-                                                const Text("서명없음"),
-                                                onTap: () {},
-                                              );
-                                            }
-
-                                            return DataCell(onTap: () {}, const SizedBox());
                                           },
-                                        ),
-                                      ),
-                                    ),
+                                        );
+                                      }
+
+                                      if (columnIndex == 3) {
+                                        return DataCell(
+                                          Text(_applicationsList[rowIndex].actNo ?? ""),
+                                          onTap: () {},
+                                        );
+                                      }
+                                      if (columnIndex == 4) {
+                                        return DataCell(
+                                          Container(
+                                            constraints: const BoxConstraints(maxWidth: 250),
+                                            child: Text(
+                                              _applicationsList[rowIndex].name ?? "",
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 2,
+                                            ),
+                                          ),
+                                          onTap: () {},
+                                        );
+                                      }
+                                      if (columnIndex == 5) {
+                                        return DataCell(
+                                          placeholder: false,
+                                          Text(_applicationsList[rowIndex].phoneNumber ?? ""),
+                                          onTap: () {},
+                                        );
+                                      }
+
+                                      if (columnIndex == 6) {
+                                        return DataCell(
+                                          placeholder: false,
+                                          OutlinedButton(
+                                            onPressed: () {
+                                              showCustomDialog(
+                                                context: context,
+                                                content: ApplicationDetailsContent(
+                                                  applicationId: _applicationsList[rowIndex].actNo ?? "",
+                                                ),
+                                              );
+                                            },
+                                            child: const Text('가입정보'),
+                                          ),
+                                          // onTap: () {},
+                                        );
+                                      }
+
+                                      if (columnIndex == 7) {
+                                        return DataCell(
+                                          placeholder: false,
+                                          const Icon(
+                                            Icons.file_present_outlined,
+                                            color: MainUi.mainColor,
+                                          ),
+                                          onTap: () async {
+                                            await _fetchApplicationImages(_applicationsList[rowIndex].actNo ?? "");
+
+                                            if (_base64ImagesList.isNotEmpty && context.mounted) {
+                                              showDialog(
+                                                barrierColor: Colors.black,
+                                                context: context,
+                                                builder: (context) => ScrollFormImageViewer(binaryImageList: _base64ImagesList),
+                                              );
+                                            }
+                                          },
+                                        );
+                                      }
+
+                                      if (columnIndex == 8) {
+                                        return DataCell(
+                                          placeholder: false,
+                                          Text(_applicationsList[rowIndex].applyDate ?? ""),
+                                          onTap: () {},
+                                        );
+                                      }
+
+                                      if (columnIndex == 9) {
+                                        return DataCell(
+                                          placeholder: false,
+                                          Text(_applicationsList[rowIndex].actDate ?? ""),
+                                          onTap: () {},
+                                        );
+                                      }
+
+                                      if (columnIndex == 10) {
+                                        return DataCell(
+                                          placeholder: false,
+                                          const Text("서명없음"),
+                                          onTap: () {},
+                                        );
+                                      }
+
+                                      return DataCell(onTap: () {}, const SizedBox());
+                                    },
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                          const Gap(100),
-                        ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-        ],
-      ),
-    );
+              ],
+            ),
+          );
   }
 
   Future<void> _fetchApplications() async {

@@ -116,7 +116,7 @@ class MyApp extends StatelessWidget {
 
         scrollbarTheme: ScrollbarThemeData(
           thumbColor: MaterialStatePropertyAll(Colors.grey.withOpacity(0.2)),
-          thickness: const MaterialStatePropertyAll(12),
+          thickness: const MaterialStatePropertyAll(15),
           thumbVisibility: const MaterialStatePropertyAll(true),
           trackVisibility: const MaterialStatePropertyAll(false),
         ),
