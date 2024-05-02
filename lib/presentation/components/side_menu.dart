@@ -12,88 +12,111 @@ class SideMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //checking user roles from myinfoprovider
-    final myInfoProvider = Provider.of<MyinfoProvifer>(context, listen: false);
-    List<String> myRoles = myInfoProvider.myRoles;
+    // //checking user roles from myinfoprovider
+    // final myInfoProvider = Provider.of<MyinfoProvifer>(context, listen: false);
+    // List<String> myRoles = myInfoProvider.myRoles;
 
-    return Drawer(
-      shadowColor: Colors.transparent,
-      surfaceTintColor: Colors.transparent,
-      backgroundColor: Colors.black,
-      // width: 500,
-      shape: const BeveledRectangleBorder(borderRadius: BorderRadius.zero),
-      child: Consumer<MenuIndexProvider>(
-        builder: (context, value, child) {
-          return ListView(
-            children: [
-              InkWell(
-                onTap: () {
-                  context.go('/profile');
-                },
-                child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-                  alignment: Alignment.topLeft,
-                  child: const ClickableLogo(
-                    height: 60,
-                    color: Colors.white,
+    return Consumer<MyinfoProvifer>(
+      builder: (context, myInfoProvider, child) => Drawer(
+        shadowColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        backgroundColor: Colors.black,
+        // width: 500,
+        shape: const BeveledRectangleBorder(borderRadius: BorderRadius.zero),
+        child: Consumer<MenuIndexProvider>(
+          builder: (context, value, child) {
+            return ListView(
+              children: [
+                InkWell(
+                  onTap: () {
+                    context.go('/profile');
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+                    alignment: Alignment.topLeft,
+                    child: const ClickableLogo(
+                      height: 60,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
-              ),
-              SideMenuWidget(
-                title: "나의 정보",
-                iconSrc: "assets/icons/user.svg",
-                press: () {
-                  context.go('/profile');
-                },
-                isSelected: value.openSideMenuIndex == 0,
-              ),
-              if (myRoles.any((role) => rolePathAccessInfo['/manage-users']!.contains(role)))
-                SideMenuWidget(
-                  title: "사용자 관리",
-                  iconSrc: "assets/icons/admin.svg",
-                  press: () {
-                    context.go('/manage-users');
-                  },
-                  isSelected: value.openSideMenuIndex == 1,
+                const Padding(
+                  padding: EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                  child: Text(
+                    "반갑습니다 ",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                    ),
+                  ),
                 ),
-              if (myRoles.any((role) => rolePathAccessInfo['/manage-plans']!.contains(role)))
+                if (myInfoProvider.userName != null)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20, right: 20, bottom: 10),
+                    child: Text(
+                      myInfoProvider.userName!,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                      ),
+                    ),
+                  ),
                 SideMenuWidget(
-                  title: "요금제 관리",
-                  iconSrc: "assets/icons/plans.svg",
+                  title: "나의 정보",
+                  iconSrc: "assets/icons/user.svg",
                   press: () {
-                    context.go('/manage-plans');
+                    context.go('/profile');
                   },
-                  isSelected: value.openSideMenuIndex == 2,
+                  isSelected: value.openSideMenuIndex == 0,
                 ),
-              if (myRoles.any((role) => rolePathAccessInfo['/applications']!.contains(role)))
+                if (myInfoProvider.myRoles.any((role) => rolePathAccessInfo['/manage-users']!.contains(role)))
+                  SideMenuWidget(
+                    title: "사용자 관리",
+                    iconSrc: "assets/icons/admin.svg",
+                    press: () {
+                      context.go('/manage-users');
+                    },
+                    isSelected: value.openSideMenuIndex == 1,
+                  ),
+                if (myInfoProvider.myRoles.any((role) => rolePathAccessInfo['/manage-plans']!.contains(role)))
+                  SideMenuWidget(
+                    title: "요금제 관리",
+                    iconSrc: "assets/icons/plans.svg",
+                    press: () {
+                      context.go('/manage-plans');
+                    },
+                    isSelected: value.openSideMenuIndex == 2,
+                  ),
+                if (myInfoProvider.myRoles.any((role) => rolePathAccessInfo['/applications']!.contains(role)))
+                  SideMenuWidget(
+                    title: "신청서 접수현황",
+                    iconSrc: "assets/icons/regis.svg",
+                    press: () {
+                      context.go('/applications');
+                    },
+                    isSelected: value.openSideMenuIndex == 3,
+                  ),
+                if (myInfoProvider.myRoles.any((role) => rolePathAccessInfo['/retailers']!.contains(role)))
+                  SideMenuWidget(
+                    title: "판매점 계약현황",
+                    iconSrc: "assets/icons/partner.svg",
+                    press: () {
+                      context.go('/retailers');
+                    },
+                    isSelected: value.openSideMenuIndex == 4,
+                  ),
                 SideMenuWidget(
-                  title: "신청서 접수현황",
-                  iconSrc: "assets/icons/regis.svg",
+                  title: "상담사 개통 문의현황",
+                  iconSrc: "assets/icons/call.svg",
                   press: () {
-                    context.go('/applications');
+                    context.go('/customer-requests');
                   },
-                  isSelected: value.openSideMenuIndex == 3,
+                  isSelected: value.openSideMenuIndex == 5,
                 ),
-              if (myRoles.any((role) => rolePathAccessInfo['/retailers']!.contains(role)))
-                SideMenuWidget(
-                  title: "판매점 계약현황",
-                  iconSrc: "assets/icons/partner.svg",
-                  press: () {
-                    context.go('/retailers');
-                  },
-                  isSelected: value.openSideMenuIndex == 4,
-                ),
-              SideMenuWidget(
-                title: "상담사 개통 문의현황",
-                iconSrc: "assets/icons/call.svg",
-                press: () {
-                  context.go('/customer-requests');
-                },
-                isSelected: value.openSideMenuIndex == 5,
-              ),
-            ],
-          );
-        },
+              ],
+            );
+          },
+        ),
       ),
     );
   }

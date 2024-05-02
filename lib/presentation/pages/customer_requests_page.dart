@@ -67,7 +67,7 @@ class CustomerRequestsPageState extends State<CustomerRequestsPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Header(title: "상담사 개통 문의현황"),
-                const Gap(10),
+                const Gap(5),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Wrap(

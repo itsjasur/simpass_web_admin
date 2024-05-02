@@ -64,7 +64,7 @@ class _RetailersPageState extends State<RetailersPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Header(title: "판매점 계약현황"),
-                const Gap(20),
+                const Gap(5),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Wrap(

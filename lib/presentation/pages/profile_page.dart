@@ -9,6 +9,7 @@ import 'package:admin_simpass/presentation/components/custom_text_input.dart';
 import 'package:admin_simpass/presentation/components/header.dart';
 import 'package:admin_simpass/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -86,10 +87,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(20),
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 20),
                         child: Container(
-                          // color: Colors.amber.shade100,
                           constraints: const BoxConstraints(
                             maxWidth: 900,
                           ),

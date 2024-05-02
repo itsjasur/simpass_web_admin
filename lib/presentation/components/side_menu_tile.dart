@@ -66,7 +66,7 @@ class _SideMenuWidgetState extends State<SideMenuWidget> {
                   Text(
                     widget.title,
                     style: TextStyle(
-                      color: widget.isSelected || _hovering ? MainUi.mainColor : Colors.white70,
+                      color: widget.isSelected || _hovering ? MainUi.mainColor : Colors.white,
                       fontSize: 16,
                     ),
                   ),

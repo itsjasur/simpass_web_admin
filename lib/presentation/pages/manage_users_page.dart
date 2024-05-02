@@ -62,10 +62,11 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Header(title: "사용자 관리"),
+                const Gap(5),
                 if (myRoles.contains('ROLE_SUPER'))
                   Container(
                     height: 47,
-                    margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                    margin: const EdgeInsets.symmetric(horizontal: 20),
                     constraints: const BoxConstraints(minWidth: 100),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(),
@@ -81,6 +82,7 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
                       child: const Text("신규등록 +"),
                     ),
                   ),
+                const Gap(20),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Pagination(

@@ -81,7 +81,7 @@ class RApplicationsPageState extends State<ApplicationsPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Header(title: "신청서 접수현황"),
-                const Gap(10),
+                const Gap(5),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Wrap(

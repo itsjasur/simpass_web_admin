@@ -73,7 +73,7 @@ class _ManagePlansPageState extends State<ManagePlansPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Header(title: "요금제 관리"),
-                const Gap(10),
+                const Gap(5),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Wrap(

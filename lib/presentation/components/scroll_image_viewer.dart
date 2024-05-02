@@ -35,18 +35,16 @@ class _ScrollFormImageViewerState extends State<ScrollFormImageViewer> {
           Align(
             child: _sendingToPrint
                 ? const CircularProgressIndicator()
-                : SingleChildScrollView(
-                    child: SizedBox(
-                      width: 1200,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        padding: const EdgeInsets.only(top: 10),
-                        itemCount: widget.binaryImageList.length,
-                        itemBuilder: (context, index) => Padding(
-                          padding: const EdgeInsets.only(bottom: 20),
-                          child: Image.memory(
-                            base64.decode(widget.binaryImageList[index]),
-                          ),
+                : SizedBox(
+                    width: 1200,
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.only(top: 10),
+                      itemCount: widget.binaryImageList.length,
+                      itemBuilder: (context, index) => Padding(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        child: Image.memory(
+                          base64.decode(widget.binaryImageList[index]),
                         ),
                       ),
                     ),
@@ -56,26 +54,23 @@ class _ScrollFormImageViewerState extends State<ScrollFormImageViewer> {
             padding: const EdgeInsets.all(20),
             child: Align(
               alignment: Alignment.topLeft,
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  hoverColor: Colors.white54,
-                  borderRadius: BorderRadius.circular(10),
-                  onTap: () {
-                    context.pop();
-                  },
-                  onHover: (value) {},
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.black38,
-                    ),
-                    padding: const EdgeInsets.all(15),
-                    child: const Icon(
-                      Icons.close_outlined,
-                      color: Colors.white,
-                      size: 30,
-                    ),
+              child: InkWell(
+                hoverColor: Colors.white54,
+                borderRadius: BorderRadius.circular(10),
+                onTap: () {
+                  context.pop();
+                },
+                onHover: (value) {},
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.black38,
+                  ),
+                  padding: const EdgeInsets.all(15),
+                  child: const Icon(
+                    Icons.close_outlined,
+                    color: Colors.white,
+                    size: 30,
                   ),
                 ),
               ),
@@ -85,35 +80,32 @@ class _ScrollFormImageViewerState extends State<ScrollFormImageViewer> {
             padding: const EdgeInsets.all(20),
             child: Align(
               alignment: Alignment.topRight,
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  hoverColor: Colors.white54,
-                  borderRadius: BorderRadius.circular(10),
-                  onTap: () async {
-                    setState(() {
-                      _sendingToPrint = true;
-                    });
-                    await Future.delayed(const Duration(milliseconds: 500));
+              child: InkWell(
+                hoverColor: Colors.white54,
+                borderRadius: BorderRadius.circular(10),
+                onTap: () async {
+                  setState(() {
+                    _sendingToPrint = true;
+                  });
+                  await Future.delayed(const Duration(milliseconds: 500));
 
-                    _printPdf();
+                  _printPdf();
 
-                    setState(() {
-                      _sendingToPrint = false;
-                    });
-                  },
-                  onHover: (value) {},
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.black38,
-                    ),
-                    padding: const EdgeInsets.all(15),
-                    child: const Icon(
-                      Icons.print,
-                      color: Colors.white,
-                      size: 30,
-                    ),
+                  setState(() {
+                    _sendingToPrint = false;
+                  });
+                },
+                onHover: (value) {},
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Colors.black38,
+                  ),
+                  padding: const EdgeInsets.all(15),
+                  child: const Icon(
+                    Icons.print,
+                    color: Colors.white,
+                    size: 30,
                   ),
                 ),
               ),
