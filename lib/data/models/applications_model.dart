@@ -234,7 +234,7 @@ class ApplicationDetailsModel {
   final String? usimNo;
   final String? usimFeeCd;
   final String? usimFeeNm;
-  final int? usimFee;
+  final String? usimFee;
   final String? dataBlock;
   final String? dataRomingBlock;
   final String? phoneBillBlock;

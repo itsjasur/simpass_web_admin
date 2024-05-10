@@ -13,7 +13,7 @@ class AuthServiceProvider extends ChangeNotifier {
     await prefs.setString('refreshToken', refreshToken);
 
     _isLoggedIn = true;
-    if (context.mounted) context.go('/profile');
+    if (context.mounted) context.go('/customer-requests');
     notifyListeners();
   }
 

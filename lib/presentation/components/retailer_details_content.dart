@@ -1,10 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:admin_simpass/data/api/api_service.dart';
 import 'package:admin_simpass/data/models/retailers_model.dart';
 import 'package:admin_simpass/presentation/components/button_circular_indicator.dart';
 import 'package:admin_simpass/presentation/components/custom_text_input.dart';
 import 'package:admin_simpass/presentation/components/image_viewer_content.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 

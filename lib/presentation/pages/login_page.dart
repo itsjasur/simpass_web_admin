@@ -98,7 +98,7 @@ class _LoginPageState extends State<LoginPage> {
                       CustomTextInput(
                         controller: _passController,
                         title: '비밀번호',
-                        validator: InputValidator().validatePass,
+                        // validator: InputValidator().validatePass,
                         hidden: true,
                       ),
 

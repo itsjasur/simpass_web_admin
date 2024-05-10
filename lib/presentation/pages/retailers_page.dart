@@ -6,7 +6,6 @@ import 'package:admin_simpass/globals/formatters.dart';
 import 'package:admin_simpass/presentation/components/custom_alert_dialog.dart';
 import 'package:admin_simpass/presentation/components/custom_drop_down_menu.dart';
 import 'package:admin_simpass/presentation/components/custom_text_input.dart';
-import 'package:admin_simpass/presentation/components/header.dart';
 import 'package:admin_simpass/presentation/components/pagination.dart';
 import 'package:admin_simpass/presentation/components/retailer_details_content.dart';
 import 'package:admin_simpass/presentation/components/retailerer_status_update_content.dart';
@@ -63,7 +62,6 @@ class _RetailersPageState extends State<RetailersPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Header(title: "판매점 계약현황"),
                 const Gap(5),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -150,7 +148,7 @@ class _RetailersPageState extends State<RetailersPage> {
                         scrollDirection: Axis.horizontal,
                         child: SingleChildScrollView(
                           child: Container(
-                            margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                            margin: const EdgeInsets.only(top: 15, bottom: 50, right: 20, left: 20),
                             constraints: BoxConstraints(
                               minWidth: constraints.maxWidth - 50,
                             ),

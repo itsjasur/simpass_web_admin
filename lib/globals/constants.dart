@@ -8,6 +8,14 @@ Map<String, List> rolePathAccessInfo = {
   "/retailers": ['ROLE_SUPER', 'ROLE_ADMIN', 'ROLE_MANAGER', 'ROLE_OPEN_ADMIN'],
   "/customer-requests": ['ALL'],
 };
+List<String> sideMenuPages = [
+  "나의 정보",
+  "사용자 관리",
+  "요금제 관리",
+  "신청서 접수현황",
+  "판매점 계약현황",
+  "상담사 개통 문의현황",
+];
 
 const List countryNameCodelist = [
   {"code": 'CN', "label": '중국'},

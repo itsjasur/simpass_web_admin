@@ -1,4 +1,6 @@
 import 'package:admin_simpass/globals/global_keys.dart';
+import 'package:admin_simpass/presentation/components/header.dart';
+import 'package:admin_simpass/providers/menu_provider.dart';
 import 'package:admin_simpass/providers/side_menu_provider.dart';
 import 'package:admin_simpass/presentation/components/side_menu.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +41,14 @@ class MenuShell extends StatelessWidget {
               child: const SideMenu(), // Optional: Add a curve for the animation
             ),
             Expanded(
-              child: child,
+              child: Column(
+                children: [
+                  Consumer<MenuProvider>(
+                    builder: (context1, value, child) => Header(title: value.title),
+                  ),
+                  Expanded(child: child),
+                ],
+              ),
             ),
           ],
         ),

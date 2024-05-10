@@ -1,7 +1,7 @@
 import 'package:admin_simpass/globals/global_keys.dart';
 import 'package:admin_simpass/providers/auth_provider.dart';
+import 'package:admin_simpass/providers/menu_provider.dart';
 import 'package:admin_simpass/providers/myinfo_provider.dart';
-import 'package:admin_simpass/providers/menu_navigation_provider.dart';
 import 'package:admin_simpass/providers/side_menu_provider.dart';
 import 'package:admin_simpass/globals/main_ui.dart';
 import 'package:admin_simpass/router/routes.dart';
@@ -19,7 +19,7 @@ Future<void> main() async {
       ChangeNotifierProvider(create: (context) => AuthServiceProvider()),
       ChangeNotifierProvider(create: (context) => SideMenuProvider()),
       ChangeNotifierProvider(create: (context) => MyinfoProvifer()),
-      ChangeNotifierProvider(create: (context) => MenuIndexProvider()),
+      ChangeNotifierProvider(create: (context) => MenuProvider()),
     ],
     child: const MyApp(),
   ));

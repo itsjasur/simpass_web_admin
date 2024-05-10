@@ -4,7 +4,6 @@ import 'package:admin_simpass/globals/constants.dart';
 import 'package:admin_simpass/globals/formatters.dart';
 import 'package:admin_simpass/globals/main_ui.dart';
 import 'package:admin_simpass/presentation/components/custom_alert_dialog.dart';
-import 'package:admin_simpass/presentation/components/header.dart';
 import 'package:admin_simpass/presentation/components/update_add_user_content.dart';
 import 'package:admin_simpass/presentation/components/pagination.dart';
 import 'package:admin_simpass/providers/myinfo_provider.dart';
@@ -61,7 +60,6 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Header(title: "사용자 관리"),
                 const Gap(5),
                 if (myRoles.contains('ROLE_SUPER'))
                   Container(
@@ -270,7 +268,11 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
 
     try {
       final APIService apiService = APIService();
-      var result = await apiService.fetchUsers(context: context, page: _currentPage, rowLimit: _perPage);
+      var result = await apiService.fetchUsers(
+        context: context,
+        page: _currentPage,
+        rowLimit: _perPage,
+      );
 
       if (result['data'] != null && result['data']['result'] == 'SUCCESS') {
         Map data = result['data'];
@@ -281,7 +283,7 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
         _usersList.addAll(newList);
       }
 
-      await Future.delayed(const Duration(seconds: 1));
+      // await Future.delayed(const Duration(seconds: 1));
       _dataLoading = false;
       setState(() {});
     } catch (e) {
