@@ -39,6 +39,7 @@ class PartnerModel {
   int? num;
   int? id;
   String? partnerCd;
+  String? agentNm;
   String? contractor;
   String? birthday;
   String? partnerNm;
@@ -89,6 +90,7 @@ class PartnerModel {
     this.num,
     this.id,
     this.partnerCd,
+    this.agentNm,
     this.contractor,
     this.birthday,
     this.partnerNm,
@@ -141,6 +143,7 @@ class PartnerModel {
       num: json['num'],
       id: json['id'],
       partnerCd: json['partner_cd'],
+      agentNm: json['agent_nm'],
       contractor: json['contractor'],
       birthday: json['birthday'],
       partnerNm: json['partner_nm'],

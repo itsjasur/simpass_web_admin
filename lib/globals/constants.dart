@@ -13,7 +13,7 @@ List<String> sideMenuPages = [
   "사용자 관리",
   "요금제 관리",
   "신청서 접수현황",
-  "판매점 계약현황",
+  "판매점 거레현황",
   "상담사 개통 문의현황",
 ];
 
@@ -180,6 +180,6 @@ final List mangePlansColumns = ['No.', '상태', '요금제명', '통신사', '�
 
 final List applicationsColumns = ['No.', '판매점영', '상태', '접수번호', '고객명', '후대펀', '가입정보', '가입신청서', '접수일자', '개통일자', '서명여부'];
 
-final List retailersColumns = ['No.', '상태', '만매점명', '대표자명', '연락처', '사업자번호', '접수일자', '계약일자', '상세정보'];
+final List retailersColumns = ['No.', '상태', '대리점명', '판매점명', '대표자명', '연락처', '사업자번호', '접수일자', '계약일자', '상세정보'];
 
 final List customerRequestsColumns = ['No.', '상태명', '이름', '연락처', '국가', '요금제', '가입구분명', '요청 날짜', '세부'];

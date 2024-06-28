@@ -408,7 +408,7 @@ class APIService {
       String? accessToken = await getAccessToken();
       headers['Authorization'] = 'Bearer $accessToken';
 
-      Uri url = _urlMaker('agent/partner');
+      Uri url = _urlMaker('agent/agentRole');
       var body = json.encode(requestModel);
       var response = await http.post(url, headers: headers, body: body);
 

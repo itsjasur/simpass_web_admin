@@ -188,12 +188,13 @@ class _RetailersPageState extends State<RetailersPage> {
                                       // sorting table on tap on header
                                       if (columnIndex == 0) mysort((model) => model.num ?? 0);
                                       if (columnIndex == 1) mysort((model) => model.statusNm?.toLowerCase() ?? "");
-                                      if (columnIndex == 2) mysort((model) => model.partnerNm?.toLowerCase() ?? "");
-                                      if (columnIndex == 3) mysort((model) => model.contractor?.toLowerCase() ?? "");
-                                      if (columnIndex == 4) mysort((model) => model.phoneNumber?.toLowerCase() ?? "");
-                                      if (columnIndex == 5) mysort((model) => model.businessNum?.toLowerCase() ?? "");
-                                      if (columnIndex == 6) mysort((model) => model.applyDate ?? "");
-                                      if (columnIndex == 7) mysort((model) => model.contractDate ?? "");
+                                      if (columnIndex == 2) mysort((model) => model.agentNm?.toLowerCase() ?? "");
+                                      if (columnIndex == 3) mysort((model) => model.partnerNm?.toLowerCase() ?? "");
+                                      if (columnIndex == 4) mysort((model) => model.contractor?.toLowerCase() ?? "");
+                                      if (columnIndex == 5) mysort((model) => model.phoneNumber?.toLowerCase() ?? "");
+                                      if (columnIndex == 6) mysort((model) => model.businessNum?.toLowerCase() ?? "");
+                                      if (columnIndex == 7) mysort((model) => model.applyDate ?? "");
+                                      if (columnIndex == 8) mysort((model) => model.contractDate ?? "");
 
                                       setState(() {});
                                     },
@@ -277,7 +278,7 @@ class _RetailersPageState extends State<RetailersPage> {
                                           Container(
                                             constraints: const BoxConstraints(maxWidth: 150),
                                             child: Text(
-                                              _retailersList[rowIndex].partnerNm ?? "",
+                                              _retailersList[rowIndex].agentNm ?? "",
                                               overflow: TextOverflow.ellipsis,
                                               maxLines: 2,
                                             ),
@@ -288,11 +289,25 @@ class _RetailersPageState extends State<RetailersPage> {
 
                                       if (columnIndex == 3) {
                                         return DataCell(
+                                          Container(
+                                            constraints: const BoxConstraints(maxWidth: 150),
+                                            child: Text(
+                                              _retailersList[rowIndex].partnerNm ?? "",
+                                              overflow: TextOverflow.ellipsis,
+                                              maxLines: 2,
+                                            ),
+                                          ),
+                                          onTap: () {},
+                                        );
+                                      }
+
+                                      if (columnIndex == 4) {
+                                        return DataCell(
                                           Text(_retailersList[rowIndex].contractor ?? ""),
                                           onTap: () {},
                                         );
                                       }
-                                      if (columnIndex == 4) {
+                                      if (columnIndex == 5) {
                                         return DataCell(
                                           Container(
                                             constraints: const BoxConstraints(maxWidth: 250),
@@ -305,7 +320,7 @@ class _RetailersPageState extends State<RetailersPage> {
                                           onTap: () {},
                                         );
                                       }
-                                      if (columnIndex == 5) {
+                                      if (columnIndex == 6) {
                                         return DataCell(
                                           placeholder: false,
                                           Text(_retailersList[rowIndex].businessNum ?? ""),
@@ -313,7 +328,7 @@ class _RetailersPageState extends State<RetailersPage> {
                                         );
                                       }
 
-                                      if (columnIndex == 6) {
+                                      if (columnIndex == 7) {
                                         return DataCell(
                                           placeholder: false,
                                           Text(CustomFormat().formatDateTime(_retailersList[rowIndex].applyDate) ?? ""),
@@ -321,7 +336,7 @@ class _RetailersPageState extends State<RetailersPage> {
                                         );
                                       }
 
-                                      if (columnIndex == 7) {
+                                      if (columnIndex == 8) {
                                         return DataCell(
                                           placeholder: false,
                                           Text(CustomFormat().formatDateTime(_retailersList[rowIndex].contractDate) ?? ""),
@@ -329,7 +344,7 @@ class _RetailersPageState extends State<RetailersPage> {
                                         );
                                       }
 
-                                      if (columnIndex == 8) {
+                                      if (columnIndex == 9) {
                                         return DataCell(
                                           placeholder: false,
                                           OutlinedButton(
